@@ -1,0 +1,31 @@
+version: "3"
+
+services:
+
+  sqlite3:
+    platform: linux/x86_64
+    image: nouchka/sqlite3:latest
+    ports:
+      - '3306:3306'
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./db/:/root/db/
+
+  app:
+    container_name: mmt-backend
+    build:
+      context: .
+    ports:
+      - "8000:8020"
+    command: >
+      sh -c ". /opt/app/start-app.sh"
+    environment:
+      DJANGO_SUPERUSER_USERNAME: "${DJANGO_SUPERUSER_USERNAME}"
+      DJANGO_SUPERUSER_PASSWORD: "${DJANGO_SUPERUSER_PASSWORD}"
+      DJANGO_SUPERUSER_EMAIL: "${DJANGO_SUPERUSER_EMAIL}"
+      SECRET_KEY_VAL: "${SECRET_KEY_VAL}"
+    volumes:
+      - ./app:/opt/app/mmt-backend
+    depends_on:
+      - sqlite3

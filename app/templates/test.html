@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<body>
+    <table>
+        <thead>
+            <th>ID</th>
+            <th>First</th>
+            <th>Second</th>
+        </thead>
+        {% for i in items %}
+            <tbody>
+                <td>{{i.third}}</td>
+                <td>{{i.first}}</td>
+                <td>{{i.second}}</td>
+            </tbody>
+        {% endfor %}
+    </table>
+</body>
