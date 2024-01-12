@@ -1,10 +1,14 @@
 mysql-connector-python >= 8.0.28, <=8.0.29
 
+django-guardian
+
 django-mysql>=3.10.0,<3.11.0
 
 Django>=3.2,<4.0
 
 djangorestframework>=3.12.2,<3.13.0
+
+djangorestframework-guardian2
 
 django-model-utils>=4.1.1,<4.2.0
 
