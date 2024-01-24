@@ -1,6 +1,8 @@
 from django.db import models
 from django.urls import reverse
 
+from users.models import UserRecord
+
 # Create your models here.
 
 
@@ -110,3 +112,17 @@ class ACEMapping(models.Model):
     def __str__(self):
         """String for representing the Model object."""
         return f'{self.id}'
+
+
+class Transcript(models.Model):
+    """Model to track Transcript access permissions"""
+    id = models.BigAutoField(primary_key=True)
+    subject = models.OneToOneField(UserRecord, on_delete=models.CASCADE)
+
+    def get_absolute_url(self):
+        """ URL for displaying individual model records."""
+        return reverse('transcript', args=[str(self.subject.id)])
+
+    def __str__(self):
+        """String for representing the Model object."""
+        return f'{self.subject}'

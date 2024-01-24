@@ -1,8 +1,9 @@
 from django.contrib import admin
-
 from generate_transcript.models import (AcademicCourse, AcademicCourseArea,
                                         AcademicInstitute, ACEMapping,
-                                        AreasAndHour, Degree, MilitaryCourse)
+                                        AreasAndHour, Degree, MilitaryCourse,
+                                        Transcript)
+from guardian.admin import GuardedModelAdmin
 
 # Register your models here.
 
@@ -40,3 +41,8 @@ class DegreeAdmin(admin.ModelAdmin):
 @admin.register(MilitaryCourse)
 class MilitaryCourseAdmin(admin.ModelAdmin):
     list_display = ('id', 'course')
+
+
+@admin.register(Transcript)
+class TranscriptAdmin(GuardedModelAdmin):
+    list_display = ('id', 'subject')
