@@ -2,9 +2,16 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
+from generate_transcript.models import MilitaryCourse
 from users.models import MMTUser, UserRecord
 
 # Register your models here.
+
+
+class MilitaryCourseInline(admin.TabularInline):
+    model = MilitaryCourse.user_id.through
+    verbose_name = 'Military Course'
+    verbose_name_plural = 'Military Courses'
 
 
 @admin.register(MMTUser)
@@ -34,3 +41,4 @@ class XDSUserAdmin(UserAdmin):
 @admin.register(UserRecord)
 class UserRecordAdmin(admin.ModelAdmin):
     list_display = ('id', 'email',)
+    inlines = [MilitaryCourseInline]

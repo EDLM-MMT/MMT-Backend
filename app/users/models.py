@@ -7,8 +7,6 @@ from django.forms import ValidationError
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 
-from generate_transcript.models import MilitaryCourse
-
 # Create your models here.
 
 
@@ -16,8 +14,6 @@ class UserRecord(models.Model):
     """Model to store user records"""
     id = models.BigAutoField(primary_key=True)
     email = models.EmailField(unique=True)
-    military_courses = models.ManyToManyField(MilitaryCourse,
-                                              related_name="user_record_set")
 
     def __str__(self):
         """String for representing the Model object."""

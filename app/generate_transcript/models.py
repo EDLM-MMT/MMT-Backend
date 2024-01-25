@@ -1,4 +1,7 @@
 from django.db import models
+from django.urls import reverse
+
+from users.models import UserRecord
 
 # Create your models here.
 
@@ -6,7 +9,7 @@ from django.db import models
 class AcademicCourseArea(models.Model):
     """Model to store academic course areas"""
     id = models.BigAutoField(primary_key=True)
-    course_area = models.CharField(max_length=250)
+    course_area = models.CharField(max_length=500)
 
     def __str__(self):
         """String for representing the Model object."""
@@ -16,11 +19,11 @@ class AcademicCourseArea(models.Model):
 class AcademicCourse(models.Model):
     """Model to store academic course detail"""
     id = models.BigAutoField(primary_key=True)
-    course = models.CharField(max_length=250)
+    course = models.CharField(max_length=500)
     academic_course_area = models.ForeignKey(AcademicCourseArea,
                                              on_delete=models.CASCADE,
                                              related_name="academic_"
-                                             "course_set",
+                                             "course",
                                              help_text="Choose an academic "
                                              "area from academic course area",)
 
@@ -35,7 +38,7 @@ class AreasAndHour(models.Model):
     academic_course_area = models.ForeignKey(AcademicCourseArea,
                                              on_delete=models.CASCADE,
                                              related_name="areas_and_"
-                                             "hours_set",
+                                             "hours",
                                              help_text="Choose an academic "
                                              "area from academic course area",
                                              )
@@ -50,13 +53,13 @@ class AreasAndHour(models.Model):
 class Degree(models.Model):
     """Model to store degrees"""
     id = models.BigAutoField(primary_key=True)
-    degree = models.CharField(max_length=250)
+    degree = models.CharField(max_length=500)
     area_and_hours = models.ForeignKey(AreasAndHour,
                                        on_delete=models.CASCADE,
-                                       related_name="degree_set",
+                                       related_name="degree",
                                        help_text="Choose an academic "
                                        "area with duration")
- 
+
     def __str__(self):
         """String for representing the Model object."""
         return f'{self.degree} - {self.area_and_hours}'
@@ -65,9 +68,9 @@ class Degree(models.Model):
 class AcademicInstitute(models.Model):
     """Model to store degree offerings"""
     id = models.BigAutoField(primary_key=True)
-    institute = models.CharField(max_length=250)
+    institute = models.CharField(max_length=500)
     degrees = models.ManyToManyField(Degree,
-                                     related_name="institute_set",
+                                     related_name="institute",
                                      help_text="Choose a degree offered")
 
     def __str__(self):
@@ -78,11 +81,15 @@ class AcademicInstitute(models.Model):
 class MilitaryCourse(models.Model):
     """Model to store Military course details"""
     id = models.BigAutoField(primary_key=True)
-    course = models.CharField(max_length=250)
+    user_id = \
+        models.ManyToManyField(
+            UserRecord, "military_course",
+            max_length=250, blank=True)
+    course_id = models.CharField(max_length=250)
 
     def __str__(self):
         """String for representing the Model object."""
-        return f'{self.course}'
+        return f'{self.course_id}'
 
 
 class ACEMapping(models.Model):
@@ -90,11 +97,11 @@ class ACEMapping(models.Model):
     id = models.BigAutoField(primary_key=True)
     academic_course_area = models.ForeignKey(AcademicCourseArea,
                                              on_delete=models.CASCADE,
-                                             related_name="ace_area_set",
+                                             related_name="ace_area",
                                              help_text="Choose an academic "
                                              "area from academic course area",)
     military_courses = models.ManyToManyField(MilitaryCourse,
-                                              related_name="ace_military_set",
+                                              related_name="ace_military",
                                               help_text="Choose military "
                                               "courses realted to "
                                               "the academic area")
@@ -102,3 +109,17 @@ class ACEMapping(models.Model):
     def __str__(self):
         """String for representing the Model object."""
         return f'{self.id}'
+
+
+class Transcript(models.Model):
+    """Model to track Transcript access permissions"""
+    id = models.BigAutoField(primary_key=True)
+    subject = models.OneToOneField(UserRecord, on_delete=models.CASCADE)
+
+    def get_absolute_url(self):
+        """ URL for displaying individual model records."""
+        return reverse('transcript', args=[str(self.subject.id)])
+
+    def __str__(self):
+        """String for representing the Model object."""
+        return f'{self.subject}'
