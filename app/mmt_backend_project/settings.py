@@ -168,3 +168,7 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
 }
+
+# Guardian Settings
+GUARDIAN_RAISE_403 = True
+ANONYMOUS_USER_NAME = None
