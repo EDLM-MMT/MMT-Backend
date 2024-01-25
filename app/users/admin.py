@@ -1,7 +1,8 @@
+
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from users.models import MMTUser
+from users.models import MMTUser, UserRecord
 
 # Register your models here.
 
@@ -28,3 +29,8 @@ class XDSUserAdmin(UserAdmin):
          ),
     )
     filter_horizontal = ['groups', 'user_permissions', ]
+
+
+@admin.register(UserRecord)
+class UserRecordAdmin(admin.ModelAdmin):
+    list_display = ('id', 'email',)

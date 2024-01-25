@@ -1,9 +1,8 @@
 from django.contrib import admin
+
 from generate_transcript.models import (AcademicCourse, AcademicCourseArea,
                                         AcademicInstitute, ACEMapping,
-                                        AreasAndHour, Degree, MilitaryCourse,
-                                        Transcript)
-from guardian.admin import GuardedModelAdmin
+                                        AreasAndHour, Degree, MilitaryCourse)
 
 # Register your models here.
 
@@ -15,34 +14,29 @@ class AcademicCourseAreaAdmin(admin.ModelAdmin):
 
 @admin.register(AcademicCourse)
 class AcademicCourseAdmin(admin.ModelAdmin):
-    list_display = ('id', 'courses', 'academic_course_areas')
+    list_display = ('id', 'course', 'academic_course_area')
 
 
 @admin.register(AcademicInstitute)
 class AcademicInstituteAdmin(admin.ModelAdmin):
-    list_display = ('id', 'institute', 'degree_offered')
+    list_display = ('id', 'institute',)
 
 
 @admin.register(ACEMapping)
 class ACEMappingAdmin(admin.ModelAdmin):
-    list_display = ('id', 'academic_course_areas',)
+    list_display = ('id', 'academic_course_area',)
 
 
 @admin.register(AreasAndHour)
 class AreasAndHourAdmin(admin.ModelAdmin):
-    list_display = ('id', 'academic_areas', 'hours')
+    list_display = ('id', 'academic_course_area', 'hours')
 
 
 @admin.register(Degree)
 class DegreeAdmin(admin.ModelAdmin):
-    list_display = ('id', 'degree', 'areas_and_hours')
+    list_display = ('id', 'degree', 'area_and_hours')
 
 
 @admin.register(MilitaryCourse)
 class MilitaryCourseAdmin(admin.ModelAdmin):
     list_display = ('id', 'course')
-
-
-@admin.register(Transcript)
-class TranscriptAdmin(GuardedModelAdmin):
-    list_display = ('id', 'subject')
