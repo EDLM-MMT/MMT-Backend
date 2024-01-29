@@ -1,7 +1,7 @@
 from django.db import models
 from django.urls import reverse
 
-from users.models import UserRecord
+from users.models import MOS, UserRecord
 
 # Create your models here.
 
@@ -19,7 +19,8 @@ class AcademicCourseArea(models.Model):
 class AcademicCourse(models.Model):
     """Model to store academic course detail"""
     id = models.BigAutoField(primary_key=True)
-    course = models.CharField(max_length=500)
+    name = models.CharField(max_length=500, help_text="Set course name")
+    code = models.CharField(max_length=200, help_text="Set course code")
     academic_course_area = models.ForeignKey(AcademicCourseArea,
                                              on_delete=models.CASCADE,
                                              related_name="academic_"
@@ -29,7 +30,7 @@ class AcademicCourse(models.Model):
 
     def __str__(self):
         """String for representing the Model object."""
-        return f'{self.course}'
+        return f'{self.name}'
 
 
 class AreasAndHour(models.Model):
@@ -54,6 +55,8 @@ class Degree(models.Model):
     """Model to store degrees"""
     id = models.BigAutoField(primary_key=True)
     degree = models.CharField(max_length=500)
+    mos = models.ManyToManyField(
+        MOS, related_name='degrees', help_text="Select valid MOS")
     area_and_hours = models.ForeignKey(AreasAndHour,
                                        on_delete=models.CASCADE,
                                        related_name="degree",
@@ -103,7 +106,7 @@ class ACEMapping(models.Model):
     military_courses = models.ManyToManyField(MilitaryCourse,
                                               related_name="ace_military",
                                               help_text="Choose military "
-                                              "courses realted to "
+                                              "courses related to "
                                               "the academic area")
 
     def __str__(self):

@@ -1,10 +1,9 @@
 from django.contrib import admin
-from guardian.admin import GuardedModelAdmin
-
 from generate_transcript.models import (AcademicCourse, AcademicCourseArea,
                                         AcademicInstitute, ACEMapping,
                                         AreasAndHour, Degree, MilitaryCourse,
                                         Transcript)
+from guardian.admin import GuardedModelAdmin
 
 # Register your models here.
 
@@ -16,7 +15,7 @@ class AcademicCourseAreaAdmin(admin.ModelAdmin):
 
 @admin.register(AcademicCourse)
 class AcademicCourseAdmin(admin.ModelAdmin):
-    list_display = ('id', 'course', 'academic_course_area')
+    list_display = ('id', 'name', 'code', 'academic_course_area')
 
 
 @admin.register(AcademicInstitute)

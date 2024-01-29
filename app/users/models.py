@@ -7,7 +7,15 @@ from django.forms import ValidationError
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 
+
 # Create your models here.
+class MOS(models.Model):
+    code = models.CharField(max_length=100, help_text="Set MOS code")
+    name = models.CharField(max_length=255, help_text="Set MOS name")
+
+    def __str__(self):
+        """String for representing the Model object."""
+        return f'{self.name} ({self.code})'
 
 
 class UserRecord(models.Model):
@@ -22,6 +30,7 @@ class UserRecord(models.Model):
 
 class MMTUserProfileManager(BaseUserManager):
     """User manager"""
+
     def create_user(self, email, password=None, **other_fields):
         """Create a new user"""
         if not email:
@@ -61,6 +70,13 @@ class MMTUser(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(default=timezone.now)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
+    position = models.CharField(max_length=200)
+    sector = models.CharField(max_length=200)
+    rank = models.CharField(max_length=200)
+    location = models.CharField(max_length=200)
+    eso_default = models.ForeignKey('self', related_name='service_members',
+                                    on_delete=models.SET_NULL, blank=True,
+                                    null=True)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
     objects = MMTUserProfileManager()

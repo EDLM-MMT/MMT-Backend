@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     # Internal Apps
     'users',
     'generate_transcript',
+    'counseling',
+    'inquiries',
 ]
 
 MIDDLEWARE = [
