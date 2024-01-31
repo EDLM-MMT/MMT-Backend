@@ -30,13 +30,22 @@ class CareerPlan(models.Model):
 
 
 class Comment(TimeStampedModel):
-    comment = models.TextField(editable=False, help_text="Set comment text")
+    comment = models.TextField(help_text="Set comment text")
     plan = models.ForeignKey(CareerPlan, related_name='comments',
                              on_delete=models.CASCADE,
                              help_text="Select associated plan")
     poster = models.ForeignKey(MMTUser, related_name='counseling_comments',
                                on_delete=models.SET_NULL, blank=True,
                                null=True, help_text="Select comment poster")
+
+    def save(self, *args, **kwargs):
+        """Block editing"""
+        if self.pk:
+            update_fields = kwargs.get('update_fields', None)
+            if update_fields:
+                kwargs['update_fields'] = []
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         """String for representing the Model object."""
