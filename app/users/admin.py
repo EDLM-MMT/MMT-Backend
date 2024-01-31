@@ -1,9 +1,9 @@
 
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-
 from generate_transcript.models import MilitaryCourse
-from users.models import MMTUser, UserRecord
+
+from users.models import MOS, MMTUser, UserRecord
 
 # Register your models here.
 
@@ -42,3 +42,8 @@ class XDSUserAdmin(UserAdmin):
 class UserRecordAdmin(admin.ModelAdmin):
     list_display = ('id', 'email',)
     inlines = [MilitaryCourseInline]
+
+
+@admin.register(MOS)
+class MOSAdmin(admin.ModelAdmin):
+    list_display = ('code', 'name',)

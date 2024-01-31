@@ -23,6 +23,28 @@ class AcademicCourseAdmin(admin.ModelAdmin):
 class AcademicInstituteAdmin(admin.ModelAdmin):
     list_display = ('id', 'institute',)
 
+    # fields to display in the admin site
+    fieldsets = (
+        (
+            "General",
+            {
+                # on the same line
+                "fields": (
+                    "institute",
+                )
+            },
+        ),
+        (
+            "Connections",
+            {
+                "fields": (
+                    "degrees",
+                )
+            }
+        ),
+    )
+    filter_horizontal = ("degrees",)
+
 
 @admin.register(ACEMapping)
 class ACEMappingAdmin(admin.ModelAdmin):
@@ -37,6 +59,29 @@ class AreasAndHourAdmin(admin.ModelAdmin):
 @admin.register(Degree)
 class DegreeAdmin(admin.ModelAdmin):
     list_display = ('id', 'degree', 'area_and_hours')
+
+    # fields to display in the admin site
+    fieldsets = (
+        (
+            "General",
+            {
+                # on the same line
+                "fields": (
+                    "degree",
+                )
+            },
+        ),
+        (
+            "Connections",
+            {
+                "fields": (
+                    "mos",
+                    "area_and_hours",
+                )
+            }
+        ),
+    )
+    filter_horizontal = ("mos",)
 
 
 @admin.register(MilitaryCourse)
