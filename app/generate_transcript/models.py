@@ -43,8 +43,7 @@ class AreasAndHour(models.Model):
                                              help_text="Choose an academic "
                                              "area from academic course area",
                                              )
-    hours = models.DecimalField(max_digits=10, decimal_places=2,
-                                help_text="Enter value in hours")
+    hours = models.PositiveIntegerField()
 
     def __str__(self):
         """String for representing the Model object."""

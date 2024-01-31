@@ -1,8 +1,8 @@
 from django.db import models
-from generate_transcript.models import (AcademicCourse, AcademicInstitute,
-                                        Degree)
 from model_utils.models import TimeStampedModel
 
+from generate_transcript.models import (AcademicCourse, AcademicInstitute,
+                                        Degree)
 from users.models import MMTUser, UserRecord
 
 
