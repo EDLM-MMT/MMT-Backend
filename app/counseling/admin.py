@@ -1,6 +1,7 @@
-from counseling.models import CareerPlan, Comment, CoursePlan
 from django.contrib import admin
 from guardian.admin import GuardedModelAdmin
+
+from counseling.models import CareerPlan, Comment, CoursePlan
 
 # Register your models here.
 
