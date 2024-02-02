@@ -53,3 +53,6 @@ class InquiryComment(TimeStampedModel):
     def __str__(self):
         """String for representing the Model object."""
         return f'{self.comment}'
+
+    class Meta:
+        ordering = ['-created',]

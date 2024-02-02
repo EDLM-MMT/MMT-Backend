@@ -17,6 +17,10 @@ class MOS(models.Model):
         """String for representing the Model object."""
         return f'{self.name} ({self.code})'
 
+    class Meta:
+        verbose_name = 'MOS'
+        verbose_name_plural = 'MOS'
+
 
 class UserRecord(models.Model):
     """Model to store user records"""

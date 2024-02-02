@@ -51,6 +51,9 @@ class Comment(TimeStampedModel):
         """String for representing the Model object."""
         return f'{self.comment}'
 
+    class Meta:
+        ordering = ['-created',]
+
 
 class CoursePlan(models.Model):
     course = models.ForeignKey(AcademicCourse,
