@@ -1,9 +1,8 @@
-# from unittest.mock import patch
-
 from rest_framework.test import APITestCase
 
 from generate_transcript.models import (AcademicCourse, AcademicCourseArea,
-                                        AreasAndHour, Degree)
+                                        AcademicInstitute, AreasAndHour,
+                                        Degree)
 
 
 class TestSetUp(APITestCase):
@@ -14,20 +13,18 @@ class TestSetUp(APITestCase):
         self.c_area = "course_area_1"
         self.course = "course1"
         self.c_degree = "degree1"
-        self.institute = "institue1"
+        self.c_institute = "institute1"
         self.code = "1234"
+        self.hours = 10
 
-        self.ac_course_area = AcademicCourseArea.objects.\
-            create(course_area=self.c_area)
+        self.ac_course_area = AcademicCourseArea(course_area=self.c_area)
         self.ac_course = \
-            AcademicCourse.objects.create(name=self.course, code=self.code,
-                                          academic_course_area=self.
-                                          ac_course_area)
-        self.a_and_h = AreasAndHour.objects.create(hours=10,
-                                                   academic_course_area=self.
-                                                   ac_course_area)
-        self.degree = Degree.objects.create(degree=self.c_degree,
-                                            area_and_hours=self.a_and_h)
+            AcademicCourse(name=self.course, code=self.code,
+                           course_area=self.c_area)
+        self.institute = AcademicInstitute(institute=self.c_institute)
+        self.degree = Degree(degree=self.c_degree, institute=self.institute)
+        self.a_and_h = AreasAndHour(hours=self.hours, degree=self.degree,
+                                    academic_course_area=self.ac_course_area)
 
         return super().setUp()
 

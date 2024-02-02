@@ -2,26 +2,42 @@ from django.contrib import admin
 from guardian.admin import GuardedModelAdmin
 
 from generate_transcript.models import (AcademicCourse, AcademicCourseArea,
-                                        AcademicInstitute, ACEMapping,
-                                        AreasAndHour, Degree, MilitaryCourse,
-                                        Transcript)
+                                        AcademicInstitute, AreasAndHour,
+                                        Degree, MilitaryCourse, Transcript)
 
 # Register your models here.
+
+
+class DegreeInline(admin.TabularInline):
+    model = Degree
+    fields = ('degree', 'mos',)
+    extra = 3
+
+
+class AreasAndHourInline(admin.TabularInline):
+    model = AreasAndHour
+    fields = ('degree', 'academic_course_area', 'hours',)
+    extra = 3
 
 
 @admin.register(AcademicCourseArea)
 class AcademicCourseAreaAdmin(admin.ModelAdmin):
     list_display = ('id', 'course_area',)
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.filter(academiccourse=None)
+
 
 @admin.register(AcademicCourse)
 class AcademicCourseAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'code', 'academic_course_area')
+    list_display = ('id', 'name', 'code', 'course_area')
 
 
 @admin.register(AcademicInstitute)
 class AcademicInstituteAdmin(admin.ModelAdmin):
     list_display = ('id', 'institute',)
+    inlines = [DegreeInline,]
 
     # fields to display in the admin site
     fieldsets = (
@@ -34,31 +50,43 @@ class AcademicInstituteAdmin(admin.ModelAdmin):
                 )
             },
         ),
-        (
-            "Connections",
-            {
-                "fields": (
-                    "degrees",
-                )
-            }
-        ),
     )
-    filter_horizontal = ("degrees",)
-
-
-@admin.register(ACEMapping)
-class ACEMappingAdmin(admin.ModelAdmin):
-    list_display = ('id', 'academic_course_area',)
 
 
 @admin.register(AreasAndHour)
 class AreasAndHourAdmin(admin.ModelAdmin):
-    list_display = ('id', 'academic_course_area', 'hours')
+    list_display = ('degree', 'academic_course_area', 'hours')
+
+    # fields to display in the admin site
+    fieldsets = (
+        (
+            "General",
+            {
+                # on the same line
+                "fields": (
+                    "hours",
+                )
+            },
+        ),
+        (
+            "Connections",
+            {
+                # on the same line
+                "fields": (
+                    "academic_course_area",
+                    "degree",
+                    "military_course",
+                )
+            },
+        ),
+    )
 
 
 @admin.register(Degree)
 class DegreeAdmin(admin.ModelAdmin):
-    list_display = ('id', 'degree', 'area_and_hours')
+    list_display = ('degree', 'institute')
+    list_filter = (('institute', admin.RelatedOnlyFieldListFilter),)
+    inlines = [AreasAndHourInline,]
 
     # fields to display in the admin site
     fieldsets = (
@@ -75,8 +103,8 @@ class DegreeAdmin(admin.ModelAdmin):
             "Connections",
             {
                 "fields": (
+                    "institute",
                     "mos",
-                    "area_and_hours",
                 )
             }
         ),
@@ -86,7 +114,8 @@ class DegreeAdmin(admin.ModelAdmin):
 
 @admin.register(MilitaryCourse)
 class MilitaryCourseAdmin(admin.ModelAdmin):
-    list_display = ('id', 'course_id')
+    list_display = ('course_id',)
+    inlines = [AreasAndHourInline,]
 
     # fields to display in the admin site
     fieldsets = (

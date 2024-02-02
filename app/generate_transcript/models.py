@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.urls import reverse
 
 from users.models import MOS, UserRecord
@@ -13,24 +14,20 @@ class AcademicCourseArea(models.Model):
 
     def __str__(self):
         """String for representing the Model object."""
+        if self.academiccourse:
+            return f'{self.academiccourse.code} - {self.academiccourse.name}'\
+                f' - {self.course_area}'
         return f'{self.course_area}'
 
 
-class AcademicCourse(models.Model):
+class AcademicCourse(AcademicCourseArea):
     """Model to store academic course detail"""
-    id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=500, help_text="Set course name")
     code = models.CharField(max_length=200, help_text="Set course code")
-    academic_course_area = models.ForeignKey(AcademicCourseArea,
-                                             on_delete=models.CASCADE,
-                                             related_name="academic_"
-                                             "course",
-                                             help_text="Choose an academic "
-                                             "area from academic course area",)
 
     def __str__(self):
         """String for representing the Model object."""
-        return f'{self.name}'
+        return f'{self.code} - {self.name} - {self.course_area}'
 
 
 class AreasAndHour(models.Model):
@@ -43,41 +40,61 @@ class AreasAndHour(models.Model):
                                              help_text="Choose an academic "
                                              "area from academic course area",
                                              )
+    degree = models.ForeignKey("Degree", related_name="areas_and_hours",
+                               on_delete=models.CASCADE,
+                               help_text="Choose the relevant degree",
+                               blank=True, null=True)
+    military_course = models.ForeignKey("MilitaryCourse",
+                                        related_name="areas_and_hours",
+                                        on_delete=models.CASCADE,
+                                        help_text="Choose the relevant"
+                                        " military course",
+                                        blank=True, null=True)
     hours = models.PositiveIntegerField()
 
     def __str__(self):
         """String for representing the Model object."""
         return f'{self.academic_course_area}  -  {self.hours} hour/s'
 
-
-class Degree(models.Model):
-    """Model to store degrees"""
-    id = models.BigAutoField(primary_key=True)
-    degree = models.CharField(max_length=500)
-    mos = models.ManyToManyField(
-        MOS, related_name='degrees', help_text="Select valid MOS")
-    area_and_hours = models.ForeignKey(AreasAndHour,
-                                       on_delete=models.CASCADE,
-                                       related_name="degree",
-                                       help_text="Choose an academic "
-                                       "area with duration")
-
-    def __str__(self):
-        """String for representing the Model object."""
-        return f'{self.degree} - {self.area_and_hours}'
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['academic_course_area',
+                        'degree',
+                        'military_course'],
+                name='unique_connection'),
+            models.CheckConstraint(
+                check=Q(degree=None) | Q(military_course=None),
+                name='only_degree_or_mc'),
+        ]
 
 
 class AcademicInstitute(models.Model):
     """Model to store degree offerings"""
     id = models.BigAutoField(primary_key=True)
     institute = models.CharField(max_length=500)
-    degrees = models.ManyToManyField(Degree,
-                                     related_name="institute",
-                                     help_text="Choose a degree offered")
+    # Groups - for tracking who has access
 
     def __str__(self):
         """String for representing the Model object."""
         return f'{self.institute}'
+
+
+class Degree(models.Model):
+    """Model to store degrees"""
+    id = models.BigAutoField(primary_key=True)
+    degree = models.CharField(max_length=500)
+    institute = models.ForeignKey(
+        AcademicInstitute, related_name="degrees", on_delete=models.CASCADE,
+        help_text="Choose the affiliated Academic Institute")
+    mos = models.ManyToManyField(
+        MOS, related_name='degrees', help_text="Select valid MOS", blank=True)
+    areas = models.ManyToManyField(
+        AcademicCourseArea, related_name="degrees", through=AreasAndHour)
+
+    def __str__(self):
+        """String for representing the Model object."""
+        return f'{self.degree} - {self.institute}'
 
 
 class MilitaryCourse(models.Model):
@@ -88,29 +105,12 @@ class MilitaryCourse(models.Model):
             UserRecord, "military_course",
             max_length=250, blank=True)
     course_id = models.CharField(max_length=250)
+    areas = models.ManyToManyField(
+        AcademicCourseArea, related_name="mappings", through=AreasAndHour)
 
     def __str__(self):
         """String for representing the Model object."""
         return f'{self.course_id}'
-
-
-class ACEMapping(models.Model):
-    """Model to store mappings btw course areas and military courses"""
-    id = models.BigAutoField(primary_key=True)
-    academic_course_area = models.ForeignKey(AcademicCourseArea,
-                                             on_delete=models.CASCADE,
-                                             related_name="ace_area",
-                                             help_text="Choose an academic "
-                                             "area from academic course area",)
-    military_courses = models.ManyToManyField(MilitaryCourse,
-                                              related_name="ace_military",
-                                              help_text="Choose military "
-                                              "courses related to "
-                                              "the academic area")
-
-    def __str__(self):
-        """String for representing the Model object."""
-        return f'{self.id}'
 
 
 class Transcript(models.Model):
