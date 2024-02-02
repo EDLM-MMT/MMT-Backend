@@ -1,5 +1,7 @@
 mysql-connector-python >= 8.0.28, <=8.0.29
 
+coverage>=7.0,<8.0
+
 django-mysql>=3.10.0,<3.11.0
 
 Django>=3.2,<4.0
