@@ -1,4 +1,4 @@
-"""test_pdf_app URL Configuration
+"""mmt_backend_project URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.2/topics/http/urls/
@@ -23,6 +23,7 @@ router = DefaultRouter()
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('generate_transcript.urls')),
+    path('api/', include('counseling.urls')),
     # path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     # path("api/schema/docs/",
     #      SpectacularSwaggerView.as_view(url_name="schema")),
