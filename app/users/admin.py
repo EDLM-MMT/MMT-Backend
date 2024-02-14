@@ -23,14 +23,15 @@ class XDSUserAdmin(UserAdmin):
     list_display = ('email', 'first_name',
                     'is_active', 'is_staff', 'last_login')
     fieldsets = (
-        (None, {'fields': ('email', 'first_name', 'last_name',)}),
+        (None,
+         {'fields': ('email', 'first_name', 'last_name', 'eso_default',)}),
         ('Permissions', {'fields': ('is_staff', 'is_active', 'groups',
                                     'user_permissions',)}),
     )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'first_name', 'last_name',
+            'fields': ('email', 'first_name', 'last_name', 'eso_default',
                        'password1', 'password2', 'is_active', 'is_staff',
                        'groups', 'user_permissions',)}
          ),
@@ -40,7 +41,7 @@ class XDSUserAdmin(UserAdmin):
 
 @admin.register(UserRecord)
 class UserRecordAdmin(admin.ModelAdmin):
-    list_display = ('id', 'email',)
+    list_display = ('id', 'email', 'mos')
     inlines = [MilitaryCourseInline]
 
 

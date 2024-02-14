@@ -1,7 +1,7 @@
 from django.contrib import admin
 from guardian.admin import GuardedModelAdmin
 
-from counseling.models import CareerPlan, Comment, CoursePlan
+from counseling.models import CareerPlan, Comment, CoursePlan, ESONote
 
 # Register your models here.
 
@@ -13,6 +13,16 @@ class CommentInline(admin.TabularInline):
     verbose_name_plural = 'Comments'
     fields = ('poster', 'comment', 'created',)
     readonly_fields = ('created', 'poster', 'comment',)
+    extra = 0
+
+
+class NoteInline(admin.TabularInline):
+    can_delete = False
+    model = ESONote
+    verbose_name = 'ESO Note'
+    verbose_name_plural = 'ESO Notes'
+    fields = ('purpose', 'poster', 'note', 'created',)
+    readonly_fields = ('created', 'poster', 'purpose', 'note',)
     extra = 0
 
 
@@ -87,6 +97,48 @@ class CommentAdmin(GuardedModelAdmin):
             self.readonly_fields = (
                 'created', 'modified', 'comment', 'poster', 'plan',)
         return super(CommentAdmin, self).get_form(request, obj, **kwargs)
+
+
+@admin.register(ESONote)
+class ESONoteAdmin(GuardedModelAdmin):
+    list_display = ('poster', 'purpose', 'note', 'plan')
+    readonly_fields = ('created', 'modified',)
+
+    fieldsets = (
+        (
+            "General",
+            {
+                # on the same line
+                "fields": (
+                    "purpose",
+                    "note",
+                )
+            },
+        ),
+        (
+            "Connections",
+            {
+                "fields": (
+                    "plan",
+                    "poster",
+                )
+            }
+        ),
+        (
+            "Metadata",
+            {
+                "fields": (
+                    "created",
+                )
+            }
+        ),
+    )
+
+    def get_form(self, request, obj=None, **kwargs):
+        if obj:
+            self.readonly_fields = (
+                'created', 'modified', 'note', 'poster', 'plan', 'purpose')
+        return super(ESONoteAdmin, self).get_form(request, obj, **kwargs)
 
 
 @admin.register(CoursePlan)

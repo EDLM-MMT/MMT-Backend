@@ -1,3 +1,4 @@
+from django.contrib.auth.models import Group
 from django.db import models
 from django.db.models import Q
 from django.urls import reverse
@@ -72,7 +73,12 @@ class AreasAndHour(models.Model):
 class AcademicInstitute(models.Model):
     """Model to store degree offerings"""
     id = models.BigAutoField(primary_key=True)
-    institute = models.CharField(max_length=500)
+    institute = models.CharField(max_length=500, unique=True)
+    group = models.ForeignKey(Group, related_name='academic_institutes',
+                              on_delete=models.SET_NULL,
+                              null=True, blank=True,
+                              help_text="Select the group that will manage "
+                              "requests for this Institute")
     # Groups - for tracking who has access
 
     def __str__(self):
@@ -96,6 +102,14 @@ class Degree(models.Model):
         """String for representing the Model object."""
         return f'{self.degree} - {self.institute}'
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['institute',
+                        'degree',],
+                name='unique_degrees'),
+        ]
+
 
 class MilitaryCourse(models.Model):
     """Model to store Military course details"""
@@ -104,7 +118,7 @@ class MilitaryCourse(models.Model):
         models.ManyToManyField(
             UserRecord, "military_course",
             max_length=250, blank=True)
-    course_id = models.CharField(max_length=250)
+    course_id = models.CharField(max_length=250, unique=True)
     areas = models.ManyToManyField(
         AcademicCourseArea, related_name="mappings", through=AreasAndHour)
 

@@ -26,6 +26,12 @@ class UserRecord(models.Model):
     """Model to store user records"""
     id = models.BigAutoField(primary_key=True)
     email = models.EmailField(unique=True)
+    user_profile = models.OneToOneField(
+        'MMTUser', related_name='user_record', on_delete=models.SET_NULL,
+        null=True, blank=True)
+    mos = models.ForeignKey(
+        MOS, related_name='users', on_delete=models.SET_NULL,
+        help_text="Select valid MOS", blank=True, null=True)
 
     def __str__(self):
         """String for representing the Model object."""
