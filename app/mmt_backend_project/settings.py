@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     # External Packages
     'rest_framework',
     'drf_spectacular',
+    'django_filters',
     'guardian',
     # Internal Apps
     'users',
@@ -164,6 +165,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "mmt_backend_project.permissions.CustomObjectPermissions",
     ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
 }
 
 SPECTACULAR_SETTINGS = {
