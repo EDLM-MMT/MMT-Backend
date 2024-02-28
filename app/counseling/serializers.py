@@ -174,7 +174,7 @@ class CareerPlanSerializer(ObjectPermissionsAssignmentMixin,
     def update(self, instance, validated_data):
         do_not_update = {'owner', 'eso', 'degree', 'academic_institute',
                          'degree_start_date', }
-        keys = validated_data.keys()
+        keys = set(validated_data.keys())
         keys.difference_update(do_not_update)
         for i in keys:
             validated_data.pop(i)
