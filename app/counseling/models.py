@@ -47,9 +47,7 @@ class Comment(TimeStampedModel):
     def save(self, *args, **kwargs):
         """Block editing"""
         if self.pk:
-            update_fields = kwargs.get('update_fields', None)
-            if update_fields:
-                kwargs['update_fields'] = []
+            kwargs['update_fields'] = []
 
         super().save(*args, **kwargs)
 
@@ -75,9 +73,7 @@ class ESONote(TimeStampedModel):
     def save(self, *args, **kwargs):
         """Block editing"""
         if self.pk:
-            update_fields = kwargs.get('update_fields', None)
-            if update_fields:
-                kwargs['update_fields'] = []
+            kwargs['update_fields'] = []
 
         super().save(*args, **kwargs)
 

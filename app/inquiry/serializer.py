@@ -98,15 +98,15 @@ class InquirySerializer(ObjectPermissionsAssignmentMixin,
     def update(self, instance, validated_data):
         do_not_update = {'email', 'name', 'subject', 'owner',
                          'description', 'comments'}
-        keys = set(validated_data.keys())
-        keys.intersection_update(do_not_update)
-        for i in keys:
-            validated_data.pop(i)
-
         if 'inquiry_type' in validated_data and validated_data['inquiry_type']:
             inquiry_type = InquiryFAQ.objects.get(
                 issue=validated_data['inquiry_type'])
             validated_data['default_assigned'] = \
                 inquiry_type.default_assigned
 
-        return super().update(instance, validated_data)
+        for field, value in validated_data.items():
+            if field not in do_not_update:
+                setattr(instance, field, value)
+
+        instance.save()
+        return instance

@@ -26,7 +26,12 @@ class CommentSerializer(ObjectPermissionsAssignmentMixin,
         perms = {}
         if not created:
             plan_owner = self.instance.plan.owner.user_profile
-            eso_group, _ = Group.objects.get_or_create(name__iexact='ESO')
+            eso_group = Group.objects.filter(
+                name__iexact='ESO')
+            if eso_group.count() > 0:
+                eso_group = eso_group.first()
+            else:
+                eso_group = Group.objects.create(name='ESO')
             eso = self.instance.plan.eso
             perms = {
                 'view_comment': [plan_owner, eso, eso_group],
@@ -67,7 +72,12 @@ class ESONoteSerializer(ObjectPermissionsAssignmentMixin,
     def get_permissions_map(self, created):
         perms = {}
         if not created:
-            eso_group, _ = Group.objects.get_or_create(name__iexact='ESO')
+            eso_group = Group.objects.filter(
+                name__iexact='ESO')
+            if eso_group.count() > 0:
+                eso_group = eso_group.first()
+            else:
+                eso_group = Group.objects.create(name='ESO')
             eso = self.instance.plan.eso
             perms = {
                 'view_esonote': [eso, eso_group],
@@ -109,7 +119,12 @@ class CoursePlanSerializer(ObjectPermissionsAssignmentMixin,
         perms = {}
         if not created:
             plan_owner = self.instance.plan.owner.user_profile
-            eso_group, _ = Group.objects.get_or_create(name__iexact='ESO')
+            eso_group = Group.objects.filter(
+                name__iexact='ESO')
+            if eso_group.count() > 0:
+                eso_group = eso_group.first()
+            else:
+                eso_group = Group.objects.create(name='ESO')
             eso = self.instance.plan.eso
             perms = {
                 'view_courseplan': [plan_owner, eso, eso_group],
@@ -150,7 +165,12 @@ class CareerPlanSerializer(ObjectPermissionsAssignmentMixin,
 
     def get_permissions_map(self, created):
         plan_owner = self.instance.owner.user_profile
-        eso_group, _ = Group.objects.get_or_create(name__iexact='ESO')
+        eso_group = Group.objects.filter(
+            name__iexact='ESO')
+        if eso_group.count() > 0:
+            eso_group = eso_group.first()
+        else:
+            eso_group = Group.objects.create(name='ESO')
         eso = self.instance.eso
         perms = {
             'view_careerplan': [plan_owner, eso, eso_group],
@@ -174,8 +194,8 @@ class CareerPlanSerializer(ObjectPermissionsAssignmentMixin,
     def update(self, instance, validated_data):
         do_not_update = {'owner', 'eso', 'degree', 'academic_institute',
                          'degree_start_date', }
-        keys = set(validated_data.keys())
-        keys.difference_update(do_not_update)
-        for i in keys:
-            validated_data.pop(i)
-        return super().update(instance, validated_data)
+        for field, value in validated_data.items():
+            if field not in do_not_update:
+                setattr(instance, field, value)
+        instance.save()
+        return instance
