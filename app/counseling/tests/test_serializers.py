@@ -1,4 +1,5 @@
 from django.contrib.auth.models import Group
+from django.test import tag
 
 from counseling.models import CareerPlan, Comment, CoursePlan, ESONote
 from counseling.serializers import (CareerPlanSerializer, CommentSerializer,
@@ -7,6 +8,7 @@ from counseling.serializers import (CareerPlanSerializer, CommentSerializer,
 from .test_setup import TestSetUp
 
 
+@tag('unit')
 class SerializersTests(TestSetUp):
     def test_serialize_career_plan(self):
         cp = CareerPlan(degree_start_date=self.date,
