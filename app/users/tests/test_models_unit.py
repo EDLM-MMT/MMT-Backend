@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.test import tag
 
-from users.models import (LowercaseValidator, MMTUser, NumberValidator,
+from users.models import (MOS, LowercaseValidator, MMTUser, NumberValidator,
                           SymbolValidator, UppercaseValidator)
 
 from .test_setup import TestSetUp
@@ -140,3 +140,21 @@ class MMTUserTests(TestSetUp):
         self.assertFalse(xdsuser.is_staff)
         self.assertTrue(xdsuser.is_active)
         self.assertFalse(xdsuser.is_superuser)
+
+
+@tag('unit')
+class MOSTests(TestSetUp):
+
+    def test_create_mos(self):
+        """
+        Test to make sure mos are correctly created
+        """
+        code = "123"
+        name = "abc"
+        mos = MOS(code=code, name=name)
+        mos.save()
+
+        self.assertEqual(mos.code, code)
+        self.assertEqual(mos.name, name)
+        self.assertIn(code, str(mos))
+        self.assertIn(name, str(mos))
