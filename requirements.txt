@@ -25,3 +25,5 @@ gunicorn>=20.0.4,<20.1.0
 isort>=5.13.2,<5.14.0
 
 weasyprint==52.5
+
+docutils>=0.20.1
