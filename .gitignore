@@ -219,3 +219,6 @@ dmypy.json
 
 # MacOS stuff
 .DS_Store
+
+# DB artifacts
+sqlite3

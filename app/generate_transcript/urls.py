@@ -1,6 +1,7 @@
 from django.urls import path
-from generate_transcript import views
 from rest_framework.routers import DefaultRouter
+
+from generate_transcript import views
 
 router = DefaultRouter()
 

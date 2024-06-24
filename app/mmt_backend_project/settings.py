@@ -38,7 +38,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.admindocs',
+    # External Packages
+    'rest_framework',
+    'drf_spectacular',
+    'django_filters',
+    'guardian',
+    # Internal Apps
+    'users',
     'generate_transcript',
+    'counseling',
+    'inquiry',
 ]
 
 MIDDLEWARE = [
@@ -49,6 +59,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.admindocs.middleware.XViewMiddleware',
 ]
 
 ROOT_URLCONF = 'mmt_backend_project.urls'
@@ -83,6 +94,8 @@ DATABASES = {
     }
 }
 
+AUTH_USER_MODEL = 'users.MMTUser'
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -99,6 +112,18 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+    {
+        'NAME': 'users.models.NumberValidator',
+    },
+    {
+        'NAME': 'users.models.UppercaseValidator',
+    },
+    {
+        'NAME': 'users.models.LowercaseValidator',
+    },
+    {
+        'NAME': 'users.models.SymbolValidator',
     },
 ]
 
@@ -121,8 +146,37 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'guardian.backends.ObjectPermissionBackend',
+)
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS':
+        'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "mmt_backend_project.permissions.CustomObjectPermissions",
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Django MMT Endpoints',
+    'DESCRIPTION': 'Your project description',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+}
+
+# Guardian Settings
+GUARDIAN_RAISE_403 = True
+ANONYMOUS_USER_NAME = None
