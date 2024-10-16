@@ -1,7 +1,6 @@
 
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-
 from generate_transcript.models import MilitaryCourse
 from users.models import MOS, MMTUser, UserRecord
 

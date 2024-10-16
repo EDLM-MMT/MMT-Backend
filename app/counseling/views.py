@@ -1,11 +1,10 @@
+from counseling.models import CareerPlan, Comment, CoursePlan, ESONote
+from counseling.serializers import (CareerPlanSerializer, CommentSerializer,
+                                    CoursePlanSerializer, ESONoteSerializer)
 from django.db.models import Prefetch
 from rest_framework import mixins, status, viewsets
 from rest_framework.response import Response
 from rest_framework_guardian import filters
-
-from counseling.models import CareerPlan, Comment, CoursePlan, ESONote
-from counseling.serializers import (CareerPlanSerializer, CommentSerializer,
-                                    CoursePlanSerializer, ESONoteSerializer)
 
 
 # Create your views here.

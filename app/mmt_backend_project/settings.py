@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'django_filters',
     'guardian',
+    'notifications',
     # Internal Apps
     'users',
     'generate_transcript',
@@ -88,9 +89,12 @@ WSGI_APPLICATION = 'mmt_backend_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'sqlite3',
-        'PORT': 3306,
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT'),
     }
 }
 

@@ -1,9 +1,8 @@
 from django.contrib import admin
-from guardian.admin import GuardedModelAdmin
-
 from generate_transcript.models import (AcademicCourse, AcademicCourseArea,
                                         AcademicInstitute, AreasAndHour,
                                         Degree, MilitaryCourse, Transcript)
+from guardian.admin import GuardedModelAdmin
 
 # Register your models here.
 

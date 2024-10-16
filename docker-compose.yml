@@ -2,15 +2,27 @@ version: "3"
 
 services:
 
-  sqlite3:
-    platform: linux/x86_64
-    image: nouchka/sqlite3:latest
+  db:
+    image: postgres
     ports:
-      - '3306:3306'
-    stdin_open: true
-    tty: true
-    volumes:
-      - ./db/:/root/db/
+      - '5432:5432'
+    environment:
+      POSTGRES_DB: "${DB_NAME}"
+#      POSTGRES_USER: 'root'
+      POSTGRES_PASSWORD: "${DB_PASSWORD}"
+    networks:
+      - openlxp
+
+
+  # sqlite3:
+  #   # platform: linux/x86_64
+  #   image: nouchka/sqlite3:latest
+  #   ports:
+  #     - '3306:3306'
+  #   stdin_open: true
+  #   tty: true
+  #   volumes:
+  #     - ./db/:/root/db/
 
   app:
     container_name: mmt-backend
@@ -21,11 +33,23 @@ services:
     command: >
       sh -c ". /opt/app/start-app.sh"
     environment:
+      DB_NAME: "${DB_NAME}"
+      DB_USER: "${DB_USER}"
+      DB_PASSWORD: "${DB_PASSWORD}"
+      DB_HOST: "${DB_HOST}"
       DJANGO_SUPERUSER_USERNAME: "${DJANGO_SUPERUSER_USERNAME}"
       DJANGO_SUPERUSER_PASSWORD: "${DJANGO_SUPERUSER_PASSWORD}"
       DJANGO_SUPERUSER_EMAIL: "${DJANGO_SUPERUSER_EMAIL}"
       SECRET_KEY_VAL: "${SECRET_KEY_VAL}"
+      LOG_PATH: "${LOG_PATH}"
+      LOGIN_REDIRECT_URL: "${LOGIN_REDIRECT_URL}"
     volumes:
       - ./app:/opt/app/mmt-backend
     depends_on:
-      - sqlite3
+      - db
+    networks:
+      - openlxp
+  
+networks:
+  openlxp:
+    external: true

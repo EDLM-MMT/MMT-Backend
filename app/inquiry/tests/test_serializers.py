@@ -2,7 +2,6 @@ from unittest.mock import Mock, patch
 
 from django.contrib.auth.models import Group
 from django.test import tag
-
 from inquiry.models import Inquiry, InquiryComment, InquiryFAQ
 from inquiry.serializer import (InquiryCommentSerializer, InquiryFAQSerializer,
                                 InquirySerializer)

@@ -1,10 +1,9 @@
 import logging
 
+from inquiry.models import Inquiry, InquiryComment, InquiryFAQ
 from rest_framework import serializers
 from rest_framework_guardian.serializers import \
     ObjectPermissionsAssignmentMixin
-
-from inquiry.models import Inquiry, InquiryComment, InquiryFAQ
 from users.models import MMTUser
 
 logger = logging.getLogger(__name__)
