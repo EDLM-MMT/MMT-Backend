@@ -1,12 +1,11 @@
-from django.contrib.auth.models import Group
-from rest_framework import serializers
-from rest_framework_guardian.serializers import \
-    ObjectPermissionsAssignmentMixin
-
 from counseling.models import CareerPlan, Comment, CoursePlan, ESONote
+from django.contrib.auth.models import Group
 from generate_transcript.models import (AcademicCourseArea, AcademicInstitute,
                                         Degree)
 from generate_transcript.serializers import DegreeSerializer
+from rest_framework import serializers
+from rest_framework_guardian.serializers import \
+    ObjectPermissionsAssignmentMixin
 from users.models import MMTUser, UserRecord
 
 

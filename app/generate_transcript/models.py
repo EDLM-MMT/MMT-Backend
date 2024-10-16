@@ -2,8 +2,7 @@ from django.contrib.auth.models import Group
 from django.db import models
 from django.db.models import Q
 from django.urls import reverse
-
-from users.models import MOS, UserRecord
+from users.models import MOS, MMTUser, UserRecord
 
 # Create your models here.
 
@@ -131,6 +130,8 @@ class Transcript(models.Model):
     """Model to track Transcript access permissions"""
     id = models.BigAutoField(primary_key=True)
     subject = models.OneToOneField(UserRecord, on_delete=models.CASCADE)
+    recipient = models.ManyToManyField(MMTUser, "transcript_recipient",
+                                       max_length=250, blank=True)
 
     def get_absolute_url(self):
         """ URL for displaying individual model records."""

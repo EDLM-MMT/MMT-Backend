@@ -1,8 +1,7 @@
-from rest_framework.test import APITestCase
-
 from generate_transcript.models import (AcademicCourse, AcademicCourseArea,
                                         AcademicInstitute, AreasAndHour,
                                         Degree)
+from rest_framework.test import APITestCase
 
 
 class TestSetUp(APITestCase):

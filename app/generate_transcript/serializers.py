@@ -1,9 +1,8 @@
 from django.contrib.auth.models import Group
-from rest_framework import serializers
-
 from generate_transcript.models import (AcademicCourse, AcademicCourseArea,
                                         AcademicInstitute, AreasAndHour,
                                         Degree, MilitaryCourse, Transcript)
+from rest_framework import serializers
 
 
 class AcademicCourseSerializer(serializers.ModelSerializer):

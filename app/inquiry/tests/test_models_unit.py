@@ -1,5 +1,4 @@
 from django.test import tag
-
 from inquiry.models import Inquiry, InquiryComment, InquiryFAQ
 
 from .test_setup import TestSetUp

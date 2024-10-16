@@ -2,7 +2,6 @@ from django.contrib.auth.models import Group
 from django.db import models
 from model_utils import Choices
 from model_utils.models import StatusModel, TimeStampedModel
-
 from users.models import MMTUser
 
 # Create your models here.

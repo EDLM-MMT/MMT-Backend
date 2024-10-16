@@ -1,10 +1,9 @@
 from django.db import models
 from django.urls import reverse
-from model_utils import Choices
-from model_utils.models import StatusField, TimeStampedModel
-
 from generate_transcript.models import (AcademicCourseArea, AcademicInstitute,
                                         Degree)
+from model_utils import Choices
+from model_utils.models import StatusField, TimeStampedModel
 from users.models import MMTUser, UserRecord
 
 
