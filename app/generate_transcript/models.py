@@ -130,8 +130,8 @@ class Transcript(models.Model):
     """Model to track Transcript access permissions"""
     id = models.BigAutoField(primary_key=True)
     subject = models.OneToOneField(UserRecord, on_delete=models.CASCADE)
-    recipient = models.ManyToManyField(MMTUser, "transcript_recipient",
-                                       max_length=250, blank=True)
+    recipient = models.ManyToManyField(MMTUser, blank=True,
+                                       through='TranscriptStatus')
 
     def get_absolute_url(self):
         """ URL for displaying individual model records."""
@@ -140,3 +140,22 @@ class Transcript(models.Model):
     def __str__(self):
         """String for representing the Model object."""
         return f'{self.subject}'
+
+
+class TranscriptStatus(models.Model):
+    """Model to track Transcript status"""
+    STATUS_CHOICES = [
+        ('Pending','Pending'),
+        ('Delivered', 'Delivered'),
+        ('Opened', 'Opened'),
+        ('Downloaded', 'Downloaded'),
+    ]
+
+    transcript = models.ForeignKey(Transcript, on_delete=models.CASCADE)
+    recipient = models.ForeignKey(MMTUser, on_delete=models.CASCADE)
+    status = models.CharField(max_length=250, choices=STATUS_CHOICES,
+                              default="Pending")
+    status_update = models.DateTimeField(auto_now_add=True)
+
+    class Meta:  
+        verbose_name_plural = 'Transcript Status'
