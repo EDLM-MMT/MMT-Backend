@@ -1,0 +1,46 @@
+name: EDLM Portal Backend Code CI/CD
+
+on:
+  pull_request:
+    branches: 
+      - main
+    types: [opened, synchronize]
+
+jobs:
+  code-test:
+    # Kicks off the workflow and prepares Github to run coverage test using a ubuntu-latest container.
+    name: Code CI/CD
+    runs-on: ubuntu-latest
+    env:
+      OS: ubuntu-latest
+      PYTHON: '3.9'
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    # Install dependencies required for tests
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update 
+        sudo apt-get install  nginx vim libpango-1.0-0 libpangoft2-1.0-0-dev -y --no-install-recommends
+        python -m pip install --upgrade pip
+        pip install setuptools
+        pip install -r ./requirements.txt
+    # - name: Generate Coverage Report
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+    #     CERT_VOLUME: ${{ secrets.CERT_VOLUME }}
+    #   run: |
+    #     echo "Cloning private repository"
+    #     git clone https://openlxp-host:${{ secrets.ACCESS_TOKEN }}@github.com/OpenLXP/openlxp-private.git
+    #     echo "Private repository cloned successfully"
+    #     echo "Copying .env file from openlxp-private to current working directory"
+    #     cp ./openlxp-private/mmt-backend-env/.env .
+    #     echo "Copied .env file successfully"
+    #     echo "Create openlxp docker network"
+    #     docker network create openlxp
+    #     echo "Docker network successfully created"
+    #     echo "Running coverage unit test"
+    #     docker compose --env-file ./.env run app sh -c "python manage.py waitdb && coverage run manage.py test --tag=unit && flake8 && coverage report && coverage report --fail-under=80"
