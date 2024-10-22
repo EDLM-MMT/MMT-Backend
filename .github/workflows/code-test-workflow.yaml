@@ -3,7 +3,7 @@ name: EDLM Portal Backend Code CI/CD
 on:
   pull_request:
     branches: 
-      - main
+      - dev
     types: [opened, synchronize]
 
 jobs:
