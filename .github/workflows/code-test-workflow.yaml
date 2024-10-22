@@ -3,7 +3,7 @@ name: EDLM Portal Backend Code CI/CD
 on:
   pull_request:
     branches: 
-      - main
+      - dev
     types: [opened, synchronize]
 
 jobs:
@@ -24,7 +24,7 @@ jobs:
     - name: Install Dependencies
       run: |
         sudo apt-get update 
-        sudo apt-get install  nginx vim libpango-1.0-0 libpangoft2-1.0-0-dev -y --no-install-recommends
+        sudo apt-get install  nginx vim libpango-1.0-0 libpangoft2-1.0-0 -y --no-install-recommends
         python -m pip install --upgrade pip
         pip install setuptools
         pip install -r ./requirements.txt
