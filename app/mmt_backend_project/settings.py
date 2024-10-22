@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'notifications',
     # Internal Apps
     'users',
+    'health_check',
     'generate_transcript',
     'counseling',
     'inquiry',
@@ -62,6 +63,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.admindocs.middleware.XViewMiddleware',
 ]
+
+SECURE_SSL_REDIRECT = False
 
 ROOT_URLCONF = 'mmt_backend_project.urls'
 
