@@ -184,3 +184,7 @@ SPECTACULAR_SETTINGS = {
 # Guardian Settings
 GUARDIAN_RAISE_403 = True
 ANONYMOUS_USER_NAME = None
+
+# settings for any extra arguments you pass to notify.send(...) will 
+# be attached to the .data attribute 
+DJANGO_NOTIFICATIONS_CONFIG = {'USE_JSONFIELD': True}

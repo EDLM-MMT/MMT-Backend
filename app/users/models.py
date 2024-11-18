@@ -6,6 +6,8 @@ from django.db import models
 from django.forms import ValidationError
 from django.utils import timezone
 from django.utils.translation import ugettext as _
+from django.core.validators import MinValueValidator, MaxValueValidator
+
 
 
 # Create your models here.
@@ -26,6 +28,14 @@ class UserRecord(models.Model):
     """Model to store user records"""
     id = models.BigAutoField(primary_key=True)
     email = models.EmailField(unique=True)
+    name = models.CharField(max_length=200)
+    rank = models.CharField(max_length=200, blank=True, null=True)
+    dob = models.DateField(blank=True, null=True)
+    ssn = models.PositiveIntegerField(
+        validators=[MinValueValidator(1000), MaxValueValidator(9999)],
+        blank=True, null=True)
+    status = models.CharField(max_length=200, blank=True, null=True)
+    branch = models.CharField(max_length=200, blank=True, null=True)
     user_profile = models.OneToOneField(
         'MMTUser', related_name='user_record', on_delete=models.SET_NULL,
         null=True, blank=True)

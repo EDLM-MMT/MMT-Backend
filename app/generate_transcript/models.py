@@ -1,8 +1,12 @@
 from django.contrib.auth.models import Group
 from django.db import models
 from django.db.models import Q
+
 from django.urls import reverse
 from users.models import MOS, MMTUser, UserRecord
+
+from model_utils import Choices
+from model_utils.models import StatusModel, TimeStampedModel
 
 # Create your models here.
 
@@ -130,8 +134,6 @@ class Transcript(models.Model):
     """Model to track Transcript access permissions"""
     id = models.BigAutoField(primary_key=True)
     subject = models.OneToOneField(UserRecord, on_delete=models.CASCADE)
-    recipient = models.ManyToManyField(MMTUser, blank=True,
-                                       through='TranscriptStatus')
 
     def get_absolute_url(self):
         """ URL for displaying individual model records."""
@@ -142,20 +144,25 @@ class Transcript(models.Model):
         return f'{self.subject}'
 
 
-class TranscriptStatus(models.Model):
+class TranscriptStatus(StatusModel, TimeStampedModel):
     """Model to track Transcript status"""
-    STATUS_CHOICES = [
-        ('Pending','Pending'),
-        ('Delivered', 'Delivered'),
-        ('Opened', 'Opened'),
-        ('Downloaded', 'Downloaded'),
-    ]
+
+    STATUS = Choices('Pending', 'Delivered', 'Opened', 'Downloaded')
 
     transcript = models.ForeignKey(Transcript, on_delete=models.CASCADE)
-    recipient = models.ForeignKey(MMTUser, on_delete=models.CASCADE)
-    status = models.CharField(max_length=250, choices=STATUS_CHOICES,
-                              default="Pending")
-    status_update = models.DateTimeField(auto_now_add=True)
+    recipient = models.ForeignKey(MMTUser, related_name='transcript_status',
+                                  on_delete=models.CASCADE, blank=True,
+                                  null=True ,help_text="Select associated "
+                                           "email address")
+    academic_institute = models.ForeignKey(AcademicInstitute,
+                                           related_name='transcript_status',
+                                           on_delete=models.CASCADE,
+                                           blank=True, null=True,
+                                           help_text="Select associated "
+                                           "academic institute")
 
     class Meta:  
         verbose_name_plural = 'Transcript Status'
+        unique_together = (('transcript', 'recipient'),
+                           ('transcript', 'academic_institute'))
+        
