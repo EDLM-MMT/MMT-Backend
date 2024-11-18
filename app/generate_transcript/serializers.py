@@ -1,13 +1,15 @@
+import logging
+
 from django.contrib.auth.models import Group
-from users.models import MMTUser
+from rest_framework import serializers
+from rest_framework_guardian.serializers import \
+    ObjectPermissionsAssignmentMixin
+
 from generate_transcript.models import (AcademicCourse, AcademicCourseArea,
                                         AcademicInstitute, AreasAndHour,
                                         Degree, MilitaryCourse, Transcript,
                                         TranscriptStatus)
-from rest_framework_guardian.serializers import \
-    ObjectPermissionsAssignmentMixin
-from rest_framework import serializers
-import logging
+from users.models import MMTUser
 
 logger = logging.getLogger(__name__)
 
@@ -25,12 +27,9 @@ class AcademicCourseAreaSerializer(serializers.ModelSerializer):
 
 
 class AcademicInstituteSerializer(serializers.ModelSerializer):
-    group = serializers.SlugRelatedField(
-        slug_field='name', queryset=Group.objects.all(), required=False)
-
     class Meta:
         model = AcademicInstitute
-        fields = ['institute', 'group',]
+        fields = ['institute', 'id']
 
 
 class DegreeSerializer(serializers.ModelSerializer):

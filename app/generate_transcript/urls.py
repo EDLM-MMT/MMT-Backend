@@ -1,11 +1,12 @@
 from django.urls import include, path
-from generate_transcript import views
 from rest_framework.routers import DefaultRouter
 
-# Create a router and register our ViewSets with it.
-router = DefaultRouter()
+from generate_transcript import views
 
 app_name = 'generate_transcript'
+router = DefaultRouter()
+router.register(r'academic-institutes', views.AcademicInstituteViewSet,
+                basename='academic-institute')
 router.register(r'transcript-status', views.TranscriptStatusViewSet,
                 basename='transcript-status')
 router.register(r'transcript', views.TranscriptViewSet,

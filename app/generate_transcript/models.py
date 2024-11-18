@@ -1,12 +1,11 @@
 from django.contrib.auth.models import Group
 from django.db import models
 from django.db.models import Q
-
 from django.urls import reverse
-from users.models import MOS, MMTUser, UserRecord
-
 from model_utils import Choices
 from model_utils.models import StatusModel, TimeStampedModel
+
+from users.models import MOS, MMTUser, UserRecord
 
 # Create your models here.
 
@@ -88,6 +87,10 @@ class AcademicInstitute(models.Model):
         """String for representing the Model object."""
         return f'{self.institute}'
 
+    def get_absolute_url(self):
+        return reverse("generate_transcript:academic-institute-detail",
+                       kwargs={"pk": self.pk})
+
 
 class Degree(models.Model):
     """Model to store degrees"""
@@ -161,7 +164,7 @@ class TranscriptStatus(StatusModel, TimeStampedModel):
                                            help_text="Select associated "
                                            "academic institute")
 
-    class Meta:  
+    class Meta:
         verbose_name_plural = 'Transcript Status'
         unique_together = (('transcript', 'recipient'),
                            ('transcript', 'academic_institute'))

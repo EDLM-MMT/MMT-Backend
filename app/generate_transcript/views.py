@@ -1,28 +1,28 @@
-from datetime import datetime
-import random
 import logging
+import random
+from datetime import datetime
 
-from django.shortcuts import render
-from django_renderpdf.views import PDFView
 from django.contrib.auth.decorators import permission_required
-from rest_framework.response import Response
-from django.db import IntegrityError
-from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
-
+from django.db import IntegrityError
+from django.shortcuts import get_object_or_404, render
+from django_renderpdf.views import PDFView
+from guardian.shortcuts import (assign_perm, get_objects_for_group,
+                                get_objects_for_user, get_perms)
 from notifications.signals import notify
-
-from users.models import MMTUser
-from generate_transcript.serializers import TranscriptSerializer, TranscriptStatusSerializer
-from generate_transcript.models import AcademicInstitute, Transcript, TranscriptStatus
 from rest_framework import mixins, status, viewsets
-from guardian.shortcuts import assign_perm, get_perms
-
+from rest_framework.response import Response
 from rest_framework_guardian import filters
 
-from guardian.shortcuts import (get_objects_for_user, get_objects_for_group)
+from generate_transcript.models import (AcademicInstitute, Transcript,
+                                        TranscriptStatus)
+from generate_transcript.serializers import (AcademicInstituteSerializer,
+                                             TranscriptSerializer,
+                                             TranscriptStatusSerializer)
+from users.models import MMTUser
 
 logger = logging.getLogger(__name__)
+
 
 class RandomPDFView(PDFView):
     """Randomly generates PDFs to test behavior"""
@@ -37,7 +37,7 @@ class RandomPDFView(PDFView):
         # for i in range(num):
         #     context['items'].append(
         #         {'first': '1', 'second': 'two', 'third': i})
-        context =kwargs['context']
+        context = kwargs['context']
         return context
 
 # @permission_required("generate_transcript.view_transcript")
@@ -48,15 +48,15 @@ def transcript_html_view(request):
     transcript_obj = get_objects_for_user(request.user,
                                           "generate_transcript.view_transcript",
                                           klass=Transcript)
-    
+
     # num = random.randint(50, 100)
     # for i in range(num):
     #     context['items'].append(
     #         {'first': 'one', 'second': 'two', 'third': i})
-        
+
     for obj in transcript_obj:
         context['items'].append(
-            {'first' : obj.subject})
+            {'first': obj.subject})
 
     return render(request=request, template_name='test.html', context=context)
 
@@ -74,21 +74,22 @@ class TranscriptViewSet(viewsets.ReadOnlyModelViewSet):
     def retrieve(self, request, pk=None, *args, **kwargs):
         transcript = get_object_or_404(self.queryset, pk=pk)
 
-        if not request.user.has_perm('generate_transcript.view_transcript', transcript):
+        if not request.user.has_perm('generate_transcript.view_transcript',
+                                     transcript):
             return Response({'detail': 'You do not have permission'
                              ' to perform this action'},
                             status=status.HTTP_403_FORBIDDEN)
-    
+
         # Create a PDF view
         pdf_view = RandomPDFView.as_view()
 
         context = {'name': transcript.subject.name,
-                    'dob': transcript.subject.dob.strftime('%d %^b %Y'),
-                    'ssn': transcript.subject.ssn,
-                    'rank': transcript.subject.rank,
-                    'status': transcript.subject.status,
-                    'date': datetime.today().strftime('%d %^b %Y'),
-                    'branch': transcript.subject.branch}
+                   'dob': transcript.subject.dob.strftime('%d %^b %Y'),
+                   'ssn': transcript.subject.ssn,
+                   'rank': transcript.subject.rank,
+                   'status': transcript.subject.status,
+                   'date': datetime.today().strftime('%d %^b %Y'),
+                   'branch': transcript.subject.branch}
 
         return pdf_view(request, context=context)
 
@@ -117,10 +118,12 @@ class TranscriptStatusViewSet(viewsets.ModelViewSet):
                 recipient_user = MMTUser.objects.filter(email=recipient_pk)
 
             if ai_pk:
-                recipient_user = (AcademicInstitute.objects.get(id=ai_pk)).group
-                
+                recipient_user = (
+                    AcademicInstitute.objects.get(id=ai_pk)).group
+
             try:
-                assign_perm("generate_transcript.view_transcript", recipient_user,
+                assign_perm("generate_transcript.view_transcript",
+                            recipient_user,
                             transcript)
             except IntegrityError as e:
                 # Handle the duplicate entry exception
@@ -133,7 +136,15 @@ class TranscriptStatusViewSet(viewsets.ModelViewSet):
                     # Handle other IntegrityError cases
                     logger.error("Other IntegrityError occurred:", e)
                     return Response({'detail': "Other IntegrityError occurred, " +
-                                        "check logs for details"},
+                                     "check logs for details"},
                                     status=status.HTTP_400_BAD_REQUEST)
 
             return super().create(request, *args, **kwargs)
+
+
+class AcademicInstituteViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Retrieve available Academic Institutes
+    """
+    queryset = AcademicInstitute.objects.all().order_by('institute')
+    serializer_class = AcademicInstituteSerializer
