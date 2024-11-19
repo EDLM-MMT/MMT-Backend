@@ -1,10 +1,10 @@
 from django.contrib import admin
-from generate_transcript.models import (AcademicCourse, AcademicCourseArea,
-                                        AcademicInstitute, AreasAndHour,
-                                        Degree, MilitaryCourse, Transcript,
-                                        TranscriptStatus)
 from guardian.admin import GuardedModelAdmin
 from guardian.shortcuts import get_objects_for_user
+
+from generate_transcript.models import (AcademicCourse, AcademicCourseArea,
+                                        AreasAndHour, Degree, MilitaryCourse,
+                                        Transcript, TranscriptStatus)
 
 # Register your models here.
 
@@ -33,25 +33,6 @@ class AcademicCourseAreaAdmin(admin.ModelAdmin):
 @admin.register(AcademicCourse)
 class AcademicCourseAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'code', 'course_area')
-
-
-@admin.register(AcademicInstitute)
-class AcademicInstituteAdmin(admin.ModelAdmin):
-    list_display = ('id', 'institute',)
-    inlines = [DegreeInline,]
-
-    # fields to display in the admin site
-    fieldsets = (
-        (
-            "General",
-            {
-                # on the same line
-                "fields": (
-                    "institute", "group"
-                )
-            },
-        ),
-    )
 
 
 @admin.register(AreasAndHour)

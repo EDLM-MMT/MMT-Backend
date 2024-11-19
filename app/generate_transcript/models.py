@@ -1,10 +1,10 @@
-from django.contrib.auth.models import Group
 from django.db import models
 from django.db.models import Q
 from django.urls import reverse
 from model_utils import Choices
 from model_utils.models import StatusModel, TimeStampedModel
 
+from academic_institute.models import AcademicInstitute
 from users.models import MOS, MMTUser, UserRecord
 
 # Create your models here.
@@ -70,26 +70,6 @@ class AreasAndHour(models.Model):
                 check=Q(degree=None) | Q(military_course=None),
                 name='only_degree_or_mc'),
         ]
-
-
-class AcademicInstitute(models.Model):
-    """Model to store degree offerings"""
-    id = models.BigAutoField(primary_key=True)
-    institute = models.CharField(max_length=500, unique=True)
-    group = models.ForeignKey(Group, related_name='academic_institutes',
-                              on_delete=models.SET_NULL,
-                              null=True, blank=True,
-                              help_text="Select the group that will manage "
-                              "requests for this Institute")
-    # Groups - for tracking who has access
-
-    def __str__(self):
-        """String for representing the Model object."""
-        return f'{self.institute}'
-
-    def get_absolute_url(self):
-        return reverse("generate_transcript:academic-institute-detail",
-                       kwargs={"pk": self.pk})
 
 
 class Degree(models.Model):

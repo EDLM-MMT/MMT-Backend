@@ -5,8 +5,7 @@ from generate_transcript import views
 
 app_name = 'generate_transcript'
 router = DefaultRouter()
-router.register(r'academic-institutes', views.AcademicInstituteViewSet,
-                basename='academic-institute')
+
 router.register(r'transcript-status', views.TranscriptStatusViewSet,
                 basename='transcript-status')
 router.register(r'transcript', views.TranscriptViewSet,

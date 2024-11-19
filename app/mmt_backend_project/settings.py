@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'notifications',
     # Internal Apps
     'users',
+    'academic_institute',
     'generate_transcript',
     'counseling',
     'inquiry',

@@ -14,10 +14,9 @@ from rest_framework import mixins, status, viewsets
 from rest_framework.response import Response
 from rest_framework_guardian import filters
 
-from generate_transcript.models import (AcademicInstitute, Transcript,
-                                        TranscriptStatus)
-from generate_transcript.serializers import (AcademicInstituteSerializer,
-                                             TranscriptSerializer,
+from academic_institute.models import AcademicInstitute
+from generate_transcript.models import Transcript, TranscriptStatus
+from generate_transcript.serializers import (TranscriptSerializer,
                                              TranscriptStatusSerializer)
 from users.models import MMTUser
 
@@ -140,11 +139,3 @@ class TranscriptStatusViewSet(viewsets.ModelViewSet):
                                     status=status.HTTP_400_BAD_REQUEST)
 
             return super().create(request, *args, **kwargs)
-
-
-class AcademicInstituteViewSet(viewsets.ReadOnlyModelViewSet):
-    """
-    Retrieve available Academic Institutes
-    """
-    queryset = AcademicInstitute.objects.all().order_by('institute')
-    serializer_class = AcademicInstituteSerializer

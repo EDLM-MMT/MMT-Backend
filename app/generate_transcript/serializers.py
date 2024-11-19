@@ -5,10 +5,10 @@ from rest_framework import serializers
 from rest_framework_guardian.serializers import \
     ObjectPermissionsAssignmentMixin
 
+from academic_institute.models import AcademicInstitute
 from generate_transcript.models import (AcademicCourse, AcademicCourseArea,
-                                        AcademicInstitute, AreasAndHour,
-                                        Degree, MilitaryCourse, Transcript,
-                                        TranscriptStatus)
+                                        AreasAndHour, Degree, MilitaryCourse,
+                                        Transcript, TranscriptStatus)
 from users.models import MMTUser
 
 logger = logging.getLogger(__name__)
@@ -24,12 +24,6 @@ class AcademicCourseAreaSerializer(serializers.ModelSerializer):
     class Meta:
         model = AcademicCourseArea
         fields = ['course_area',]
-
-
-class AcademicInstituteSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = AcademicInstitute
-        fields = ['institute', 'id']
 
 
 class DegreeSerializer(serializers.ModelSerializer):
@@ -77,7 +71,8 @@ class TranscriptStatusSerializer(ObjectPermissionsAssignmentMixin,
     def get_permissions_map(self, created):
         perms = {}
         if not created:
-            transcript_obj = Transcript.objects.get(id=self.context['request'].data['transcript'])
+            transcript_obj = Transcript.objects.get(
+                id=self.context['request'].data['transcript'])
             if self.context['request'].user == transcript_obj.subject.user_profile:
                 transcript_subject = transcript_obj.subject.user_profile
                 transcript_recipient = self.instance.recipient
@@ -88,10 +83,11 @@ class TranscriptStatusSerializer(ObjectPermissionsAssignmentMixin,
                 }
 
         return perms
-    
+
     def create(self, validated_data):
         if 'status' in validated_data and validated_data['status']:
-            transcript_obj = Transcript.objects.get(id=self.context['request'].data['transcript'])
+            transcript_obj = Transcript.objects.get(
+                id=self.context['request'].data['transcript'])
             if self.context['request'].user == transcript_obj.subject.user_profile:
                 validated_data['status'] = TranscriptStatus.STATUS.Delivered
             else:

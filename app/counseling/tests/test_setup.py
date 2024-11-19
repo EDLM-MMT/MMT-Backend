@@ -2,10 +2,11 @@
 
 import datetime
 
-from counseling.models import CareerPlan
-from generate_transcript.models import (AcademicCourseArea, AcademicInstitute,
-                                        Degree)
 from rest_framework.test import APITestCase
+
+from academic_institute.models import AcademicInstitute
+from counseling.models import CareerPlan
+from generate_transcript.models import AcademicCourseArea, Degree
 from users.models import MMTUser, UserRecord
 
 
