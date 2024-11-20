@@ -17,7 +17,7 @@ class AcademicCourseArea(models.Model):
 
     def __str__(self):
         """String for representing the Model object."""
-        if self.academiccourse:
+        if hasattr(self, 'academiccourse'):
             return f'{self.academiccourse.code} - {self.academiccourse.name}'\
                 f' - {self.course_area}'
         return f'{self.course_area}'
