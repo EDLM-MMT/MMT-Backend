@@ -1,4 +1,5 @@
 from django.contrib import admin
+from guardian.admin import GuardedModelAdmin
 
 from academic_institute.models import AcademicInstitute
 from generate_transcript.admin import DegreeInline
@@ -6,7 +7,7 @@ from generate_transcript.admin import DegreeInline
 
 # Register your models here.
 @admin.register(AcademicInstitute)
-class AcademicInstituteAdmin(admin.ModelAdmin):
+class AcademicInstituteAdmin(GuardedModelAdmin):
     list_display = ('id', 'institute',)
     inlines = [DegreeInline,]
 
@@ -17,7 +18,7 @@ class AcademicInstituteAdmin(admin.ModelAdmin):
             {
                 # on the same line
                 "fields": (
-                    "institute", "group"
+                    "institute", "group", "admins"
                 )
             },
         ),

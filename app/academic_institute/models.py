@@ -13,6 +13,11 @@ class AcademicInstitute(models.Model):
                               null=True, blank=True,
                               help_text="Select the group that will manage "
                               "requests for this Institute")
+    admins = models.ForeignKey(Group, related_name='managing',
+                               on_delete=models.SET_NULL,
+                               null=True, blank=True,
+                               help_text="Select the group that will manage "
+                               "this Institute")
     # Groups - for tracking who has access
 
     def __str__(self):
