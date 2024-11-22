@@ -7,7 +7,7 @@
 
     <div style="background-color: whitesmoke; padding-bottom:15px"> 
         <div style="display: flex;">
-            <img src="/src/EducationLogo.png" alt="Education logo" height="60" style="margin: 10px">
+            <img src={{image}} alt="Education logo" width="50" height="50" style="margin: 10px">
             <div style="padding-top: 15px; padding-left: 8px ">
                 <div><strong>O F F I C I A L</strong></div>
                 <h2 style="margin-top: 0;"> MILITARY TRANSCRIPT</h2>
@@ -58,10 +58,11 @@
         </div>
 
         <!-- Experiences -->
-        <div style="padding-top: 5px; padding-left: 5px">
+        <!-- <div style="padding-top: 5px; padding-left: 5px">
+            {% for exp in experiences %}
             <div style="float: left; width: 10%; padding: 10px;">
-                <p style="margin: 0; font-size: 0.7em;"><strong>01 SEPT 09</strong></p>
-                <p style="margin: 0; font-size: 0.7em;"><strong>31 MARCH 14</strong></p>
+                <p style="margin: 0; font-size: 0.7em;"><strong>{{exp.start_date}}</strong></p>
+                <p style="margin: 0; font-size: 0.7em;"><strong>{{exp.end_date}}</strong></p>
             </div>
             <div style="float: left; width: 15%; padding: 10px;">
                 <p style="margin: 0; font-size: 0.7em; color:cornflowerblue" >MOS-11B-006</p>
@@ -81,47 +82,47 @@
             </div>
 
             <span style="content: ''; display: table; clear: both;"></span>
-
-        </div>
+            {% endfor %}
+        </div> -->
 
         <div style="padding-top: 5px; padding-left: 5px ">
+            {% for exp in experiences %}
             <div style="float: left; width: 10%; padding: 10px;">
-                <p style="margin: 0; font-size: 0.7em; color:gray;">07 AUG 09</p>
-                <p style="margin: 0; font-size: 0.7em; color:gray;">31 MARCH 14</p>
+                <p style="margin: 0; font-size: 0.7em; color:gray;">{{exp.start_date}}</p>
+                <p style="margin: 0; font-size: 0.7em; color:gray;">{{exp.end_date}}</p>
             </div>
             <div style="float: left; width: 15%; padding: 10px;">
-                <p style="display:inline; margin: 0; font-size: 0.7em; color:cornflowerblue" >MOS-11B-006 <p style="margin: 0; font-size: 0.7em; color:gray">v01 </p></p>
+                <p style="display:inline; margin: 0; font-size: 0.7em; color:cornflowerblue" >{{exp.ACE_identifier}} <p style="margin: 0; font-size: 0.7em; color:gray"> </p></p>
             </div>
             <div style="float: left; width: 40%; padding: 10px;">
-                <p style="margin: 0; font-size: 0.7em; padding-bottom:3px; color:gray;"> 11B10-OSUT</p>
-                <p style="margin: 0; font-size: 0.7em; color:gray;"> <strong>11B10 Infantryman</strong></p>
+                <p style="margin: 0; font-size: 0.7em; padding-bottom:3px; color:gray;"> {{exp.course_id}}</p>
+                <p style="margin: 0; font-size: 0.7em; color:gray;"> <strong>{{exp.course_name}}</strong></p>
                 <ul style="float: left; margin-top: 5px; padding-left:25px;">
-                    <li style="font-size: 0.7em; padding-bottom:3px; color:gray;">Ethics</li>
-                    <li style="font-size: 0.7em; padding-bottom:3px; color:gray;">First Aid and Safety</li>
-                    <li style="font-size: 0.7em; padding-bottom:3px; color:gray;">Marksmenship</li>
-                    <li style="font-size: 0.7em; padding-bottom:3px; color:gray;">Military Science</li>
-                    <li style="font-size: 0.7em; padding-bottom:3px; color:gray;">Physical Conditioning</li>
+                    {% for area in exp.areas %}
+                    <li style="font-size: 0.7em; padding-bottom:3px; color:gray;">{{area}}</li>
+                    {% endfor %}  
                 </ul>
             </div>
             <div style="float: left; width: 15%; padding: 10px; padding-top: 30px;">
                 <ul style="float: left; list-style-type:none; padding-left: 0px;">
-                    <li style="font-size: 0.7em; padding-bottom:3px; color:gray;">1 SH</li>
-                    <li style="font-size: 0.7em; padding-bottom:3px; color:gray;">1 SH</li>
-                    <li style="font-size: 0.7em; padding-bottom:3px; color:gray;">1 SH</li>
-                    <li style="font-size: 0.7em; padding-bottom:3px; color:gray;">3 SH</li>
-                    <li style="font-size: 0.7em; padding-bottom:3px; color:gray;">3 SH</li>
+                    {% for hours in exp.hours %}
+                    <li style="font-size: 0.7em; padding-bottom:3px; color:gray;">{{hours}} SH</li>
+                    {% endfor %} 
                 </ul>
             </div>
             <div style="padding: 10px; ">
                 <ul style="float: left; list-style-type:none; padding-left: 0px; padding-top: 20px;">
+                    {% for level in exp.level %}
+                    <li style="font-size: 0.7em; padding-bottom:3px; color:gray;">{{level}}</li>
+                    <!-- <li style="font-size: 0.7em; padding-bottom:3px; color:gray;">L</li>
                     <li style="font-size: 0.7em; padding-bottom:3px; color:gray;">L</li>
                     <li style="font-size: 0.7em; padding-bottom:3px; color:gray;">L</li>
-                    <li style="font-size: 0.7em; padding-bottom:3px; color:gray;">L</li>
-                    <li style="font-size: 0.7em; padding-bottom:3px; color:gray;">L</li>
-                    <li style="font-size: 0.7em; padding-bottom:3px; color:gray;">L</li>
+                    <li style="font-size: 0.7em; padding-bottom:3px; color:gray;">L</li> -->
+                    {% endfor %} 
                 </ul>
             </div>
             <span style="content: ''; display: table; clear: both;"></span>
+            {% endfor %}
         </div>
     </div>
 
@@ -181,7 +182,6 @@
 
     </body>
     <footer>
-        <p>Author: Hege Refsnes</p>
-        <p><a href="mailto:hege@example.com">hege@example.com</a></p>
+
     </footer>
 </html>

@@ -54,6 +54,7 @@ class AreasAndHour(models.Model):
                                         " military course",
                                         blank=True, null=True)
     hours = models.PositiveIntegerField()
+    level = models.CharField(max_length=3, blank=True, null=True)
 
     def __str__(self):
         """String for representing the Model object."""
@@ -102,15 +103,34 @@ class MilitaryCourse(models.Model):
     id = models.BigAutoField(primary_key=True)
     user_id = \
         models.ManyToManyField(
-            UserRecord, "military_course",
-            max_length=250, blank=True)
+            UserRecord,
+            max_length=250, blank=True, through="MilitaryCourse_User")
     course_id = models.CharField(max_length=250, unique=True)
+    course_name = models.CharField(max_length=500)
     areas = models.ManyToManyField(
         AcademicCourseArea, related_name="mappings", through=AreasAndHour)
+    ACE_identifier = models.CharField(max_length=250, default="None Assigned")
 
     def __str__(self):
         """String for representing the Model object."""
         return f'{self.course_id}'
+
+
+class MilitaryCourse_User(models.Model):
+    """Model to store User and Military course through details"""
+    course_id = models.ForeignKey(MilitaryCourse, related_name="militarycourse_user",
+                                        on_delete=models.CASCADE,
+                                        help_text="Choose the relevant"
+                                        " military course")
+    user_id = models.ForeignKey(UserRecord, related_name="militarycourse_user",
+                                on_delete=models.CASCADE, max_length=250, blank=True)
+    start_date = models.DateField(null=True, blank=True,
+        help_text="Set degree start date month and year, January 2050")
+    end_date = models.DateField(null=True, blank=True,
+        help_text="Set degree start date month and year, January 2050")
+    
+    # class Meta:
+    #     db_table = "generate_transcript_militarycourse_user_id"
 
 
 class Transcript(models.Model):
@@ -146,6 +166,6 @@ class TranscriptStatus(StatusModel, TimeStampedModel):
 
     class Meta:
         verbose_name_plural = 'Transcript Status'
-        unique_together = (('transcript', 'recipient'),
-                           ('transcript', 'academic_institute'))
+        # unique_together = (('transcript', 'recipient'),
+        #                    ('transcript', 'academic_institute'))
         

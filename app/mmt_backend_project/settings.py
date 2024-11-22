@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+import datetime
 import os
 from pathlib import Path
 
@@ -186,6 +187,12 @@ SPECTACULAR_SETTINGS = {
 GUARDIAN_RAISE_403 = True
 ANONYMOUS_USER_NAME = None
 
-# settings for any extra arguments you pass to notify.send(...) will 
-# be attached to the .data attribute 
-DJANGO_NOTIFICATIONS_CONFIG = {'USE_JSONFIELD': True}
+# Django-notifications package settings
+DJANGO_NOTIFICATIONS_CONFIG = {
+    'USE_JSONFIELD': True,
+}
+
+# when notifications should be automatically deleted, should be days or greater
+NOTIFICATIONS_EXPIRE_AFTER = datetime.timedelta(days=30)
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880

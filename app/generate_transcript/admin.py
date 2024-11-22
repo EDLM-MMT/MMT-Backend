@@ -3,7 +3,7 @@ from guardian.admin import GuardedModelAdmin
 from guardian.shortcuts import get_objects_for_user
 
 from generate_transcript.models import (AcademicCourse, AcademicCourseArea,
-                                        AreasAndHour, Degree, MilitaryCourse,
+                                        AreasAndHour, Degree, MilitaryCourse, MilitaryCourse_User,
                                         Transcript, TranscriptStatus)
 
 # Register your models here.
@@ -46,7 +46,7 @@ class AreasAndHourAdmin(admin.ModelAdmin):
             {
                 # on the same line
                 "fields": (
-                    "hours",
+                    "hours", "level"
                 )
             },
         ),
@@ -107,20 +107,21 @@ class MilitaryCourseAdmin(admin.ModelAdmin):
                 # on the same line
                 "fields": (
                     "course_id",
+                    "course_name",
+                    "ACE_identifier",
                 )
             },
         ),
-        (
-            "Users",
-            {
-                "fields": (
-                    "user_id",
-                )
-            }
-        ),
+        # (
+        #     "Users",
+        #     {
+        #         "fields": (
+        #             "user_id",
+        #         )
+        #     }
+        # ),
     )
     filter_horizontal = ("user_id",)
-
 
 @admin.register(Transcript)
 class TranscriptAdmin(GuardedModelAdmin):
@@ -170,4 +171,9 @@ class TranscriptAdmin(GuardedModelAdmin):
 
 @admin.register(TranscriptStatus)
 class TranscriptStatusAdmin(GuardedModelAdmin):
-    list_display = ('transcript', 'recipient', 'status')
+    list_display = ('transcript', 'recipient', 'academic_institute', 'status')
+
+
+@admin.register(MilitaryCourse_User)
+class MilitaryCourse_UserAdmin(GuardedModelAdmin):
+    list_display = ('start_date', 'end_date')
