@@ -1,8 +1,9 @@
+from django.contrib.auth.models import Group
+from django.test import tag
+
 from counseling.models import CareerPlan, Comment, CoursePlan, ESONote
 from counseling.serializers import (CareerPlanSerializer, CommentSerializer,
                                     CoursePlanSerializer, ESONoteSerializer)
-from django.contrib.auth.models import Group
-from django.test import tag
 
 from .test_setup import TestSetUp
 
@@ -10,8 +11,11 @@ from .test_setup import TestSetUp
 @tag('unit')
 class SerializersTests(TestSetUp):
     def test_serialize_career_plan(self):
+        self.ur.save()
         cp = CareerPlan(degree_start_date=self.date,
-                        expected_graduation_date=self.date)
+                        expected_graduation_date=self.date,
+                        owner=self.ur)
+        cp.save()
         serialized_cp = CareerPlanSerializer(cp)
 
         self.assertEqual(
@@ -21,14 +25,13 @@ class SerializersTests(TestSetUp):
 
     def test_create_serialize_career_plan(self):
         self.ur.save()
-        self.user.save()
         self.institute.save()
         self.degree.save()
         serialized_cp = CareerPlanSerializer(data={
             'degree_start_date': str(self.date),
             'expected_graduation_date': str(self.date),
             'owner': self.email,
-            'eso': self.uname,
+            'eso': self.email,
             'academic_institute': self.institute.institute,
             'degree': {
                 'institute': self.institute.institute,
@@ -61,7 +64,7 @@ class SerializersTests(TestSetUp):
             'degree_start_date': str(self.date.today()),
             'expected_graduation_date': str(self.date.today()),
             'owner': self.email,
-            'eso': self.uname,
+            'eso': self.email,
             'academic_institute': self.institute.institute,
             'degree': {
                 'institute': self.institute.institute,

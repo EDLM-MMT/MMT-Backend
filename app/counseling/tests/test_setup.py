@@ -21,8 +21,9 @@ class TestSetUp(APITestCase):
         self.c_degree = "degree1"
         self.c_institute = "institute1"
         self.uname = "username"
-        self.user = MMTUser.objects.create_user(self.uname, "password")
         self.email = "test@test.com"
+        self.user = MMTUser.objects.create_user(
+            password="password", email=self.email)
         self.ur = UserRecord(user_profile=self.user, email=self.email)
         self.hours = 5
         self.institute = AcademicInstitute(institute=self.c_institute)

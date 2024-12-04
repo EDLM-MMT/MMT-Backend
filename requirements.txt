@@ -24,6 +24,8 @@ flake8>=7.0.0,<7.1.0
 
 gunicorn>=20.0.4,<20.1.0
 
+health-check
+
 isort>=5.13.2,<5.14.0
 
 psycopg2-binary >= 2.9, < 3.0
