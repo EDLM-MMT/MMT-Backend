@@ -2,12 +2,11 @@ import re
 
 from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
                                         PermissionsMixin)
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.forms import ValidationError
 from django.utils import timezone
-from django.utils.translation import ugettext as _
-from django.core.validators import MinValueValidator, MaxValueValidator
-
+from django.utils.translation import gettext as _
 
 
 # Create your models here.

@@ -35,6 +35,7 @@ class SerializersTests(TestSetUp):
         inq = Inquiry(email=self.email, name=self.text,
                       description=self.text, subject=self.text,
                       file=self.file_field)
+        inq.save()
         serialized_inq = InquirySerializer(inq)
 
         self.assertEqual(self.email, serialized_inq.data['email'])
