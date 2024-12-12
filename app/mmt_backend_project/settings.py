@@ -29,6 +29,17 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+# Content Security Policy (CSP)
+SELF_VALUE = "'self'"  # defining a constant
+
+CSP_DEFAULT_SRC = (SELF_VALUE,)
+CSP_SCRIPT_SRC = (SELF_VALUE,)
+CSP_IMG_SRC = (SELF_VALUE,)
+CSP_STYLE_SRC = (SELF_VALUE,)
+CSP_FRAME_SRC = (SELF_VALUE,)
+CSP_FONT_SRC = (SELF_VALUE,)
+# Application definition
+
 
 # Application definition
 
@@ -63,6 +74,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.admindocs.middleware.XViewMiddleware',
+    'csp.middleware.CSPMiddleware',
 ]
 
 ROOT_URLCONF = 'mmt_backend_project.urls'

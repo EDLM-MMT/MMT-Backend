@@ -3,7 +3,8 @@ from guardian.admin import GuardedModelAdmin
 from guardian.shortcuts import get_objects_for_user
 
 from generate_transcript.models import (AcademicCourse, AcademicCourseArea,
-                                        AreasAndHour, Degree, MilitaryCourse, MilitaryCourse_User,
+                                        AreasAndHour, Degree, MilitaryCourse,
+                                        MilitaryCourse_User, MilitaryExperience,
                                         Transcript, TranscriptStatus)
 
 # Register your models here.
@@ -17,7 +18,7 @@ class DegreeInline(admin.TabularInline):
 
 class AreasAndHourInline(admin.TabularInline):
     model = AreasAndHour
-    fields = ('degree', 'academic_course_area', 'hours',)
+    fields = ('degree', 'academic_course_area', 'hours', 'level')
     extra = 3
 
 
@@ -93,10 +94,17 @@ class DegreeAdmin(admin.ModelAdmin):
     )
     filter_horizontal = ("mos",)
 
+@admin.register(MilitaryExperience)
+class MilitaryExperienceAdmin(admin.ModelAdmin):
+    list_display = ('id', 'experience_id',)
+    inlines = [AreasAndHourInline,]
+
+    filter_horizontal = ("user_id",)
+
 
 @admin.register(MilitaryCourse)
 class MilitaryCourseAdmin(admin.ModelAdmin):
-    list_display = ('course_id',)
+    list_display = ('experience_id', 'course_name')
     inlines = [AreasAndHourInline,]
 
     # fields to display in the admin site
@@ -106,7 +114,7 @@ class MilitaryCourseAdmin(admin.ModelAdmin):
             {
                 # on the same line
                 "fields": (
-                    "course_id",
+                    "experience_id",
                     "course_name",
                     "ACE_identifier",
                 )

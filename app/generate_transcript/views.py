@@ -26,27 +26,20 @@ logger = logging.getLogger(__name__)
 
 class RandomPDFView(PDFView):
     """Randomly generates PDFs to test behavior"""
-    template_name = 'modernizedTranscript.html'
     download_name = 'resume'
     # prompt_download = True
 
+    def get_template_names(self):
+        return ['modernizedTranscript.html']
+
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        
-        # num = random.randint(50, 100)
-        # for i in range(num):
-        #     context['items'].append(
-        #         {'first': '1', 'second': 'two', 'third': i})
         context = kwargs['context']
         context['image'] = "/static/EducationLogo1.png"
         context['experiences'] = []
         context['experiences']
-        
 
-        # logger.error(kwargs['transcript'].subject.militarycourse_set.all())        
-
-        for military_obj in kwargs['transcript'].subject.militarycourse_set.all():
-            # military_user_obj = list(military_obj.militarycourse_user.all())
+        for military_obj in kwargs['transcript'].subject.militaryexperience_set.all():
             course_details = MilitaryCourse_User.objects.get(course_id=military_obj.id,
                                                              user_id=kwargs['transcript'].subject)
 
@@ -59,12 +52,18 @@ class RandomPDFView(PDFView):
                 area.append(areas_hours_obj.academic_course_area.course_area)
                 hours.append(areas_hours_obj.hours)
                 level.append(areas_hours_obj.level)
+            course_name = ""
+
+            if hasattr(military_obj, 'militarycourse'):
+                course_name=military_obj.militarycourse.course_name
 
             context['experiences'].append({'start_date': course_details.start_date.strftime('%d %^b %Y'),
                                            'end_date': course_details.end_date.strftime('%d %^b %Y'),
                                            'ACE_identifier': military_obj.ACE_identifier,
-                                           'course_id': military_obj.course_id,
-                                           'course_name': military_obj.course_name,
+                                           'rank': military_obj.rank,
+                                           'rank_level': military_obj.rank_level,
+                                           'course_id': military_obj.experience_id,
+                                           'course_name': course_name,
                                            'areas' : area,
                                            'hours': hours,
                                            'level': level})
@@ -79,11 +78,6 @@ def transcript_html_view(request):
     transcript_obj = get_objects_for_user(request.user,
                                           "generate_transcript.view_transcript",
                                           klass=Transcript)
-
-    # num = random.randint(50, 100)
-    # for i in range(num):
-    #     context['items'].append(
-    #         {'first': 'one', 'second': 'two', 'third': i})
 
     for obj in transcript_obj:
         context['items'].append(
@@ -112,32 +106,26 @@ class TranscriptViewSet(viewsets.ReadOnlyModelViewSet):
                              ' to perform this action'},
                             status=status.HTTP_403_FORBIDDEN)
 
+        # Create a PDF view
+        pdf_view = RandomPDFView.as_view()
+
         user = MMTUser.objects.get(email=request.user)
-
-        # logger.error(transcript)
-        # logger.error(user)
-
         recipient_status_obj = TranscriptStatus.objects.filter(transcript=transcript, recipient=user).first()
 
-        # logger.error(recipient_status_obj)
-
         if recipient_status_obj:
-            logger.error("here")
             recipient_status_obj.status = TranscriptStatus.STATUS.Opened
             recipient_status_obj.save()
 
         group_list = list(user.groups.all())
 
         for group in group_list:
-            for academic_institute in group.academic_institutes.all():
-                group_status_obj = TranscriptStatus.objects.filter(transcript=transcript, academic_institute=academic_institute).first()
-                if group_status_obj:
-                    group_status_obj.status = TranscriptStatus.STATUS.Opened
-                    group_status_obj.save()
-            # logger.error(group.academic_institutes.all())
-
-        # Create a PDF view
-        pdf_view = RandomPDFView.as_view()
+            academic_group = (group.academic_institutes.all().first() 
+                              if group.academic_institutes.all().first() 
+                              else group.managing.all().first())
+            group_status_obj = TranscriptStatus.objects.filter(transcript=transcript, academic_institute=academic_group).first()
+            if group_status_obj:
+                group_status_obj.status = TranscriptStatus.STATUS.Opened
+                group_status_obj.save()
 
         context = {'name': transcript.subject.name,
                    'dob': transcript.subject.dob.strftime('%d %^b %Y'),
@@ -147,7 +135,7 @@ class TranscriptViewSet(viewsets.ReadOnlyModelViewSet):
                    'date': datetime.today().strftime('%d %^b %Y'),
                    'branch': transcript.subject.branch}
 
-        return pdf_view(request, context=context, transcript=transcript)
+        return pdf_view(request, context=context, transcript=transcript, template_name='modernizedTranscript.html')
 
 
 class TranscriptStatusViewSet(viewsets.ModelViewSet):

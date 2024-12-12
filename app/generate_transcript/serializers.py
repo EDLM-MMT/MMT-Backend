@@ -70,9 +70,11 @@ class TranscriptStatusSerializer(ObjectPermissionsAssignmentMixin,
             if self.context['request'].user == transcript_obj.subject.user_profile:
                 transcript_subject = transcript_obj.subject.user_profile
                 transcript_recipient = self.instance.recipient
+                transcript_ai_group = self.instance.academic_institute
                 perms = {
-                    'view_transcriptstatus': [transcript_subject, transcript_recipient],
-                    'change_transcriptstatus': [transcript_subject],
+                    'view_transcriptstatus': [transcript_subject, transcript_recipient,
+                                              transcript_ai_group],
+                    'change_transcriptstatus': [transcript_subject, transcript_ai_group]
                 }
 
         return perms

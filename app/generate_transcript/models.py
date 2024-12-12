@@ -47,7 +47,7 @@ class AreasAndHour(models.Model):
                                on_delete=models.CASCADE,
                                help_text="Choose the relevant degree",
                                blank=True, null=True)
-    military_course = models.ForeignKey("MilitaryCourse",
+    military_course = models.ForeignKey("MilitaryExperience",
                                         related_name="areas_and_hours",
                                         on_delete=models.CASCADE,
                                         help_text="Choose the relevant"
@@ -97,28 +97,38 @@ class Degree(models.Model):
                 name='unique_degrees'),
         ]
 
-
-class MilitaryCourse(models.Model):
-    """Model to store Military course details"""
+class MilitaryExperience(models.Model):
+    """Model to store academic course areas"""
     id = models.BigAutoField(primary_key=True)
     user_id = \
         models.ManyToManyField(
             UserRecord,
             max_length=250, blank=True, through="MilitaryCourse_User")
-    course_id = models.CharField(max_length=250, unique=True)
-    course_name = models.CharField(max_length=500)
+    experience_id = models.CharField(max_length=500, unique=True)
+    ACE_identifier = models.CharField(max_length=250, default="None Assigned")
+    rank = models.CharField(max_length=500, null=True, blank=True)
+    rank_level = models.CharField(max_length=500,null=True, blank=True)
     areas = models.ManyToManyField(
         AcademicCourseArea, related_name="mappings", through=AreasAndHour)
-    ACE_identifier = models.CharField(max_length=250, default="None Assigned")
 
     def __str__(self):
         """String for representing the Model object."""
-        return f'{self.course_id}'
+        if hasattr(self, 'militarycourse'):
+            return f'{self.experience_id} {self.militarycourse.course_name}'
+        return f'{self.experience_id}'
+
+class MilitaryCourse(MilitaryExperience):
+    """Model to store Military course details"""
+    course_name = models.CharField(max_length=500)
+
+    def __str__(self):
+        """String for representing the Model object."""
+        return f'{self.course_name}'
 
 
 class MilitaryCourse_User(models.Model):
     """Model to store User and Military course through details"""
-    course_id = models.ForeignKey(MilitaryCourse, related_name="militarycourse_user",
+    course_id = models.ForeignKey(MilitaryExperience, related_name="militarycourse_user",
                                         on_delete=models.CASCADE,
                                         help_text="Choose the relevant"
                                         " military course")
@@ -128,9 +138,6 @@ class MilitaryCourse_User(models.Model):
         help_text="Set degree start date month and year, January 2050")
     end_date = models.DateField(null=True, blank=True,
         help_text="Set degree start date month and year, January 2050")
-    
-    # class Meta:
-    #     db_table = "generate_transcript_militarycourse_user_id"
 
 
 class Transcript(models.Model):
@@ -166,6 +173,4 @@ class TranscriptStatus(StatusModel, TimeStampedModel):
 
     class Meta:
         verbose_name_plural = 'Transcript Status'
-        # unique_together = (('transcript', 'recipient'),
-        #                    ('transcript', 'academic_institute'))
         

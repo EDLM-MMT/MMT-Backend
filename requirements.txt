@@ -2,6 +2,8 @@ coverage>=7.0,<8.0
 
 Django>=4.2.15,<5.0
 
+django-csp>=3.7,<3.8
+
 djangorestframework>=3.15.2,<3.16.0
 
 djangorestframework-guardian2
