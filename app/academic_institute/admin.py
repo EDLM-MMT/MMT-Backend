@@ -8,7 +8,7 @@ from generate_transcript.admin import DegreeInline
 # Register your models here.
 @admin.register(AcademicInstitute)
 class AcademicInstituteAdmin(GuardedModelAdmin):
-    list_display = ('id', 'institute',)
+    list_display = ('id', 'institute', 'managed_by_import')
     inlines = [DegreeInline,]
 
     # fields to display in the admin site
@@ -16,9 +16,8 @@ class AcademicInstituteAdmin(GuardedModelAdmin):
         (
             "General",
             {
-                # on the same line
                 "fields": (
-                    "institute", "group", "admins"
+                    "institute", "group", "admins", "managed_by_import"
                 )
             },
         ),

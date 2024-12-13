@@ -18,6 +18,7 @@ class AcademicInstitute(models.Model):
                                null=True, blank=True,
                                help_text="Select the group that will manage "
                                "this Institute")
+    managed_by_import = models.BooleanField(default=True)
     # Groups - for tracking who has access
 
     def __str__(self):

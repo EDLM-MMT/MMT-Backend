@@ -10,6 +10,32 @@ from users.models import MMTUser
 logger = logging.getLogger(__name__)
 
 
+class MMTUserSerializer(serializers.ModelSerializer):
+    first_name = serializers.CharField(read_only=True)
+    last_name = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = MMTUser
+        fields = ['email', 'first_name', 'last_name', 'position',]
+
+        def validate_email(attrs):
+            return attrs
+        extra_kwargs = {
+            'email': {'validators': [validate_email]},
+            'position': {'default': ''}
+        }
+
+    def validate(self, attrs):
+        attrs = super().validate(attrs)
+        inst = MMTUser.objects.filter(email=attrs['email'])
+        if inst.exists():
+            self.instance = inst.get()
+        return attrs
+
+    def create(self, validated_data):
+        return None
+
+
 class AcademicInstituteSerializer(serializers.ModelSerializer,
                                   ObjectPermissionsAssignmentMixin):
     class Meta:
@@ -29,8 +55,7 @@ class AcademicInstituteSerializer(serializers.ModelSerializer,
 
 
 class ManageAcademicInstituteSerializer(serializers.ModelSerializer):
-    members = serializers.ListField(
-        child=serializers.EmailField(), source='group.user_set.all')
+    members = MMTUserSerializer(many=True, source='group.user_set.all')
     administrators = serializers.ListField(
         child=serializers.EmailField(), source='admins.user_set.all',
         read_only=True)
@@ -40,7 +65,15 @@ class ManageAcademicInstituteSerializer(serializers.ModelSerializer):
         fields = ['id', 'institute', 'members', 'administrators']
 
     def update(self, instance, validated_data):
+        members = validated_data.pop('group', {'user_set': {'all': []}})[
+            'user_set']['all']
+        email_keys = {member['email']: member['position']
+                      for member in members}
         instance.group.user_set.set(MMTUser.objects.filter(
-            email__in=validated_data['group']['user_set']['all']))
+            email__in=list(email_keys.keys())))
+        for user in instance.group.user_set.all():
+            if user.position != email_keys[user.email]:
+                user.position = email_keys[user.email]
+                user.save()
 
         return instance

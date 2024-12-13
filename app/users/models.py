@@ -89,7 +89,7 @@ class MMTUser(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(default=timezone.now)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    position = models.CharField(max_length=200)
+    position = models.CharField(max_length=200, blank=True)
     sector = models.CharField(max_length=200)
     rank = models.CharField(max_length=200)
     location = models.CharField(max_length=200)
