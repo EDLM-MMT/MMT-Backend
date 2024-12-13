@@ -69,12 +69,13 @@ class TranscriptStatusSerializer(ObjectPermissionsAssignmentMixin,
             transcript_obj = Transcript.objects.get(id=self.context['request'].data['transcript'])
             if self.context['request'].user == transcript_obj.subject.user_profile:
                 transcript_subject = transcript_obj.subject.user_profile
-                transcript_recipient = self.instance.recipient
-                transcript_ai_group = self.instance.academic_institute
+                if self.instance.recipient:
+                    transcript_recipient = self.instance.recipient
+                else:
+                    transcript_recipient = self.instance.academic_institute.group
                 perms = {
-                    'view_transcriptstatus': [transcript_subject, transcript_recipient,
-                                              transcript_ai_group],
-                    'change_transcriptstatus': [transcript_subject, transcript_ai_group]
+                    'view_transcriptstatus': [transcript_subject, transcript_recipient],
+                    'change_transcriptstatus': [transcript_subject, transcript_recipient]
                 }
 
         return perms
@@ -86,5 +87,5 @@ class TranscriptStatusSerializer(ObjectPermissionsAssignmentMixin,
                 validated_data['status'] = TranscriptStatus.STATUS.Delivered
             else:
                 validated_data['status'] = TranscriptStatus.STATUS.Pending
-        transcriptStatus,c  = TranscriptStatus.objects.update_or_create(**validated_data)
+        transcriptStatus, c  = TranscriptStatus.objects.update_or_create(**validated_data)
         return transcriptStatus
