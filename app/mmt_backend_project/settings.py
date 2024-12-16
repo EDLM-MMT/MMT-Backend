@@ -57,6 +57,8 @@ INSTALLED_APPS = [
     'django_filters',
     'guardian',
     'notifications',
+    'django_celery_beat',
+    'django_celery_results',
     # Internal Apps
     'users',
     'academic_institute',
@@ -194,6 +196,15 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
 }
+
+# Celery Settings
+CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
+CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND')
+CELERY_CACHE_BACKEND = 'default'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
 
 # Guardian Settings
 GUARDIAN_RAISE_403 = True
