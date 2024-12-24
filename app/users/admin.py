@@ -40,8 +40,8 @@ class XDSUserAdmin(UserAdmin):
 
 @admin.register(UserRecord)
 class UserRecordAdmin(admin.ModelAdmin):
-    list_display = ('id', 'email', 'name', 'rank', 'dob', 
-                    'ssn', 'status', 'branch','mos')
+    list_display = ('id', 'email', 'first_name', 'last_name','rank',
+                    'dob', 'ssn', 'status', 'branch','mos')
     inlines = [MilitaryExperienceInline]
 
 

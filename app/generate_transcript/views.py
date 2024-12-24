@@ -1,5 +1,6 @@
 import logging
 import random
+import re
 from datetime import datetime
 
 from django.contrib.auth.decorators import permission_required
@@ -24,13 +25,10 @@ from users.models import MMTUser
 logger = logging.getLogger(__name__)
 
 
-class RandomPDFView(PDFView):
-    """Randomly generates PDFs to test behavior"""
-    download_name = 'resume'
-    # prompt_download = True
+class TranscriptPDFView(PDFView):
+    """ Generates PDFs for Transcripts"""
 
-    def get_template_names(self):
-        return ['modernizedTranscript.html']
+    download_name = 'resume'
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -64,27 +62,13 @@ class RandomPDFView(PDFView):
                                            'rank_level': military_obj.rank_level,
                                            'course_id': military_obj.experience_id,
                                            'course_name': course_name,
+                                           'occupation_name': military_obj.experience_name,
+                                           'description': military_obj.description,
                                            'areas' : area,
                                            'hours': hours,
                                            'level': level})
 
         return context
-
-# @permission_required("generate_transcript.view_transcript")
-def transcript_html_view(request):
-    context = {}
-    context['items'] = []
-
-    transcript_obj = get_objects_for_user(request.user,
-                                          "generate_transcript.view_transcript",
-                                          klass=Transcript)
-
-    for obj in transcript_obj:
-        context['items'].append(
-            {'first': obj.subject})
-    context['image'] = "/static/EducationLogo.png"
-
-    return render(request=request, template_name='modernizedTranscript.html', context=context)
 
 
 class TranscriptViewSet(viewsets.ReadOnlyModelViewSet):
@@ -98,6 +82,9 @@ class TranscriptViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = [filters.ObjectPermissionsFilter]
 
     def retrieve(self, request, pk=None, *args, **kwargs):
+
+        # version = self.kwargs['version']
+
         transcript = get_object_or_404(self.queryset, pk=pk)
 
         if not request.user.has_perm('generate_transcript.view_transcript',
@@ -107,10 +94,14 @@ class TranscriptViewSet(viewsets.ReadOnlyModelViewSet):
                             status=status.HTTP_403_FORBIDDEN)
 
         # Create a PDF view
-        pdf_view = RandomPDFView.as_view()
+        # if re.search("legacy", version, re.IGNORECASE):
+        #     pdf_view = TranscriptPDFView.as_view(template_name='legacyTranscript.html')
+        # else:
+        pdf_view = TranscriptPDFView.as_view(template_name='modernizedTranscript.html')
 
         user = MMTUser.objects.get(email=request.user)
         recipient_status_obj = TranscriptStatus.objects.filter(transcript=transcript, recipient=user).first()
+        receiver=user.last_name + ", " + user.first_name
 
         if recipient_status_obj:
             recipient_status_obj.status = TranscriptStatus.STATUS.Opened
@@ -127,15 +118,17 @@ class TranscriptViewSet(viewsets.ReadOnlyModelViewSet):
                 group_status_obj.status = TranscriptStatus.STATUS.Opened
                 group_status_obj.save()
 
-        context = {'name': transcript.subject.name,
+        context = {'first_name': transcript.subject.first_name,
+                   'last_name': transcript.subject.last_name,
                    'dob': transcript.subject.dob.strftime('%d %^b %Y'),
                    'ssn': transcript.subject.ssn,
                    'rank': transcript.subject.rank,
                    'status': transcript.subject.status,
                    'date': datetime.today().strftime('%d %^b %Y'),
-                   'branch': transcript.subject.branch}
+                   'branch': transcript.subject.branch,
+                   'receiver' : receiver}
 
-        return pdf_view(request, context=context, transcript=transcript, template_name='modernizedTranscript.html')
+        return pdf_view(request, context=context, transcript=transcript)
 
 
 class TranscriptStatusViewSet(viewsets.ModelViewSet):

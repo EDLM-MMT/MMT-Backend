@@ -27,7 +27,8 @@ class UserRecord(models.Model):
     """Model to store user records"""
     id = models.BigAutoField(primary_key=True)
     email = models.EmailField(unique=True)
-    name = models.CharField(max_length=200)
+    first_name = models.CharField(max_length=200)
+    last_name = models.CharField(max_length=200)
     rank = models.CharField(max_length=200, blank=True, null=True)
     dob = models.DateField(blank=True, null=True)
     ssn = models.PositiveIntegerField(

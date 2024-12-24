@@ -105,7 +105,9 @@ class MilitaryExperience(models.Model):
             UserRecord,
             max_length=250, blank=True, through="MilitaryCourse_User")
     experience_id = models.CharField(max_length=500, unique=True)
+    experience_name = models.CharField(max_length=500, blank=True, null=True)
     ACE_identifier = models.CharField(max_length=250, default="None Assigned")
+    description = models.TextField(null=True, blank=True)
     rank = models.CharField(max_length=500, null=True, blank=True)
     rank_level = models.CharField(max_length=500,null=True, blank=True)
     areas = models.ManyToManyField(

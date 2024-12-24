@@ -12,6 +12,6 @@ router.register(r'transcript', views.TranscriptViewSet,
                 basename='transcript')
 urlpatterns = [
     path('', include(router.urls)),
-    path('html-test', views.transcript_html_view, name='html-ver'),
-    path('test', views.RandomPDFView.as_view(), name='pdf-ver'),
+    # path('html-test', views.transcript_html_view, name='html-ver'),
+    # path('test', views.RandomPDFView.as_view(), name='pdf-ver'),
 ]
