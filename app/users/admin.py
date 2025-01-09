@@ -1,6 +1,7 @@
 
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+
 from generate_transcript.models import MilitaryExperience
 from users.models import MOS, MMTUser, UserRecord
 
@@ -40,8 +41,8 @@ class XDSUserAdmin(UserAdmin):
 
 @admin.register(UserRecord)
 class UserRecordAdmin(admin.ModelAdmin):
-    list_display = ('id', 'email', 'first_name', 'last_name','rank',
-                    'dob', 'ssn', 'status', 'branch','mos')
+    list_display = ('id', 'email', 'first_name', 'last_name', 'rank',
+                    'dob', 'ssn', 'status', 'branch', 'mos')
     inlines = [MilitaryExperienceInline]
 
 

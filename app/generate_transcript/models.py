@@ -18,8 +18,7 @@ class AcademicCourseArea(models.Model):
     def __str__(self):
         """String for representing the Model object."""
         if hasattr(self, 'academiccourse'):
-            return f'{self.academiccourse.code} - {self.academiccourse.name}'\
-                f' - {self.course_area}'
+            return str(self.academiccourse)
         return f'{self.course_area}'
 
 
@@ -97,6 +96,7 @@ class Degree(models.Model):
                 name='unique_degrees'),
         ]
 
+
 class MilitaryExperience(models.Model):
     """Model to store academic course areas"""
     id = models.BigAutoField(primary_key=True)
@@ -109,15 +109,16 @@ class MilitaryExperience(models.Model):
     ACE_identifier = models.CharField(max_length=250, default="None Assigned")
     description = models.TextField(null=True, blank=True)
     rank = models.CharField(max_length=500, null=True, blank=True)
-    rank_level = models.CharField(max_length=500,null=True, blank=True)
+    rank_level = models.CharField(max_length=500, null=True, blank=True)
     areas = models.ManyToManyField(
         AcademicCourseArea, related_name="mappings", through=AreasAndHour)
 
     def __str__(self):
         """String for representing the Model object."""
         if hasattr(self, 'militarycourse'):
-            return f'{self.experience_id} {self.militarycourse.course_name}'
+            return str(self.militarycourse)
         return f'{self.experience_id}'
+
 
 class MilitaryCourse(MilitaryExperience):
     """Model to store Military course details"""
@@ -130,15 +131,19 @@ class MilitaryCourse(MilitaryExperience):
 
 class MilitaryCourse_User(models.Model):
     """Model to store User and Military course through details"""
-    course_id = models.ForeignKey(MilitaryExperience, related_name="militarycourse_user",
-                                        on_delete=models.CASCADE,
-                                        help_text="Choose the relevant"
-                                        " military course")
+    course_id = models.ForeignKey(MilitaryExperience,
+                                  related_name="militarycourse_user",
+                                  on_delete=models.CASCADE,
+                                  help_text="Choose the relevant"
+                                  " military course")
     user_id = models.ForeignKey(UserRecord, related_name="militarycourse_user",
-                                on_delete=models.CASCADE, max_length=250, blank=True)
-    start_date = models.DateField(null=True, blank=True,
+                                on_delete=models.CASCADE, max_length=250,
+                                blank=True)
+    start_date = models.DateField(
+        null=True, blank=True,
         help_text="Set degree start date month and year, January 2050")
-    end_date = models.DateField(null=True, blank=True,
+    end_date = models.DateField(
+        null=True, blank=True,
         help_text="Set degree start date month and year, January 2050")
 
 
@@ -164,8 +169,8 @@ class TranscriptStatus(StatusModel, TimeStampedModel):
     transcript = models.ForeignKey(Transcript, on_delete=models.CASCADE)
     recipient = models.ForeignKey(MMTUser, related_name='transcript_status',
                                   on_delete=models.CASCADE, blank=True,
-                                  null=True ,help_text="Select associated "
-                                           "email address")
+                                  null=True, help_text="Select associated "
+                                  "email address")
     academic_institute = models.ForeignKey(AcademicInstitute,
                                            related_name='transcript_status',
                                            on_delete=models.CASCADE,
@@ -175,4 +180,3 @@ class TranscriptStatus(StatusModel, TimeStampedModel):
 
     class Meta:
         verbose_name_plural = 'Transcript Status'
-        

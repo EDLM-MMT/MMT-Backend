@@ -32,7 +32,7 @@ class CareerPlan(models.Model):
 
     def get_absolute_url(self):
         """ URL for displaying individual model records."""
-        return reverse('career-plan-detail', args=[str(self.id)])
+        return reverse('counseling:career-plan-detail', args=[str(self.id)])
 
 
 class Comment(TimeStampedModel):
