@@ -2,6 +2,7 @@ from unittest.mock import Mock, patch
 
 from django.contrib.auth.models import Group
 from django.test import tag
+
 from inquiry.models import Inquiry, InquiryComment, InquiryFAQ
 from inquiry.serializer import (InquiryCommentSerializer, InquiryFAQSerializer,
                                 InquirySerializer)
@@ -63,6 +64,44 @@ class SerializersTests(TestSetUp):
             self.user, self.user, eso_group])
         self.assertListEqual(perms['change_inquiry'], [self.user, self.user])
         self.assertListEqual(perms['delete_inquiry'], [self.user, self.user])
+
+    def test_create_inquiry_serializer(self):
+        mock = Mock()
+        mock.user = self.user
+        mock.data = []
+        faq = InquiryFAQ(issue=self.text, response=self.text)
+        faq.save()
+        data = {"name": self.text, "email": self.email,
+                "description": self.text, "subject": self.text,
+                "inquiry_type": faq.pk}
+        inq = InquirySerializer(data=data, context={"request": mock})
+        inq.is_valid(raise_exception=True)
+        inq.save()
+
+        self.assertEqual(Inquiry.objects.all().count(), 1)
+
+    def test_update_inquiry_serializer(self):
+        mock = Mock()
+        mock.user = self.user
+        mock.data = []
+        eso_group = Group.objects.create(name='ESO')
+        eso_group.save()
+        inq = Inquiry(owner=self.user, name=self.text,
+                      description=self.text, subject=self.text,
+                      file=self.file_field, default_assigned=eso_group,
+                      assigned=self.user)
+        inq.save()
+        faq = InquiryFAQ(issue=self.text, response=self.text)
+        faq.save()
+        data = {"name": self.text, "email": self.email,
+                "description": self.text, "subject": self.text,
+                "inquiry_type": faq.pk}
+        inq_serializer = InquirySerializer(
+            inq, data=data, context={"request": mock})
+        inq_serializer.is_valid(raise_exception=True)
+        inq_serializer.save()
+
+        self.assertEqual(Inquiry.objects.all().count(), 1)
 
     def test_serialize_inquiry_comment(self):
         inq = Inquiry(email=self.email, name=self.text,

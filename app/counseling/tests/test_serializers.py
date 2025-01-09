@@ -1,3 +1,5 @@
+from unittest.mock import Mock
+
 from django.contrib.auth.models import Group
 from django.test import tag
 
@@ -130,6 +132,21 @@ class SerializersTests(TestSetUp):
         self.assertListEqual(perms['view_comment'], [
                              self.ur.user_profile, self.user, eso_group])
 
+    def test_create_comment(self):
+        mock = Mock()
+        mock.user = self.user
+        self.ur.save()
+        self.cp.eso = self.user
+        self.cp.save()
+        data = {"comment": self.text, "poster": self.user.email,
+                "plan": self.cp.pk}
+        serialized_comment = CommentSerializer(
+            data=data, context={"request": mock})
+        serialized_comment.is_valid()
+        serialized_comment.save()
+
+        self.assertEqual(Comment.objects.all().count(), 1)
+
     def test_serialize_eso_note(self):
         self.ur.save()
         self.cp.save()
@@ -163,6 +180,22 @@ class SerializersTests(TestSetUp):
         self.assertEqual(len(perms), 1)
         self.assertIn('view_esonote', perms)
         self.assertListEqual(perms['view_esonote'], [self.user, eso_group])
+
+    def test_create_eso_note(self):
+        mock = Mock()
+        mock.user = self.user
+        self.ur.save()
+        self.cp.eso = self.user
+        self.cp.save()
+        data = {"purpose": ESONote.PURPOSE_CHOICES.Advised,
+                "note": self.text, "poster": self.user.email,
+                "plan": self.cp.pk}
+        serialized_note = ESONoteSerializer(
+            data=data, context={"request": mock})
+        serialized_note.is_valid()
+        serialized_note.save()
+
+        self.assertEqual(ESONote.objects.all().count(), 1)
 
     def test_serialize_course_plan(self):
         self.ur.save()
