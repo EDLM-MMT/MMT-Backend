@@ -8,10 +8,13 @@ router = DefaultRouter()
 
 router.register(r'transcript-status', views.TranscriptStatusViewSet,
                 basename='transcript-status')
-router.register(r'transcript', views.TranscriptViewSet,
+router.register("transcript/legacy",
+                views.TranscriptViewSet,
+                basename='transcript-legacy')
+router.register(r'transcript',
+                views.TranscriptViewSet,
                 basename='transcript')
+
 urlpatterns = [
     path('', include(router.urls)),
-    # path('html-test', views.transcript_html_view, name='html-ver'),
-    # path('test', views.RandomPDFView.as_view(), name='pdf-ver'),
 ]

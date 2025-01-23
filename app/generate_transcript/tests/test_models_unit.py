@@ -39,3 +39,7 @@ class ModelTests(TestSetUp):
         self.assertEqual(self.degree.degree, self.c_degree)
         self.assertIn(self.c_degree, str(self.degree))
         self.assertIn(str(self.institute), str(self.degree))
+
+    def test_military_course(self):
+        self.military_course.save()
+        self.assertEqual(self.military_course.course_name, self.course)

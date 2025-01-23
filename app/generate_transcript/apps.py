@@ -10,4 +10,5 @@ class GenerateTranscriptConfig(AppConfig):
         import generate_transcript.signals
         generate_transcript.signals.set_permission
         generate_transcript.signals.create_transcript
-        generate_transcript.signals.my_post_save_handler
+        generate_transcript.signals.my_post_save_user_handler
+        generate_transcript.signals.my_post_save_group_handler

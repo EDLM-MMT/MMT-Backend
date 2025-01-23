@@ -2,7 +2,7 @@ from rest_framework.test import APITestCase
 
 from academic_institute.models import AcademicInstitute
 from generate_transcript.models import (AcademicCourse, AcademicCourseArea,
-                                        AreasAndHour, Degree)
+                                        AreasAndHour, Degree, MilitaryCourse)
 
 
 class TestSetUp(APITestCase):
@@ -25,6 +25,7 @@ class TestSetUp(APITestCase):
         self.degree = Degree(degree=self.c_degree, institute=self.institute)
         self.a_and_h = AreasAndHour(hours=self.hours, degree=self.degree,
                                     academic_course_area=self.ac_course_area)
+        self.military_course = MilitaryCourse(course_name=self.course)
 
         return super().setUp()
 

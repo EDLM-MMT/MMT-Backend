@@ -8,3 +8,5 @@ class AcademicInstituteConfig(AppConfig):
     def ready(self):
         super(AcademicInstituteConfig, self).ready()
         import academic_institute.signals
+        academic_institute.signals.create_groups
+        academic_institute.signals.update_permissions
