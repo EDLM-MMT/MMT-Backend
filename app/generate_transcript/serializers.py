@@ -37,7 +37,7 @@ class DegreeSerializer(serializers.ModelSerializer):
 class MilitaryCourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = MilitaryCourse
-        fields = ['course_id',]
+        fields = ['course_name',]
 
 
 class AreasAndHourSerializer(serializers.ModelSerializer):
