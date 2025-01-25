@@ -24,7 +24,6 @@ django-renderpdf >=4.0, <5.0
 
 djangorestframework-guardian2
 
-djangorestframework>=3.12.2,<3.13.0
 
 django-health-check>3.18.0, <3.19.0
 
