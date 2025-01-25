@@ -79,6 +79,8 @@ MIDDLEWARE = [
     'csp.middleware.CSPMiddleware',
 ]
 
+SECURE_SSL_REDIRECT = False
+
 ROOT_URLCONF = 'mmt_backend_project.urls'
 
 TEMPLATES = [
