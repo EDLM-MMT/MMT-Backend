@@ -49,6 +49,43 @@ services:
       - db
     networks:
       - openlxp
+
+  redis:
+    image: redis:alpine
+    networks:
+      - openlxp
+
+  celery:
+    build:
+      context: .
+    command: celery -A mmt_backend_project worker -l info --pool=solo
+    volumes:
+      - ./app:/opt/app/mmt-backend
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+      - redis
+      - app
+    networks:
+      - openlxp
+    restart: on-failure
+
+  celery-beat:
+    build:
+      context: .
+    command: celery -A mmt_backend_project beat --scheduler django_celery_beat.schedulers:DatabaseScheduler --loglevel=info --pidfile=/tmp/celerybeat.pid
+    volumes:
+      - ./app:/opt/app/mmt-backend
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+      - redis
+      - app
+    networks:
+      - openlxp
+    restart: on-failure
   
 networks:
   openlxp:

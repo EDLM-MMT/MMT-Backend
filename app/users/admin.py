@@ -1,16 +1,17 @@
 
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from generate_transcript.models import MilitaryCourse
+
+from generate_transcript.models import MilitaryExperience
 from users.models import MOS, MMTUser, UserRecord
 
 # Register your models here.
 
 
-class MilitaryCourseInline(admin.TabularInline):
-    model = MilitaryCourse.user_id.through
-    verbose_name = 'Military Course'
-    verbose_name_plural = 'Military Courses'
+class MilitaryExperienceInline(admin.TabularInline):
+    model = MilitaryExperience.user_id.through
+    verbose_name = 'Military Experience'
+    verbose_name_plural = 'Military Experience'
 
 
 @admin.register(MMTUser)
@@ -40,8 +41,9 @@ class XDSUserAdmin(UserAdmin):
 
 @admin.register(UserRecord)
 class UserRecordAdmin(admin.ModelAdmin):
-    list_display = ('id', 'email', 'mos')
-    inlines = [MilitaryCourseInline]
+    list_display = ('id', 'email', 'first_name', 'last_name', 'rank',
+                    'dob', 'ssn', 'status', 'branch', 'mos')
+    inlines = [MilitaryExperienceInline]
 
 
 @admin.register(MOS)

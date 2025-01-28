@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+import datetime
 import os
 from pathlib import Path
 
@@ -28,6 +29,17 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+# Content Security Policy (CSP)
+SELF_VALUE = "'self'"  # defining a constant
+
+CSP_DEFAULT_SRC = (SELF_VALUE,)
+CSP_SCRIPT_SRC = (SELF_VALUE,)
+CSP_IMG_SRC = (SELF_VALUE,)
+CSP_STYLE_SRC = (SELF_VALUE,)
+CSP_FRAME_SRC = (SELF_VALUE,)
+CSP_FONT_SRC = (SELF_VALUE,)
+# Application definition
+
 
 # Application definition
 
@@ -45,9 +57,11 @@ INSTALLED_APPS = [
     'django_filters',
     'guardian',
     'notifications',
+    'django_celery_beat',
+    'django_celery_results',
     # Internal Apps
     'users',
-    'health_check',
+    'academic_institute',
     'generate_transcript',
     'counseling',
     'inquiry',
@@ -62,6 +76,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.admindocs.middleware.XViewMiddleware',
+    'csp.middleware.CSPMiddleware',
 ]
 
 SECURE_SSL_REDIRECT = False
@@ -184,6 +199,25 @@ SPECTACULAR_SETTINGS = {
     'SERVE_INCLUDE_SCHEMA': False,
 }
 
+# Celery Settings
+CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
+CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND')
+CELERY_CACHE_BACKEND = 'default'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
+
 # Guardian Settings
 GUARDIAN_RAISE_403 = True
 ANONYMOUS_USER_NAME = None
+
+# Django-notifications package settings
+DJANGO_NOTIFICATIONS_CONFIG = {
+    'USE_JSONFIELD': True,
+}
+
+# when notifications should be automatically deleted, should be days or greater
+NOTIFICATIONS_EXPIRE_AFTER = datetime.timedelta(days=30)
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880

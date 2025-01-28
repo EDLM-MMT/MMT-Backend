@@ -1,9 +1,10 @@
 from django.db import models
 from django.urls import reverse
-from generate_transcript.models import (AcademicCourseArea, AcademicInstitute,
-                                        Degree)
 from model_utils import Choices
 from model_utils.models import StatusField, TimeStampedModel
+
+from academic_institute.models import AcademicInstitute
+from generate_transcript.models import AcademicCourseArea, Degree
 from users.models import MMTUser, UserRecord
 
 
@@ -31,7 +32,7 @@ class CareerPlan(models.Model):
 
     def get_absolute_url(self):
         """ URL for displaying individual model records."""
-        return reverse('career-plan-detail', args=[str(self.id)])
+        return reverse('counseling:career-plan-detail', args=[str(self.id)])
 
 
 class Comment(TimeStampedModel):

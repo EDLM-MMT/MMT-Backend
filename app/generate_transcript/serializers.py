@@ -1,8 +1,15 @@
-from django.contrib.auth.models import Group
-from generate_transcript.models import (AcademicCourse, AcademicCourseArea,
-                                        AcademicInstitute, AreasAndHour,
-                                        Degree, MilitaryCourse, Transcript)
+import logging
+
 from rest_framework import serializers
+from rest_framework_guardian.serializers import \
+    ObjectPermissionsAssignmentMixin
+
+from academic_institute.models import AcademicInstitute
+from generate_transcript.models import (AcademicCourse, AcademicCourseArea,
+                                        AreasAndHour, Degree, MilitaryCourse,
+                                        Transcript, TranscriptStatus)
+
+logger = logging.getLogger(__name__)
 
 
 class AcademicCourseSerializer(serializers.ModelSerializer):
@@ -17,18 +24,10 @@ class AcademicCourseAreaSerializer(serializers.ModelSerializer):
         fields = ['course_area',]
 
 
-class AcademicInstituteSerializer(serializers.ModelSerializer):
-    group = serializers.SlugRelatedField(
-        slug_field='name', queryset=Group.objects.all(), required=False)
-
-    class Meta:
-        model = AcademicInstitute
-        fields = ['institute', 'group',]
-
-
 class DegreeSerializer(serializers.ModelSerializer):
     institute = serializers.SlugRelatedField(
-        slug_field='institute', queryset=AcademicInstitute.objects.all())
+        slug_field='institute',
+        queryset=AcademicInstitute.objects.all())
 
     class Meta:
         model = Degree
@@ -38,7 +37,7 @@ class DegreeSerializer(serializers.ModelSerializer):
 class MilitaryCourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = MilitaryCourse
-        fields = ['course_id',]
+        fields = ['course_name',]
 
 
 class AreasAndHourSerializer(serializers.ModelSerializer):
@@ -55,3 +54,48 @@ class TranscriptSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transcript
         fields = '__all__'
+
+
+class TranscriptStatusSerializer(ObjectPermissionsAssignmentMixin,
+                                 serializers.ModelSerializer):
+    class Meta:
+        model = TranscriptStatus
+        fields = ['transcript', 'recipient',
+                  'status', 'academic_institute']
+
+    def get_permissions_map(self, created):
+        perms = {}
+        if not created:
+            transcript_obj = (
+                Transcript.objects.get(id=self.context['request'].
+                                       data['transcript']))
+            if (self.context['request'].user == (transcript_obj.
+                                                 subject.user_profile)):
+                transcript_subject = transcript_obj.subject.user_profile
+                if self.instance.recipient:
+                    transcript_recipient = self.instance.recipient
+                else:
+                    transcript_recipient = (self.instance.
+                                            academic_institute.group)
+                perms = {
+                    'view_transcriptstatus': [transcript_subject,
+                                              transcript_recipient],
+                    'change_transcriptstatus': [transcript_subject,
+                                                transcript_recipient]
+                }
+
+        return perms
+
+    def create(self, validated_data):
+        if 'status' in validated_data and validated_data['status']:
+            transcript_obj = Transcript.objects.get(id=self.
+                                                    context['request'].
+                                                    data['transcript'])
+            if (self.context['request'].user ==
+                    transcript_obj.subject.user_profile):
+                validated_data['status'] = TranscriptStatus.STATUS.Delivered
+            else:
+                validated_data['status'] = TranscriptStatus.STATUS.Pending
+        transcriptStatus, c = TranscriptStatus.objects.update_or_create(
+            **validated_data)
+        return transcriptStatus
