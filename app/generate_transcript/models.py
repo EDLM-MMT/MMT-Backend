@@ -1,3 +1,4 @@
+from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models import Q
 from django.urls import reverse
@@ -7,13 +8,17 @@ from model_utils.models import StatusModel, TimeStampedModel
 from academic_institute.models import AcademicInstitute
 from users.models import MOS, MMTUser, UserRecord
 
+from .regex import REGEX_CHECK, REGEX_ERROR_MESSAGE
+
 # Create your models here.
 
 
 class AcademicCourseArea(models.Model):
     """Model to store academic course areas"""
     id = models.BigAutoField(primary_key=True)
-    course_area = models.CharField(max_length=500)
+    course_area = models.CharField(max_length=500, validators=[
+        RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
+    ])
 
     def __str__(self):
         """String for representing the Model object."""
@@ -24,8 +29,18 @@ class AcademicCourseArea(models.Model):
 
 class AcademicCourse(AcademicCourseArea):
     """Model to store academic course detail"""
-    name = models.CharField(max_length=500, help_text="Set course name")
-    code = models.CharField(max_length=200, help_text="Set course code")
+    name = models.CharField(max_length=500, help_text="Set course name",
+                            validators=[
+                                RegexValidator(
+                                    regex=REGEX_CHECK,
+                                    message=REGEX_ERROR_MESSAGE),
+                            ])
+    code = models.CharField(max_length=200, help_text="Set course code",
+                            validators=[
+                                RegexValidator(
+                                    regex=REGEX_CHECK,
+                                    message=REGEX_ERROR_MESSAGE),
+                            ])
 
     def __str__(self):
         """String for representing the Model object."""
@@ -53,7 +68,9 @@ class AreasAndHour(models.Model):
                                         " military course",
                                         blank=True, null=True)
     hours = models.PositiveIntegerField()
-    level = models.CharField(max_length=3, blank=True, null=True)
+    level = models.CharField(max_length=3, blank=True, null=True, validators=[
+        RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
+    ])
 
     def __str__(self):
         """String for representing the Model object."""
@@ -75,7 +92,9 @@ class AreasAndHour(models.Model):
 class Degree(models.Model):
     """Model to store degrees"""
     id = models.BigAutoField(primary_key=True)
-    degree = models.CharField(max_length=500)
+    degree = models.CharField(max_length=500, validators=[
+        RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
+    ])
     institute = models.ForeignKey(
         AcademicInstitute, related_name="degrees", on_delete=models.CASCADE,
         help_text="Choose the affiliated Academic Institute")
@@ -104,12 +123,35 @@ class MilitaryExperience(models.Model):
         models.ManyToManyField(
             UserRecord,
             max_length=250, blank=True, through="MilitaryCourse_User")
-    experience_id = models.CharField(max_length=500, unique=True)
-    experience_name = models.CharField(max_length=500, blank=True, null=True)
-    ACE_identifier = models.CharField(max_length=250, default="None Assigned")
-    description = models.TextField(null=True, blank=True)
-    rank = models.CharField(max_length=500, null=True, blank=True)
-    rank_level = models.CharField(max_length=500, null=True, blank=True)
+    experience_id = models.CharField(max_length=500, unique=True, validators=[
+        RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
+    ])
+    experience_name = models.CharField(max_length=500, blank=True, null=True,
+                                       validators=[
+                                           RegexValidator(
+                                               regex=REGEX_CHECK,
+                                               message=REGEX_ERROR_MESSAGE
+                                           ),
+                                       ])
+    ACE_identifier = models.CharField(max_length=250, default="None Assigned",
+                                      validators=[
+                                          RegexValidator(
+                                              regex=REGEX_CHECK,
+                                              message=REGEX_ERROR_MESSAGE
+                                          ),
+                                      ])
+    description = models.TextField(null=True, blank=True, validators=[
+        RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
+    ])
+    rank = models.CharField(max_length=500, null=True, blank=True, validators=[
+        RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
+    ])
+    rank_level = models.CharField(max_length=500, null=True, blank=True,
+                                  validators=[
+                                      RegexValidator(
+                                          regex=REGEX_CHECK,
+                                          message=REGEX_ERROR_MESSAGE),
+                                  ])
     areas = models.ManyToManyField(
         AcademicCourseArea, related_name="mappings", through=AreasAndHour)
 
@@ -122,7 +164,9 @@ class MilitaryExperience(models.Model):
 
 class MilitaryCourse(MilitaryExperience):
     """Model to store Military course details"""
-    course_name = models.CharField(max_length=500)
+    course_name = models.CharField(max_length=500, validators=[
+        RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
+    ])
 
     def __str__(self):
         """String for representing the Model object."""

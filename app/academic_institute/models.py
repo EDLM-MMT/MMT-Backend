@@ -1,13 +1,18 @@
 from django.contrib.auth.models import Group
+from django.core.validators import RegexValidator
 from django.db import models
 from django.urls import reverse
+
+from generate_transcript.regex import REGEX_CHECK, REGEX_ERROR_MESSAGE
 
 
 # Create your models here.
 class AcademicInstitute(models.Model):
     """Model to store degree offerings"""
     id = models.BigAutoField(primary_key=True)
-    institute = models.CharField(max_length=500, unique=True)
+    institute = models.CharField(max_length=500, unique=True, validators=[
+        RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
+    ])
     group = models.ForeignKey(Group, related_name='academic_institutes',
                               on_delete=models.SET_NULL,
                               null=True, blank=True,
