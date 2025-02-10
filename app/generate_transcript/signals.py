@@ -1,9 +1,10 @@
+import logging
+
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from notifications.signals import notify
-from guardian.shortcuts import assign_perm
 from guardian.models import GroupObjectPermission, UserObjectPermission
-import logging
+from guardian.shortcuts import assign_perm
+from notifications.signals import notify
 
 from .models import Transcript, TranscriptStatus
 
@@ -59,10 +60,6 @@ def my_post_save_user_handler(sender, instance, created, **kwargs):
                             verb='Transcript Delivered',
                             status_val=transcript_obj.status)
 
-    else:
-        # an existing instance is updated
-        logger.info("Instance updated:", instance)
-
 
 @receiver(post_save, sender=GroupObjectPermission)
 def my_post_save_group_handler(sender, instance, created, **kwargs):
@@ -91,7 +88,3 @@ def my_post_save_group_handler(sender, instance, created, **kwargs):
                         recipient=instance.group,
                         verb='Transcript Delivered',
                         status_val=transcript_obj.status)
-
-    else:
-        # an existing instance is update
-        logger.info("Instance updated:", instance)
