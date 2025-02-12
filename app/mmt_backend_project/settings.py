@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     # External Packages
     'rest_framework',
     'drf_spectacular',
+    'drf_spectacular_sidecar',
     'django_filters',
     'guardian',
     'notifications',
@@ -196,7 +197,10 @@ SPECTACULAR_SETTINGS = {
     'TITLE': 'Django MMT Endpoints',
     'DESCRIPTION': 'Your project description',
     'VERSION': '1.0.0',
-    'SERVE_INCLUDE_SCHEMA': False,
+    # 'SERVE_INCLUDE_SCHEMA': False,
+    'SWAGGER_UI_DIST': 'SIDECAR',  # shorthand to use the sidecar instead
+    'SWAGGER_UI_FAVICON_HREF': 'SIDECAR',
+    'REDOC_DIST': 'SIDECAR',
 }
 
 # Celery Settings
