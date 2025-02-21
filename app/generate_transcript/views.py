@@ -5,19 +5,16 @@ from datetime import datetime
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
 from django_renderpdf.views import PDFView
-from guardian.shortcuts import (assign_perm)
-from academic_institute.models import AcademicInstitute
+from guardian.shortcuts import assign_perm
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 from rest_framework_guardian import filters
 
-from generate_transcript.models import (AreasAndHour,
-                                        MilitaryCourse_User,
-                                        Transcript,
-                                        TranscriptStatus)
-from generate_transcript. \
-    serializers import (TranscriptSerializer,
-                        TranscriptStatusSerializer)
+from academic_institute.models import AcademicInstitute
+from generate_transcript.models import (AreasAndHour, MilitaryCourse_User,
+                                        Transcript, TranscriptStatus)
+from generate_transcript.serializers import (TranscriptSerializer,
+                                             TranscriptStatusSerializer)
 from users.models import MMTUser
 
 logger = logging.getLogger(__name__)
@@ -146,7 +143,7 @@ class TranscriptStatusViewSet(viewsets.ModelViewSet):
     allows operations on individual events if user has appropriate 'view',
     'add', 'change' or 'delete' permissions.
     """
-    queryset = TranscriptStatus.objects.all()
+    queryset = TranscriptStatus.objects.all().order_by('-created')
     serializer_class = TranscriptStatusSerializer
     filter_backends = [filters.ObjectPermissionsFilter]
 
