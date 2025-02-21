@@ -99,3 +99,14 @@ class TranscriptStatusSerializer(ObjectPermissionsAssignmentMixin,
         transcriptStatus, c = TranscriptStatus.objects.update_or_create(
             **validated_data)
         return transcriptStatus
+
+    def to_representation(self, instance):
+        return {
+            'transcript':
+            f"{instance.transcript.subject.user_profile.last_name}, "
+            f"{instance.transcript.subject.user_profile.first_name}",
+            'status': instance.status,
+            'academic_institute': instance.academic_institute.institute,
+            'modified': instance.modified,
+            'created': instance.created
+        }
