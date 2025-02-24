@@ -56,9 +56,8 @@ class AcademicInstituteSerializer(serializers.ModelSerializer,
 
 class ManageAcademicInstituteSerializer(serializers.ModelSerializer):
     members = MMTUserSerializer(many=True, source='group.user_set.all')
-    administrators = serializers.ListField(
-        child=serializers.EmailField(), source='admins.user_set.all',
-        read_only=True)
+    administrators = MMTUserSerializer(many=True, source='admins.user_set.all',
+                                       read_only=True)
 
     class Meta:
         model = AcademicInstitute
