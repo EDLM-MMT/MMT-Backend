@@ -1,4 +1,3 @@
-import json
 import logging
 
 from rest_framework import mixins, viewsets
@@ -38,7 +37,7 @@ class ManageAcademicInstituteViewSet(mixins.RetrieveModelMixin,
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         sm = serializer.data['members']
-        rm = json.loads(request.data['members'])
+        rm = request.data['members']
         new_members = {'members': sm + rm}
         serializer = self.get_serializer(
             instance, data=new_members, partial=True)
