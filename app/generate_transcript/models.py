@@ -222,5 +222,10 @@ class TranscriptStatus(StatusModel, TimeStampedModel):
                                            help_text="Select associated "
                                            "academic institute")
 
+    def get_absolute_url(self):
+        """ URL for displaying individual model records."""
+        return reverse('generate_transcript:transcript-status-detail',
+                       args=[str(self.pk)])
+
     class Meta:
         verbose_name_plural = 'Transcript Status'

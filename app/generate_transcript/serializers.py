@@ -102,9 +102,11 @@ class TranscriptStatusSerializer(ObjectPermissionsAssignmentMixin,
 
     def to_representation(self, instance):
         return {
-            'transcript':
-            f"{instance.transcript.subject.user_profile.last_name}, "
-            f"{instance.transcript.subject.user_profile.first_name}",
+            'transcript': {
+                "dob": instance.transcript.subject.dob,
+                "first_name": instance.transcript.subject.first_name,
+                "last_name": instance.transcript.subject.last_name
+            },
             'status': instance.status,
             'academic_institute': instance.academic_institute.institute,
             'modified': instance.modified,
