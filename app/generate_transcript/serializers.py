@@ -106,7 +106,8 @@ class TranscriptStatusSerializer(ObjectPermissionsAssignmentMixin,
             'transcript': {
                 "dob": instance.transcript.subject.dob,
                 "first_name": instance.transcript.subject.first_name,
-                "last_name": instance.transcript.subject.last_name
+                "last_name": instance.transcript.subject.last_name,
+                "pk": instance.transcript.pk
             },
             'status': instance.status,
             'academic_institute': instance.academic_institute.institute,
