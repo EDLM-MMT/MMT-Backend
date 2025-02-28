@@ -86,6 +86,7 @@ CSRF_TRUSTED_ORIGINS = ['*', 'https://*', 'https://mmt.deloitteopenlxp.com',]
 CORS_ALLOWED_ORIGINS = [
     '*', 'https://*', 'https://mmt.deloitteopenlxp.com', 'mmt.deloitteopenlxp.com']
 CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
 
 SECURE_SSL_REDIRECT = False
 
