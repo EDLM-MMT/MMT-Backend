@@ -80,6 +80,10 @@ MIDDLEWARE = [
     'csp.middleware.CSPMiddleware',
 ]
 
+CSRF_TRUSTED_ORIGINS = ['*', 'https://*', 'https://mmt.deloitteopenlxp.com',]
+CORS_ALLOWED_ORIGINS = [
+    '*', 'https://*', 'https://mmt.deloitteopenlxp.com', 'mmt.deloitteopenlxp.com']
+
 SECURE_SSL_REDIRECT = False
 
 ROOT_URLCONF = 'mmt_backend_project.urls'
