@@ -13,17 +13,8 @@ logger = logging.getLogger(__name__)
 
 @receiver(post_save, sender=Transcript)
 def set_permission(sender, instance, **kwargs):
-#     # assign view permissions to transcript subject
-#     assign_perm("generate_transcript.view_transcript",
-#                 instance.subject.user_profile)
     assign_perm("generate_transcript.view_transcript",
                 instance.subject.user_profile, instance)
-#     assign_perm("generate_transcript.view_transcriptstatus",
-#                 instance.subject.user_profile)
-#     assign_perm("generate_transcript.change_transcriptstatus",
-#                 instance.subject.user_profile)
-#     assign_perm("generate_transcript.add_transcriptstatus",
-#                 instance.subject.user_profile)
 
 
 @receiver(post_save, sender=TranscriptStatus)
