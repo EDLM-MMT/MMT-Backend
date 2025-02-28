@@ -51,7 +51,8 @@ class UserRecord(models.Model):
     ])
     dob = models.DateField(blank=True, null=True)
     ssn = models.PositiveIntegerField(
-        validators=[MinValueValidator(1000), MaxValueValidator(9999)],
+        validators=[MinValueValidator(100000000),
+                    MaxValueValidator(999999999)],
         blank=True, null=True)
     status = models.CharField(max_length=200, blank=True, null=True,
                               validators=[
