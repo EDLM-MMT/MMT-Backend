@@ -13,27 +13,38 @@ logger = logging.getLogger(__name__)
 
 @receiver(post_save, sender=Transcript)
 def set_permission(sender, instance, **kwargs):
-    # assign view permissions to transcript subject
-    assign_perm("generate_transcript.view_transcript",
-                instance.subject.user_profile)
+#     # assign view permissions to transcript subject
+#     assign_perm("generate_transcript.view_transcript",
+#                 instance.subject.user_profile)
     assign_perm("generate_transcript.view_transcript",
                 instance.subject.user_profile, instance)
-    assign_perm("generate_transcript.view_transcriptstatus",
-                instance.subject.user_profile)
-    assign_perm("generate_transcript.change_transcriptstatus",
-                instance.subject.user_profile)
-    assign_perm("generate_transcript.add_transcriptstatus",
-                instance.subject.user_profile)
+#     assign_perm("generate_transcript.view_transcriptstatus",
+#                 instance.subject.user_profile)
+#     assign_perm("generate_transcript.change_transcriptstatus",
+#                 instance.subject.user_profile)
+#     assign_perm("generate_transcript.add_transcriptstatus",
+#                 instance.subject.user_profile)
 
 
 @receiver(post_save, sender=TranscriptStatus)
 def create_transcript(sender, instance, created, **kwargs):
     # if created:
-    if instance.status != 'Delivered':
+    if instance.status and instance.status != 'Delivered':
+
         notify.send(sender=instance.transcript.subject.user_profile,
                     recipient=instance.transcript.subject.user_profile,
-                    verb='Transcript Opened',
+                    verb=instance.status,
                     status_val=instance.status)
+        if instance.academic_institute.group:
+            notify.send(sender=instance.transcript.subject.user_profile,
+                        recipient=instance.academic_institute.group,
+                        verb=instance.status,
+                        status_val=instance.status)
+        if instance.recipient:
+            notify.send(sender=instance.transcript.subject.user_profile,
+                        recipient=instance.recipient,
+                        verb=instance.status,
+                        status_val=instance.status)
 
 
 @receiver(post_save, sender=UserObjectPermission)
@@ -52,12 +63,12 @@ def my_post_save_user_handler(sender, instance, created, **kwargs):
                                     subject.user_profile),
                             recipient=(instance.content_object.
                                        subject.user_profile),
-                            verb='Transcript Delivered',
+                            verb=transcript_obj.status,
                             status_val=transcript_obj.status)
                 notify.send(sender=(instance.content_object.
                                     subject.user_profile),
                             recipient=instance.user,
-                            verb='Transcript Delivered',
+                            verb=transcript_obj.status,
                             status_val=transcript_obj.status)
 
 
@@ -81,10 +92,10 @@ def my_post_save_group_handler(sender, instance, created, **kwargs):
                                      defaults={"status": "Delivered"}))
             notify.send(sender=instance.content_object.subject.user_profile,
                         recipient=instance.content_object.subject.user_profile,
-                        verb='Transcript Delivered',
+                        verb=transcript_obj.status,
                         status_val=transcript_obj.status)
 
             notify.send(sender=instance.content_object.subject.user_profile,
                         recipient=instance.group,
-                        verb='Transcript Delivered',
+                        verb=transcript_obj.status,
                         status_val=transcript_obj.status)

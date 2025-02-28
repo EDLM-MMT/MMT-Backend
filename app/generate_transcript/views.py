@@ -148,14 +148,23 @@ class TranscriptStatusViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.ObjectPermissionsFilter]
 
     def create(self, request, *args, **kwargs):
-        transcript_pk = request.data.get('transcript')
+        ssn = request.data.get('ssn')
         recipient_pk = request.data.get('recipient')
         ai_pk = request.data.get('academic_institute')
-        transcript = Transcript.objects.get(pk=transcript_pk)
+
+        transcript = Transcript.objects.filter(
+            subject__user_profile=request.user).first()
+        if ssn:
+            try:
+                transcript = get_object_or_404(Transcript, subject__ssn=ssn)
+            except Exception as e:
+                logger.error(e)
+
+        request.data["transcript"] = transcript.id
 
         if request.user == transcript.subject.user_profile:
             if recipient_pk:
-                recipient_user = get_object_or_404(MMTUser, id=recipient_pk)
+                recipient_user = get_object_or_404(MMTUser, email=recipient_pk)
 
             elif ai_pk:
                 recipient_user = (get_object_or_404(
@@ -179,4 +188,4 @@ class TranscriptStatusViewSet(viewsets.ModelViewSet):
                                      "check logs for details"},
                                     status=status.HTTP_400_BAD_REQUEST)
 
-            return super().create(request, *args, **kwargs)
+        return super().create(request, *args, **kwargs)
