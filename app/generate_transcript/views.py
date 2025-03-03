@@ -124,10 +124,14 @@ class TranscriptViewSet(viewsets.ReadOnlyModelViewSet):
                 group_status_obj.status = TranscriptStatus.STATUS.Opened
                 group_status_obj.save()
 
+        # setting SSN Value
+        ssn = str(transcript.subject.ssn)[-4:]
+        ssn = "***-**-"+ssn
+
         context = {'first_name': transcript.subject.first_name,
                    'last_name': transcript.subject.last_name,
                    'dob': transcript.subject.dob.strftime('%d %^b %Y'),
-                   'ssn': transcript.subject.ssn,
+                   'ssn': ssn,
                    'rank': transcript.subject.rank,
                    'status': transcript.subject.status,
                    'date': datetime.today().strftime('%d %^b %Y'),
