@@ -1,4 +1,9 @@
+import logging
+
+import clamd
+import magic
 from django.contrib.auth.models import Group
+from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db import models
 from model_utils import Choices
@@ -8,6 +13,7 @@ from generate_transcript.regex import REGEX_CHECK, REGEX_ERROR_MESSAGE
 from users.models import MMTUser
 
 # Create your models here.
+logger = logging.getLogger()
 
 
 class InquiryFAQ(StatusModel, TimeStampedModel):
@@ -69,6 +75,39 @@ class Inquiry(StatusModel, TimeStampedModel):
     default_assigned = models.ForeignKey(
         Group, related_name='assigned_group', on_delete=models.SET_NULL,
         blank=True, null=True, help_text="Select default assigned group")
+
+    def clean(self):
+        if self.file:
+            # scan file for malicious payloads
+            cd = clamd.ClamdNetworkSocket(
+                host="clamd.clamav", port=3310, timeout=10)
+            json_file = self.file
+            scan_results = cd.instream(json_file)['stream']
+
+            if 'OK' not in scan_results:
+                for issue_type, issue in [scan_results, ]:
+                    logger.error(
+                        '%s %s in file from %s',
+                        issue_type, issue, self.owner
+                    )
+                    raise ValidationError('{} {} in file from {}'.format(
+                        issue_type, issue, self.owner))
+            # only save file if no issues found
+            else:
+                # rewind buffer
+                json_file.seek(0)
+
+                # use magic to check file type
+                mime_type = magic.from_buffer(json_file.read(), mime=True)
+                # log issue if file isn't image
+                if 'image' not in mime_type.lower():
+                    logger.error('Invalid file type detected. Expected image, found %s', mime_type)  # noqa: E501
+                    raise ValidationError('Invalid file type detected. '
+                                          'Expected image, found {}'.format(
+                                              mime_type))
+                else:
+                    # rewind buffer
+                    json_file.seek(0)
 
 
 class InquiryComment(TimeStampedModel):

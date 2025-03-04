@@ -1,5 +1,7 @@
 celery >=5.2.3, <6.0
 
+clamd==1.0.2
+
 coverage>=7.0,<8.0
 
 Django>=4.2.15,<5.0
@@ -26,7 +28,6 @@ django-renderpdf >=4.0, <5.0
 
 djangorestframework-guardian2
 
-
 django-health-check>3.18.0, <3.19.0
 
 docutils>=0.20.1
@@ -46,6 +47,8 @@ isort>=5.13.2,<5.14.0
 mysql-connector-python >= 8.0.28, <=8.0.29
 
 redis==4.1.2
+
+python-magic >=0.4.27, <0.5
 
 psycopg2-binary >= 2.9, < 3.0
 
