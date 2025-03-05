@@ -3,6 +3,7 @@ import re
 from datetime import datetime
 
 from django.db import IntegrityError
+from django.http.response import Http404
 from django.shortcuts import get_object_or_404
 from django_renderpdf.views import PDFView
 from guardian.shortcuts import assign_perm
@@ -20,6 +21,7 @@ from generate_transcript.serializers import (TranscriptSerializer,
 from users.models import MMTUser
 
 logger = logging.getLogger(__name__)
+
 
 
 class TranscriptPDFView(PDFView):
@@ -164,7 +166,7 @@ class TranscriptStatusViewSet(viewsets.ModelViewSet):
         if ssn:
             try:
                 transcript = get_object_or_404(Transcript, subject__ssn=ssn)
-            except Exception as e:
+            except Http404 as e:
                 logger.error(e)
 
         request.data["transcript"] = transcript.id

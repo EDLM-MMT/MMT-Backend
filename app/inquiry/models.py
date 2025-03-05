@@ -90,24 +90,21 @@ class Inquiry(StatusModel, TimeStampedModel):
                         '%s %s in file from %s',
                         issue_type, issue, self.owner
                     )
-                    raise ValidationError('{} {} in file from {}'.format(
-                        issue_type, issue, self.owner))
+                    raise ValidationError(
+                        f'{issue_type} {issue} in file from {self.owner}')
             # only save file if no issues found
-            else:
-                # rewind buffer
-                json_file.seek(0)
+            # rewind buffer
+            json_file.seek(0)
 
-                # use magic to check file type
-                mime_type = magic.from_buffer(json_file.read(), mime=True)
-                # log issue if file isn't image
-                if 'image' not in mime_type.lower():
-                    logger.error('Invalid file type detected. Expected image, found %s', mime_type)  # noqa: E501
-                    raise ValidationError('Invalid file type detected. '
-                                          'Expected image, found {}'.format(
-                                              mime_type))
-                else:
-                    # rewind buffer
-                    json_file.seek(0)
+            # use magic to check file type
+            mime_type = magic.from_buffer(json_file.read(), mime=True)
+            # log issue if file isn't image
+            if 'image' not in mime_type.lower():
+                logger.error('Invalid file type detected. Expected image, found %s', mime_type)  # noqa: E501
+                raise ValidationError('Invalid file type detected. '
+                                      f'Expected image, found {mime_type}')
+            # rewind buffer
+            json_file.seek(0)
 
 
 class InquiryComment(TimeStampedModel):
