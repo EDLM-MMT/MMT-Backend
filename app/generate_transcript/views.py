@@ -11,6 +11,8 @@ from rest_framework.response import Response
 from rest_framework_guardian import filters
 
 from academic_institute.models import AcademicInstitute
+from generate_transcript.filters import (BranchFilter, RecentFilter,
+                                         StatusFilter)
 from generate_transcript.models import (AreasAndHour, MilitaryCourse_User,
                                         Transcript, TranscriptStatus)
 from generate_transcript.serializers import (TranscriptSerializer,
@@ -149,7 +151,8 @@ class TranscriptStatusViewSet(viewsets.ModelViewSet):
     """
     queryset = TranscriptStatus.objects.all().order_by('-created')
     serializer_class = TranscriptStatusSerializer
-    filter_backends = [filters.ObjectPermissionsFilter]
+    filter_backends = [filters.ObjectPermissionsFilter,
+                       StatusFilter, BranchFilter, RecentFilter]
 
     def create(self, request, *args, **kwargs):
         ssn = request.data.get('ssn')
