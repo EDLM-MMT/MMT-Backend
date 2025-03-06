@@ -26,7 +26,7 @@ class StatusFilter(filters.SearchFilter):
     search_param = 'status'
     search_title = 'Search Status'
     search_description = 'A status of: ' + \
-        str(TranscriptStatus.STATUS._db_values)
+        str({i[0] for i in TranscriptStatus.STATUS})
 
     def get_search_fields(self, view, request):
         return ['=status', ]
@@ -39,8 +39,8 @@ class BranchFilter(filters.SearchFilter):
     search_param = 'branch'
     search_title = 'Search Branch'
     search_description = 'A branch of: ' + \
-        str(set([i[0] for i in UserRecord.objects.distinct('branch').order_by(
-            'branch').values_list('branch')]))
+        str({i[0] for i in UserRecord.objects.distinct('branch').order_by(
+            'branch').values_list('branch')})
 
     def get_search_fields(self, view, request):
         return ['=transcript__subject__branch', ]
