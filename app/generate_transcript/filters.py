@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 from rest_framework import filters
 
 from generate_transcript.models import TranscriptStatus
-from users.models import UserRecord
 
 
 class RecentFilter(filters.BaseFilterBackend):
@@ -38,9 +37,7 @@ class BranchFilter(filters.SearchFilter):
     """
     search_param = 'branch'
     search_title = 'Search Branch'
-    search_description = 'A branch of: ' + \
-        str({i[0] for i in UserRecord.objects.distinct('branch').order_by(
-            'branch').values_list('branch')})
+    search_description = 'The service branch of a user'
 
     def get_search_fields(self, view, request):
         return ['=transcript__subject__branch', ]
