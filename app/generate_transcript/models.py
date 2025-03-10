@@ -198,7 +198,8 @@ class Transcript(models.Model):
 
     def get_absolute_url(self):
         """ URL for displaying individual model records."""
-        return reverse('transcript', args=[str(self.subject.id)])
+        return reverse('generate_transcript:transcript-detail',
+                       args=[str(self.pk)])
 
     def __str__(self):
         """String for representing the Model object."""

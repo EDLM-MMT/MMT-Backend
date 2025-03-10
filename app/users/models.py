@@ -8,6 +8,7 @@ from django.db import models
 from django.forms import ValidationError
 from django.utils import timezone
 from django.utils.translation import gettext as _
+from pgcrypto.fields import IntegerPGPSymmetricKeyField
 
 from generate_transcript.regex import REGEX_CHECK, REGEX_ERROR_MESSAGE
 
@@ -50,10 +51,10 @@ class UserRecord(models.Model):
         RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
     ])
     dob = models.DateField(blank=True, null=True)
-    ssn = models.PositiveIntegerField(
+    ssn = IntegerPGPSymmetricKeyField(
         validators=[MinValueValidator(100000000),
                     MaxValueValidator(999999999)],
-        blank=True, null=True)
+        null=True)
     status = models.CharField(max_length=200, blank=True, null=True,
                               validators=[
                                   RegexValidator(

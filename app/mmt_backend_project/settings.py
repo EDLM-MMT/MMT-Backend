@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'notifications',
     'django_celery_beat',
     'django_celery_results',
+    'pgcrypto',
     # Internal Apps
     'users',
     'academic_institute',
@@ -82,9 +83,9 @@ MIDDLEWARE = [
     'csp.middleware.CSPMiddleware',
 ]
 
-CSRF_TRUSTED_ORIGINS = ['*', 'https://*', 'https://mmt.deloitteopenlxp.com',]
+CSRF_TRUSTED_ORIGINS = ['https://*', 'https://*', 'https://mmt.deloitteopenlxp.com',]
 CORS_ALLOWED_ORIGINS = [
-    '*', 'https://*', 'https://mmt.deloitteopenlxp.com', 'mmt.deloitteopenlxp.com']
+    'https://*', 'https://*', 'https://mmt.deloitteopenlxp.com', 'https://mmt.deloitteopenlxp.com']
 CSRF_COOKIE_DOMAIN = '.deloitteopenlxp.com'
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
@@ -117,12 +118,13 @@ WSGI_APPLICATION = 'mmt_backend_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': os.environ.get('DB_NAME'),
         'USER': os.environ.get('DB_USER'),
         'PASSWORD': os.environ.get('DB_PASSWORD'),
         'HOST': os.environ.get('DB_HOST'),
         'PORT': os.environ.get('DB_PORT'),
+        'PGCRYPTO_KEY': os.environ.get('DB_ENC_PASS'),
     }
 }
 
