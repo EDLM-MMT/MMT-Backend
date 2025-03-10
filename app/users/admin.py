@@ -3,6 +3,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 from generate_transcript.models import MilitaryExperience
+from users.forms import UserRecordChangeForm, UserRecordForm
 from users.models import MOS, MMTUser, UserRecord
 
 # Register your models here.
@@ -15,7 +16,7 @@ class MilitaryExperienceInline(admin.TabularInline):
 
 
 @admin.register(MMTUser)
-class XDSUserAdmin(UserAdmin):
+class MMTUserAdmin(UserAdmin):
     model = MMTUser
     search_fields = ('email', 'first_name',)
     list_filter = ('is_active', 'is_staff', 'is_superuser')
@@ -24,7 +25,8 @@ class XDSUserAdmin(UserAdmin):
                     'is_active', 'is_staff', 'last_login')
     fieldsets = (
         (None,
-         {'fields': ('email', 'first_name', 'last_name', 'eso_default',)}),
+         {'fields': ('email', 'first_name', 'last_name', 'password',
+                     'eso_default',)}),
         ('Permissions', {'fields': ('is_staff', 'is_active', 'groups',
                                     'user_permissions',)}),
     )
@@ -44,6 +46,18 @@ class UserRecordAdmin(admin.ModelAdmin):
     list_display = ('id', 'email', 'first_name', 'last_name', 'rank',
                     'status', 'branch', 'mos')
     inlines = [MilitaryExperienceInline]
+    form = UserRecordChangeForm
+    add_form = UserRecordForm
+
+    def get_form(self, request, obj=None, **kwargs):
+        """
+        Use special form during user creation
+        """
+        defaults = {}
+        if obj is None:
+            defaults["form"] = self.add_form
+        defaults.update(kwargs)
+        return super().get_form(request, obj, **defaults)
 
 
 @admin.register(MOS)
