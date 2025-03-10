@@ -124,7 +124,7 @@ DATABASES = {
         'PASSWORD': os.environ.get('DB_PASSWORD'),
         'HOST': os.environ.get('DB_HOST'),
         'PORT': os.environ.get('DB_PORT'),
-        'PGCRYPTO_KEY': 'djangorocks',
+        'PGCRYPTO_KEY': os.environ.get('DB_ENC_PASS'),
     }
 }
 
