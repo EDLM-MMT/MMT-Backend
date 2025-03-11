@@ -2,9 +2,9 @@ from django.test import tag
 
 from academic_institute.models import AcademicInstitute
 from academic_institute.serializers import (AcademicInstituteSerializer,
-                                            ManageAcademicInstituteSerializer,
-                                            MMTUserSerializer)
+                                            ManageAcademicInstituteSerializer)
 from users.models import MMTUser
+from users.serializers import MMTUserSerializer
 
 from .test_setup import TestSetUp
 

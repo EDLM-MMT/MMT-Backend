@@ -14,4 +14,5 @@ urlpatterns = [
     path('delete-key/', LogoutView.as_view(), name='delete-key'),
     path('delete-all-keys/', LogoutAllView.as_view(),
          name='delete-all-keys'),
+    path('validate', views.ValidateSession.as_view(), name='validate'),
 ]
