@@ -28,6 +28,8 @@ django-pgcrypto-fields >= 2.6.0, < 3.0
 
 django-renderpdf >=4.0, <5.0
 
+django-rest-knox>=5.0.2,<5.1.0
+
 djangorestframework-guardian2
 
 django-health-check>3.18.0, <3.19.0

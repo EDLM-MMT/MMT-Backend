@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'django_celery_results',
     'pgcrypto',
+    'knox',
     # Internal Apps
     'users',
     'academic_institute',
@@ -83,9 +84,11 @@ MIDDLEWARE = [
     'csp.middleware.CSPMiddleware',
 ]
 
-CSRF_TRUSTED_ORIGINS = ['https://*', 'https://*', 'https://mmt.deloitteopenlxp.com',]
+CSRF_TRUSTED_ORIGINS = ['https://*', 'https://*',
+                        'https://mmt.deloitteopenlxp.com',]
 CORS_ALLOWED_ORIGINS = [
-    'https://*', 'https://*', 'https://mmt.deloitteopenlxp.com', 'https://mmt.deloitteopenlxp.com']
+    'https://*', 'https://*', 'https://mmt.deloitteopenlxp.com',
+    'https://mmt.deloitteopenlxp.com']
 CSRF_COOKIE_DOMAIN = '.deloitteopenlxp.com'
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
@@ -188,6 +191,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTHENTICATION_BACKENDS = (
+    'knox.auth.TokenAuthentication',
     'django.contrib.auth.backends.ModelBackend',
     'guardian.backends.ObjectPermissionBackend',
 )
@@ -196,6 +200,7 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS':
         'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'knox.auth.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
     "DEFAULT_PERMISSION_CLASSES": [
@@ -236,3 +241,15 @@ DJANGO_NOTIFICATIONS_CONFIG = {
 NOTIFICATIONS_EXPIRE_AFTER = datetime.timedelta(days=30)
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880
+
+# Knox settings
+
+if os.environ.get('TOKEN_LIFE_HOURS') is not None:
+    REST_KNOX_TOKEN_TTL = datetime.timedelta(
+        hours=float(os.environ.get('TOKEN_LIFE_HOURS')))
+elif os.environ.get('TOKEN_LIFE_FOREVER') is not None:
+    REST_KNOX_TOKEN_TTL = None
+
+if os.environ.get('TOKEN_COUNT_PER_USER') is not None:
+    REST_KNOX_TOKEN_LIMIT_PER_USER = int(
+        os.environ.get('TOKEN_COUNT_PER_USER'))

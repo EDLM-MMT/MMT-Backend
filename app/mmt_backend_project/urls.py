@@ -29,6 +29,7 @@ urlpatterns = [
     path('api/', include('counseling.urls')),
     path('api/', include('inquiry.urls')),
     path('api/', include('academic_institute.urls')),
+    path('auth/', include('users.urls')),
     path('notifications/', include(notifications.urls,
                                    namespace='notifications')),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
