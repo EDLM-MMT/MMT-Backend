@@ -1,3 +1,4 @@
+import json
 import logging
 import re
 from datetime import datetime
@@ -7,21 +8,104 @@ from django.http.response import Http404
 from django.shortcuts import get_object_or_404
 from django_renderpdf.views import PDFView
 from guardian.shortcuts import assign_perm
-from rest_framework import status, viewsets
+from rest_framework import status, viewsets, mixins
 from rest_framework.response import Response
 from rest_framework_guardian import filters
 
 from academic_institute.models import AcademicInstitute
 from generate_transcript.filters import (BranchFilter, RecentFilter,
                                          StatusFilter)
-from generate_transcript.models import (AreasAndHour, MilitaryCourse_User,
+from generate_transcript.models import (AcademicCourseArea, AreasAndHour,
+                                        MilitaryCourse,
+                                        MilitaryCourse_User,
+                                        MilitaryExperience,
                                         Transcript, TranscriptStatus)
-from generate_transcript.serializers import (TranscriptSerializer,
+from generate_transcript.serializers import (AcademicCourseAreaSerializer,
+                                             AreasAndHourSerializer,
+                                             MilitaryCourseSerializer,
+                                             MilitaryExperienceSerializer,
+                                             TranscriptSerializer,
                                              TranscriptStatusSerializer)
 from users.models import MMTUser
 
 logger = logging.getLogger(__name__)
 
+
+class AreasAndHourViewSet(viewsets.ReadOnlyModelViewSet,
+                          mixins.CreateModelMixin):
+    """
+    Viewset that only lists events if user has 'view' permissions, and only
+    allows operations on individual events if user has appropriate 'view',
+    'add', 'change' or 'delete' permissions.
+    """
+    queryset = AreasAndHour.objects.all()
+    serializer_class = AreasAndHourSerializer
+    # filter_backends = [filters.ObjectPermissionsFilter]
+
+    def create(self, request, *args, **kwargs):
+
+        data = request.data.get('metadata')
+        military_course = data['military_course']
+
+        if 'version' in military_course and military_course['version']:
+            serializer_data = MilitaryCourseSerializer(data=military_course)
+        else:
+            serializer_data = MilitaryExperienceSerializer(
+                data=military_course)
+
+        if not serializer_data.is_valid():
+            logger.error(serializer_data.errors)
+        else:
+            serializer_data.save()
+
+        military_id = MilitaryExperience.objects.get(
+            experience_id=military_course['experience_id'])
+
+        if 'areaandhour' in data and data['areaandhour']['areaandhour']:
+
+            area_hours_data = data['areaandhour']
+
+            area_hours_list = json.loads(area_hours_data['areaandhour'])
+
+            for item in area_hours_list:
+                item.update({"military_course": military_id.id})
+
+            serializer = self.get_serializer(
+                data=area_hours_list, many=True)
+
+            if serializer.is_valid():
+                # Process the validated data for multiple items
+                self.perform_create(serializer)
+                headers = self.get_success_headers(serializer.data)
+                return Response(serializer.data,
+                                status=status.HTTP_201_CREATED,
+                                headers=headers)
+            return Response(serializer.errors, status=400)
+        return Response(serializer_data.data, status=201)
+
+
+class MilitaryCourseViewSet(viewsets.ReadOnlyModelViewSet,
+                            mixins.CreateModelMixin):
+    """
+    Viewset that only lists events if user has 'view' permissions, and only
+    allows operations on individual events if user has appropriate 'view',
+    'add', 'change' or 'delete' permissions.
+    """
+    queryset = MilitaryCourse.objects.all()
+    serializer_class = MilitaryCourseSerializer
+    # filter_backends = [filters.ObjectPermissionsFilter]
+
+
+class AcademicCourseAreaViewSet(viewsets.ReadOnlyModelViewSet,
+                                mixins.CreateModelMixin):
+    """
+    Viewset that only lists events if user has 'view' permissions, and only
+    allows operations on individual events if user has appropriate 'view',
+    'add', 'change' or 'delete' permissions.
+    """
+    queryset = AcademicCourseArea.objects.all()
+    serializer_class = AcademicCourseAreaSerializer
+    # filter_backends = [filters.ObjectPermissionsFilter]
 
 
 class TranscriptPDFView(PDFView):
@@ -53,21 +137,14 @@ class TranscriptPDFView(PDFView):
                             academic_course_area.course_area)
                 hours.append(areas_hours_obj.hours)
                 level.append(areas_hours_obj.level)
-            course_name = ""
-
-            if hasattr(military_obj, 'militarycourse'):
-                course_name = military_obj.militarycourse.course_name
 
             context['experiences'].append(
                 {'start_date': course_details.start_date.strftime('%d %^b %Y'),
                  'end_date': course_details.end_date.strftime('%d %^b %Y'),
                  'ACE_identifier': military_obj.ACE_identifier,
                  'rank': military_obj.rank,
-                 'rank_level': military_obj.rank_level,
                  'course_id': military_obj.experience_id,
-                 'course_name': course_name,
-                 'occupation_name': military_obj.
-                 experience_name,
+                 'name': military_obj.experience_name,
                  'description': military_obj.description,
                  'areas': area,
                  'hours': hours,

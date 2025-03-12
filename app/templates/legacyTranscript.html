@@ -87,7 +87,7 @@
 
         <!-- Courses Begin -->
         {% for exp in experiences %}
-        {% if exp.course_name %}
+        {% if exp.name %}
         <div style="padding-top: 5px;">
             <div style="float: left; width: 10%; padding: 10px;">
                 <p style="margin: 0; font-size: 0.9em;">{{exp.course_id}}</p>
@@ -104,7 +104,7 @@
                 <p style="margin: 0;"></p>
             </div>
             <div style="float: left; width: 80%; padding-left: 10px;">
-                <p style="margin-top: 0; margin-bottom: 0; font-size: 0.9em;"> <strong>{{exp.course_name}} </strong></p>
+                <p style="margin-top: 0; margin-bottom: 0; font-size: 0.9em;"> <strong>{{exp.name}} </strong></p>
                 <p style="margin: 5px 0px 3px; font-size: 0.9em;"> {{exp.description}} </p>
 
                 <div style="font-size: 0.9em; padding-bottom: 0;">
@@ -160,7 +160,7 @@
 
         <!-- Experiences Begin -->
         {% for exp in experiences %}
-        {% if not exp.course_name %}
+        {% if not exp.name %}
         <div style="padding-top: 5px;">
             <div style="float: left; width: 10%; padding: 10px;">
                 <p style="margin: 0; font-size: 0.9em;">{{exp.course_id}}</p>
@@ -175,7 +175,7 @@
                 <p style="margin: 0;"></p>
             </div>
             <div style="float: left; width: 80%; padding-left: 10px;">
-                <p style="margin-top: 0; margin-bottom: 0; font-size: 0.9em;"> <strong>{{exp.occupation_name}}:
+                <p style="margin-top: 0; margin-bottom: 0; font-size: 0.9em;"> <strong>{{exp.name}}:
                     </strong></p>
                 <p style="margin: 5px 0px 3px; font-size: 0.9em;">{{exp.description}} </p>
 

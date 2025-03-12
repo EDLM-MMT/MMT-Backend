@@ -25,11 +25,11 @@ class SerializersTests(TestSetUp):
             self.course, serialized_course.data['name'])
 
     def test_MilitaryCourse_serializer(self):
-        Military_Course = MilitaryCourse(course_name=self.course)
+        Military_Course = MilitaryCourse(version=self.version)
         serialized_course = MilitaryCourseSerializer(Military_Course)
 
         self.assertEqual(
-            self.course, serialized_course.data['course_name'])
+            self.version, serialized_course.data['version'])
 
     def test_create_status(self):
         self.ur.save()

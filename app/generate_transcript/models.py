@@ -68,7 +68,7 @@ class AreasAndHour(models.Model):
                                         " military course",
                                         blank=True, null=True)
     hours = models.PositiveIntegerField()
-    level = models.CharField(max_length=3, blank=True, null=True, validators=[
+    level = models.CharField(max_length=10, blank=True, null=True, validators=[
         RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
     ])
 
@@ -140,18 +140,25 @@ class MilitaryExperience(models.Model):
                                               message=REGEX_ERROR_MESSAGE
                                           ),
                                       ])
+    Service = models.CharField(max_length=250, default="None Assigned",
+                               validators=[
+                                   RegexValidator(
+                                       regex=REGEX_CHECK,
+                                       message=REGEX_ERROR_MESSAGE
+                                   ),
+                               ])
     description = models.TextField(null=True, blank=True, validators=[
         RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
     ])
+    instruction = models.TextField(null=True, blank=True, validators=[
+        RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
+    ])
+    LastUpdatedOn = models.DateField(
+        null=True, blank=True,
+        help_text="Set degree start date month and year, January 2050")
     rank = models.CharField(max_length=500, null=True, blank=True, validators=[
         RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
     ])
-    rank_level = models.CharField(max_length=500, null=True, blank=True,
-                                  validators=[
-                                      RegexValidator(
-                                          regex=REGEX_CHECK,
-                                          message=REGEX_ERROR_MESSAGE),
-                                  ])
     areas = models.ManyToManyField(
         AcademicCourseArea, related_name="mappings", through=AreasAndHour)
 
@@ -164,13 +171,16 @@ class MilitaryExperience(models.Model):
 
 class MilitaryCourse(MilitaryExperience):
     """Model to store Military course details"""
-    course_name = models.CharField(max_length=500, validators=[
-        RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
-    ])
+    version = models.CharField(max_length=500, null=True,
+                               blank=True, validators=[
+                                   RegexValidator(
+                                       regex=REGEX_CHECK,
+                                       message=REGEX_ERROR_MESSAGE),
+                               ])
 
     def __str__(self):
         """String for representing the Model object."""
-        return f'{self.course_name}'
+        return f'{self.experience_id}'
 
 
 class MilitaryCourse_User(models.Model):

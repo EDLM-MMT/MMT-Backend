@@ -14,6 +14,7 @@ class TestSetUp(APITestCase):
         """Function to set up necessary data for testing"""
         self.c_area = "course_area_1"
         self.course = "course1"
+        self.version = "1"
         self.c_degree = "degree1"
         self.c_institute = "institute1"
         self.code = "1234"
@@ -34,7 +35,7 @@ class TestSetUp(APITestCase):
         self.degree = Degree(degree=self.c_degree, institute=self.institute)
         self.a_and_h = AreasAndHour(hours=self.hours, degree=self.degree,
                                     academic_course_area=self.ac_course_area)
-        self.military_course = MilitaryCourse(course_name=self.course)
+        self.military_course = MilitaryCourse(version=self.version)
 
         return super().setUp()
 

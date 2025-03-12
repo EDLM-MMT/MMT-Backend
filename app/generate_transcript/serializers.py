@@ -7,6 +7,7 @@ from rest_framework_guardian.serializers import \
 from academic_institute.models import AcademicInstitute
 from generate_transcript.models import (AcademicCourse, AcademicCourseArea,
                                         AreasAndHour, Degree, MilitaryCourse,
+                                        MilitaryExperience,
                                         Transcript, TranscriptStatus)
 
 logger = logging.getLogger(__name__)
@@ -34,20 +35,41 @@ class DegreeSerializer(serializers.ModelSerializer):
         fields = ['institute', 'degree',]
 
 
+class MilitaryExperienceSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = MilitaryExperience
+        fields = ['experience_id', 'experience_name',
+                  'ACE_identifier', 'description', 'LastUpdatedOn',
+                  'instruction', 'Service']
+
+
 class MilitaryCourseSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = MilitaryCourse
-        fields = ['course_name',]
+        fields = ['experience_id', 'experience_name',
+                  'ACE_identifier', 'description', 'LastUpdatedOn',
+                  'version', 'instruction', 'Service']
 
 
 class AreasAndHourSerializer(serializers.ModelSerializer):
     academic_course_area = AcademicCourseAreaSerializer()
-    degree = DegreeSerializer()
-    military_course = MilitaryCourseSerializer()
+    # degree = DegreeSerializer()
+    # military_course = MilitaryCourseSerializer()
 
     class Meta:
         model = AreasAndHour
-        fields = ['hours', 'name', 'code',]
+        fields = ['hours', 'level', 'academic_course_area',
+                  'military_course']
+
+    def create(self, validated_data):
+
+        area_data = validated_data.pop('academic_course_area')
+        area = AcademicCourseArea.objects.create(**area_data)
+        validated_data['academic_course_area'] = area
+        instance = AreasAndHour.objects.create(**validated_data)
+        return instance
 
 
 class TranscriptSerializer(serializers.ModelSerializer):

@@ -108,7 +108,7 @@ class MilitaryExperienceAdmin(admin.ModelAdmin):
 
 @admin.register(MilitaryCourse)
 class MilitaryCourseAdmin(admin.ModelAdmin):
-    list_display = ('experience_id', 'course_name')
+    list_display = ('experience_id', 'version')
     inlines = [AreasAndHourInline,]
 
     # fields to display in the admin site
@@ -119,7 +119,7 @@ class MilitaryCourseAdmin(admin.ModelAdmin):
                 # on the same line
                 "fields": (
                     "experience_id",
-                    "course_name",
+                    "version",
                     "ACE_identifier",
                 )
             },

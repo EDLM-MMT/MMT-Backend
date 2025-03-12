@@ -88,7 +88,7 @@
         <div style="padding-top: 5px; padding-left: 5px ">
             {% for exp in experiences %}
             <div style="float: left; width: 10%; padding: 10px;">
-                {% if exp.course_name %}
+                {% if exp.name %}
                     <p style="margin: 0; font-size: 0.7em; color:gray;">{{exp.start_date}}</p>
                     <p style="margin: 0; font-size: 0.7em; color:gray;">{{exp.end_date}}</p>
                 {% else %}
@@ -103,16 +103,16 @@
                     <p style="display:inline; margin: 0; font-size: 0.7em; color:black" >{{exp.ACE_identifier}} <p style="margin: 0; font-size: 0.7em; color:gray"> </p>
                 {% endif %}
                 {% if exp.rank %}
-                    <p style="margin: 0; font-size: 0.7em; color:black;"> <strong>{{exp.rank}} . {{exp.rank_level}}</strong></p>
+                    <p style="margin: 0; font-size: 0.7em; color:black;"> <strong>{{exp.rank}}</strong></p>
                 {% endif %}
             </div>
             <div style="float: left; width: 40%; padding: 10px;">
-                {% if exp.course_name %}
+                {% if exp.name %}
                     <p style="margin: 0; font-size: 0.7em; padding-bottom:3px; color:gray;"> {{exp.course_id}}</p>
-                    <p style="margin: 0; font-size: 0.7em; color:gray;"> <strong>{{exp.course_name}}</strong></p>
+                    <p style="margin: 0; font-size: 0.7em; color:gray;"> <strong>{{exp.name}}</strong></p>
                 {% else %}
                     <p style="margin: 0; font-size: 0.7em; padding-bottom:3px; color:black;"> {{exp.course_id}}</p>
-                    <p style="margin: 0; font-size: 0.7em; color:black;"> <strong>{{exp.course_name}}</strong></p>
+                    <p style="margin: 0; font-size: 0.7em; color:black;"> <strong>{{exp.name}}</strong></p>
                 {% endif %}
                 <ul style="float: left; margin-top: 5px; padding-left:25px;">
                     {% for area in exp.areas %}
