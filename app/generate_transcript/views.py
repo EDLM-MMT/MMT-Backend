@@ -59,8 +59,8 @@ class TranscriptPDFView(PDFView):
                 course_name = military_obj.militarycourse.course_name
 
             context['experiences'].append(
-                {'start_date': course_details.start_date.strftime('%d %^b %Y'),
-                 'end_date': course_details.end_date.strftime('%d %^b %Y'),
+                {'start_date': course_details.start_date.strftime('%d-%^b-%Y'),
+                 'end_date': course_details.end_date.strftime('%d-%^b-%Y') if course_details.end_date else "PRESENT",
                  'ACE_identifier': military_obj.ACE_identifier,
                  'rank': military_obj.rank,
                  'rank_level': military_obj.rank_level,
