@@ -1,204 +1,296 @@
 <!DOCTYPE html>
-<html>
-    <head>
-    <title style="text-align:center">Modernized MMT Transcript</title>
-    </head>
-    <body>
-
-    <div style="background-color: whitesmoke; padding-bottom:15px"> 
-        <div style="display: flex;">
-            <img src={{image}} alt="Education logo" width="50" height="50" style="margin: 10px">
-            <div style="padding-top: 15px; padding-left: 8px ">
-                <div><strong>O F F I C I A L</strong></div>
-                <h2 style="margin-top: 0;"> MILITARY TRANSCRIPT</h2>
-            </div>
+<html lang="en" xml:lang="en">
+  <head>
+    <title style="text-align: center">Modernized MMT Transcript</title>
+  </head>
+  <body>
+    <div style="background-color: whitesmoke; padding-bottom: 15px">
+      <div style="display: flex">
+        <img
+          src="{{image}}"
+          alt="Education logo"
+          width="50"
+          height="50"
+          style="margin: 10px"
+        />
+        <div style="padding-top: 15px; padding-left: 8px">
+          <div><strong>O F F I C I A L</strong></div>
+          <h2 style="margin-top: 0">MILITARY TRANSCRIPT</h2>
         </div>
-        <div style="padding: 5px;  print-color-adjust: exact;">
-            <div style="float: left; width: 30%; padding: 10px;">
-                <p style="margin: 0; font-size:0.7em;"><strong style="color:gray; padding-right:15px" >NAME </strong> {{first_name}} {{last_name}}</p>
-                <p style="margin-top: 5px; margin-bottom: 0; font-size:0.7em;"><strong style="color:gray; padding-right:26px" >DOB </strong> {{dob}}</p>
-                <p style="margin-top: 5px; margin-bottom: 0; font-size:0.7em;"><strong style="color:gray; padding-right:30px" >SSN </strong> {{ssn}}</p>
-            </div>
-            <div style="float: left; width: 30%; padding: 10px;">
-                <p style="margin: 0; font-size:0.7em;"><strong style="color:gray; padding-right:25px" >RANK </strong> {{rank}}</p>
-                <p style="margin-top: 5px; margin-bottom: 0; font-size:0.7em;"><strong style="color:gray; padding-right:15px" >STATUS </strong> {{status}}</p>
-            </div>
-            <div style="float: left; width: 20%; padding: 10px;">
-                <p style="margin: 0; font-size:0.7em;"><strong style="color:gray; padding-right:30px" >DATE </strong> {{date}}</p>
-                <p style="margin-top: 5px; margin-bottom: 0; font-size:0.7em;"><strong style="color:gray; padding-right:10px">BRANCH </strong>{{branch}}</p>
-            </div>
-            <span style="content: ''; display: table; clear: both;"></span>
+      </div>
+      <div style="padding: 5px; print-color-adjust: exact">
+        <div style="float: left; width: 30%; padding: 10px">
+          <p style="margin: 0; font-size: 0.7em">
+            <strong style="color: gray; padding-right: 15px">NAME </strong>
+            {{first_name}} {{last_name}}
+          </p>
+          <p style="margin-top: 5px; margin-bottom: 0; font-size: 0.7em">
+            <strong style="color: gray; padding-right: 26px">DOB </strong>
+            {{dob}}
+          </p>
+          <p style="margin-top: 5px; margin-bottom: 0; font-size: 0.7em">
+            <strong style="color: gray; padding-right: 30px">SSN </strong>
+            {{ssn}}
+          </p>
         </div>
+        <div style="float: left; width: 30%; padding: 10px">
+          <p style="margin: 0; font-size: 0.7em">
+            <strong style="color: gray; padding-right: 25px">RANK </strong>
+            {{rank}}
+          </p>
+          <p style="margin-top: 5px; margin-bottom: 0; font-size: 0.7em">
+            <strong style="color: gray; padding-right: 15px">STATUS </strong>
+            {{status}}
+          </p>
+        </div>
+        <div style="float: left; width: 20%; padding: 10px">
+          <p style="margin: 0; font-size: 0.7em">
+            <strong style="color: gray; padding-right: 30px">DATE </strong>
+            {{date}}
+          </p>
+          <p style="margin-top: 5px; margin-bottom: 0; font-size: 0.7em">
+            <strong style="color: gray; padding-right: 10px">BRANCH </strong
+            >{{branch}}
+          </p>
+        </div>
+        <span style="content: ''; display: table; clear: both"></span>
+      </div>
     </div>
 
-    <div style="margin-top:25px">
-        <h2 style="margin-top: 0;"> Military Courses and Occupational Experience</h2>
-        
-        <!-- Titles -->
-        <div style="padding: 5px; print-color-adjust: exact;">
-            <div style="float: left; width: 10%; padding: 10px;">
-                <p style="margin: 0; font-size: 0.7em; color:gray;"><strong >START DATE</strong></p>
-                <p style="margin: 5px 0px 3px; font-size: 0.7em; color:gray;"> <strong>END DATE </strong></p>
-            </div>
-            <div style="float: left; width: 15%; padding: 10px;">
-                <p style="margin: 0; font-size: 0.7em; color:gray;"> <strong>ACE IDENTIFIER </strong></p>
-                <p style="margin-top: 5px; margin-bottom: 0; font-size: 0.7em; color:gray;"> <strong>RANK </strong></p>
-            </div>
-            <div style="float: left; width: 40%; padding: 10px;">
-                <p style="margin: 0; font-size: 0.7em; color:gray;"><strong>ID </strong></p>
-                <p style="margin: 5px 0px 3px; font-size: 0.7em; color:gray;"> <strong>TITLE </strong></p>
-            </div>
-            <div style="float: left; width: 15%; padding: 10px;">
-                <p style="margin: 0; font-size: 0.7em; color:gray;"><strong>ACE CRED</strong></p>
-            </div>
-            <div style="padding: 10px; ">
-                <p style="margin: 0; font-size: 0.7em; color:gray;"><strong>LEVEL </strong></p>
-            </div>
-            <span style="content: ''; display: table; clear: both;"></span>
+    <div style="margin-top: 25px">
+      <h2 style="margin-top: 0">
+        Military Courses and Occupational Experience
+      </h2>
+
+      <!-- Titles -->
+      <div style="padding: 5px; print-color-adjust: exact">
+        <div style="float: left; width: 10%; padding: 10px">
+          <p style="margin: 0; font-size: 0.7em; color: gray">
+            <strong>START DATE</strong>
+          </p>
+          <p style="margin: 5px 0px 3px; font-size: 0.7em; color: gray">
+            <strong>END DATE </strong>
+          </p>
         </div>
-
-        <!-- Experiences -->
-        <!-- <div style="padding-top: 5px; padding-left: 5px">
-            {% for exp in experiences %}
-            <div style="float: left; width: 10%; padding: 10px;">
-                <p style="margin: 0; font-size: 0.7em;"><strong>{{exp.start_date}}</strong></p>
-                <p style="margin: 0; font-size: 0.7em;"><strong>{{exp.end_date}}</strong></p>
-            </div>
-            <div style="float: left; width: 15%; padding: 10px;">
-                <p style="margin: 0; font-size: 0.7em; color:cornflowerblue" >MOS-11B-006</p>
-                <strong style="margin: 0; font-size: 0.7em;"> E3 - Level 10</strong>
-            </div>
-            <div style="float: left; width: 40%; padding: 10px;">
-                <p style="margin: 0; font-size: 0.7em;"> <strong>11B10 Primary Infantryman</strong></p>
-                <ul style="float: left; margin-top: 5px; padding-left:25px;">
-                    <li style="font-size: 0.7em; padding-bottom:3px;">Credit may be generated on the basis of an individualized assessment of the student</li>
-                </ul>
-            </div>
-            <div style="float: left; width: 15%; padding: 10px;">
-                <p style="margin: 0; font-size: 0.7em;">0 SH</p>
-            </div>
-            <div style="padding: 10px; ">
-                <p style="margin: 0; font-size: 0.7em;">L </p>
-            </div>
-
-            <span style="content: ''; display: table; clear: both;"></span>
-            {% endfor %}
-        </div> -->
-
-        <div style="padding-top: 5px; padding-left: 5px ">
-            {% for exp in experiences %}
-            <div style="float: left; width: 10%; padding: 10px;">
-                {% if exp.course_name %}
-                    <p style="margin: 0; font-size: 0.7em; color:gray;">{{exp.start_date}}</p>
-                    <p style="margin: 0; font-size: 0.7em; color:gray;">{{exp.end_date}}</p>
-                {% else %}
-                    <p style="margin: 0; font-size: 0.7em; color:black;"><strong>{{exp.start_date}}</strong></p>
-                    <p style="margin: 0; font-size: 0.7em; color:black;"><strong>{{exp.end_date}}</strong></p>
-                {% endif %}
-            </div>
-            <div style="float: left; width: 15%; padding: 10px;">
-                {% if exp.ACE_identifier and exp.ACE_identifier != "None Assigned" %}
-                    <p style="display:inline; margin: 0; font-size: 0.7em; color:cornflowerblue" >{{exp.ACE_identifier}} <p style="margin: 0; font-size: 0.7em; color:gray"> </p>
-                {% else %}
-                    <p style="display:inline; margin: 0; font-size: 0.7em; color:black" >{{exp.ACE_identifier}} <p style="margin: 0; font-size: 0.7em; color:gray"> </p>
-                {% endif %}
-                {% if exp.rank %}
-                    <p style="margin: 0; font-size: 0.7em; color:black;"> <strong>{{exp.rank}} . {{exp.rank_level}}</strong></p>
-                {% endif %}
-            </div>
-            <div style="float: left; width: 40%; padding: 10px;">
-                {% if exp.course_name %}
-                    <p style="margin: 0; font-size: 0.7em; padding-bottom:3px; color:gray;"> {{exp.course_id}}</p>
-                    <p style="margin: 0; font-size: 0.7em; color:gray;"> <strong>{{exp.course_name}}</strong></p>
-                {% else %}
-                    <p style="margin: 0; font-size: 0.7em; padding-bottom:3px; color:black;"> {{exp.course_id}}</p>
-                    <p style="margin: 0; font-size: 0.7em; color:black;"> <strong>{{exp.course_name}}</strong></p>
-                {% endif %}
-                <ul style="float: left; margin-top: 5px; padding-left:25px;">
-                    {% for area in exp.areas %}
-                    <li style="font-size: 0.7em; padding-bottom:3px; color:gray;">{{area}}</li>
-                    {% endfor %}  
-                </ul>
-            </div>
-            <div style="float: left; width: 15%; padding: 10px; padding-top: 30px;">
-                <ul style="float: left; list-style-type:none; padding-left: 0px;">
-                    {% for hours in exp.hours %}
-                    <li style="font-size: 0.7em; padding-bottom:3px; color:gray;">{{hours}} SH</li>
-                    {% endfor %} 
-                </ul>
-            </div>
-            <div style="padding: 10px; ">
-                <ul style="float: left; list-style-type:none; padding-left: 0px; padding-top: 20px;">
-                    {% for level in exp.level %}
-                    <li style="font-size: 0.7em; padding-bottom:3px; color:gray;">{{level}}</li>
-                    <!-- <li style="font-size: 0.7em; padding-bottom:3px; color:gray;">L</li>
-                    <li style="font-size: 0.7em; padding-bottom:3px; color:gray;">L</li>
-                    <li style="font-size: 0.7em; padding-bottom:3px; color:gray;">L</li>
-                    <li style="font-size: 0.7em; padding-bottom:3px; color:gray;">L</li> -->
-                    {% endfor %} 
-                </ul>
-            </div>
-            <span style="content: ''; display: table; clear: both;"></span>
-            {% endfor %}
+        <div style="float: left; width: 15%; padding: 10px">
+          <p style="margin: 0; font-size: 0.7em; color: gray">
+            <strong>ACE IDENTIFIER </strong>
+          </p>
+          <p
+            style="
+              margin-top: 5px;
+              margin-bottom: 0;
+              font-size: 0.7em;
+              color: gray;
+            "
+          >
+            <strong>RANK </strong>
+          </p>
         </div>
+        <div style="float: left; width: 40%; padding: 10px">
+          <p style="margin: 0; font-size: 0.7em; color: gray">
+            <strong>ID </strong>
+          </p>
+          <p style="margin: 5px 0px 3px; font-size: 0.7em; color: gray">
+            <strong>TITLE </strong>
+          </p>
+        </div>
+        <div style="float: left; width: 15%; padding: 10px">
+          <p style="margin: 0; font-size: 0.7em; color: gray">
+            <strong>ACE CRED</strong>
+          </p>
+        </div>
+        <div style="padding: 10px">
+          <p style="margin: 0; font-size: 0.7em; color: gray">
+            <strong>LEVEL </strong>
+          </p>
+        </div>
+        <span style="content: ''; display: table; clear: both"></span>
+      </div>
+
+      <div style="padding-top: 5px; padding-left: 5px">
+        {% for exp in experiences %}
+        <div style="float: left; width: 10%; padding: 10px">
+          {% if exp.course_name %}
+          <p style="margin: 0; font-size: 0.7em; color: gray">
+            {{exp.start_date}}
+          </p>
+          <p style="margin: 0; font-size: 0.7em; color: gray">
+            {{exp.end_date}}
+          </p>
+          {% else %}
+          <p style="margin: 0; font-size: 0.7em; color: black">
+            <strong>{{exp.start_date}}</strong>
+          </p>
+          <p style="margin: 0; font-size: 0.7em; color: black">
+            <strong>{{exp.end_date}}</strong>
+          </p>
+          {% endif %}
+        </div>
+        <div style="float: left; width: 15%; padding: 10px">
+          {% if exp.ACE_identifier and exp.ACE_identifier != "None Assigned" %}
+          <p
+            style="
+              display: inline;
+              margin: 0;
+              font-size: 0.7em;
+              color: cornflowerblue;
+            "
+          >
+            {{exp.ACE_identifier}}
+          </p>
+          <p style="margin: 0; font-size: 0.7em; color: gray"></p>
+          {% else %}
+          <p style="display: inline; margin: 0; font-size: 0.7em; color: black">
+            {{exp.ACE_identifier}}
+          </p>
+          <p style="margin: 0; font-size: 0.7em; color: gray"></p>
+          {% endif %} {% if exp.rank %}
+          <p style="margin: 0; font-size: 0.7em; color: black">
+            <strong>{{exp.rank}} . {{exp.rank_level}}</strong>
+          </p>
+          {% endif %}
+        </div>
+        <div style="float: left; width: 40%; padding: 10px">
+          {% if exp.course_name %}
+          <p
+            style="
+              margin: 0;
+              font-size: 0.7em;
+              padding-bottom: 3px;
+              color: gray;
+            "
+          >
+            {{exp.course_id}}
+          </p>
+          <p style="margin: 0; font-size: 0.7em; color: gray">
+            <strong>{{exp.course_name}}</strong>
+          </p>
+          {% else %}
+          <p
+            style="
+              margin: 0;
+              font-size: 0.7em;
+              padding-bottom: 3px;
+              color: black;
+            "
+          >
+            {{exp.course_id}}
+          </p>
+          <p style="margin: 0; font-size: 0.7em; color: black">
+            <strong>{{exp.course_name}}</strong>
+          </p>
+          {% endif %}
+          <ul style="float: left; margin-top: 5px; padding-left: 25px">
+            {% for area in exp.areas %}
+            <li style="font-size: 0.7em; padding-bottom: 3px; color: gray">
+              {{area}}
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div style="float: left; width: 15%; padding: 10px; padding-top: 30px">
+          <ul style="float: left; list-style-type: none; padding-left: 0px">
+            {% for hours in exp.hours %}
+            <li style="font-size: 0.7em; padding-bottom: 3px; color: gray">
+              {{hours}} SH
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div style="padding: 10px">
+          <ul
+            style="
+              float: left;
+              list-style-type: none;
+              padding-left: 0px;
+              padding-top: 20px;
+            "
+          >
+            {% for level in exp.level %}
+            <li style="font-size: 0.7em; padding-bottom: 3px; color: gray">
+              {{level}}
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        <span style="content: ''; display: table; clear: both"></span>
+        {% endfor %}
+      </div>
     </div>
 
     <div>
-        <h2 style="margin-top: 0;"> Additional ACE Recommended Credits</h2>
+      <h2 style="margin-top: 0">Additional ACE Recommended Credits</h2>
 
-        <!-- Titles -->
-        <div style="padding: 5px; print-color-adjust: exact;">
-            <div style="float: left; width: 10%; padding: 10px;">
-                <p style="margin: 0; font-size: 0.7em; color:gray;"><strong > DATES</strong></p>
-            </div>
-            <div style="float: left; width: 15%; padding: 10px;">
-                <p style="margin: 0; font-size: 0.7em; color:gray;"> <strong>TEST TYPE </strong></p>
-            </div>
-            <div style="float: left; width: 30%; padding: 10px;">
-                <p style="margin: 0; font-size: 0.7em; color:gray;"><strong>TITLE </strong></p>
-            </div>
-            <div style="float: left; width: 10%; padding: 10px;">
-                <p style="margin: 0; font-size: 0.7em; color:gray;"><strong>REC HRS</strong></p>
-            </div>
-            <div style="float: left; width: 10%; padding: 10px;">
-                <p style="margin: 0; font-size: 0.7em; color:gray;"><strong>ACE RQD</strong></p>
-            </div>
-            <div style="padding: 10px; ">
-                <p style="margin: 0; font-size: 0.7em; color:gray;"><strong>SCORE </strong></p>
-            </div>
-            <span style="content: ''; display: table; clear: both;"></span>
+      <!-- Titles -->
+      <div style="padding: 5px; print-color-adjust: exact">
+        <div style="float: left; width: 10%; padding: 10px">
+          <p style="margin: 0; font-size: 0.7em; color: gray">
+            <strong> DATES</strong>
+          </p>
         </div>
+        <div style="float: left; width: 15%; padding: 10px">
+          <p style="margin: 0; font-size: 0.7em; color: gray">
+            <strong>TEST TYPE </strong>
+          </p>
+        </div>
+        <div style="float: left; width: 30%; padding: 10px">
+          <p style="margin: 0; font-size: 0.7em; color: gray">
+            <strong>TITLE </strong>
+          </p>
+        </div>
+        <div style="float: left; width: 10%; padding: 10px">
+          <p style="margin: 0; font-size: 0.7em; color: gray">
+            <strong>REC HRS</strong>
+          </p>
+        </div>
+        <div style="float: left; width: 10%; padding: 10px">
+          <p style="margin: 0; font-size: 0.7em; color: gray">
+            <strong>ACE RQD</strong>
+          </p>
+        </div>
+        <div style="padding: 10px">
+          <p style="margin: 0; font-size: 0.7em; color: gray">
+            <strong>SCORE </strong>
+          </p>
+        </div>
+        <span style="content: ''; display: table; clear: both"></span>
+      </div>
 
-        <!-- Courses -->
-        <div style="print-color-adjust: exact;">
-            <div style="float: left; width: 10%; padding: 10px;">
-                <p style="margin: 0; font-size: 0.7em;"> 13 JAN 11</p>
-            </div>
-            <div style="float: left; width: 15%; padding: 10px;">
-                <p style="margin: 0; font-size: 0.7em;">CLEP</p>
-            </div>
-            <div style="float: left; width: 30%; padding: 10px;">
-                <p style="margin: 0; font-size: 0.7em;">Intoduction Sociology</p>
-            </div>
-            <div style="float: left; width: 10%; padding: 10px;">
-                <p style="margin: 0; font-size: 0.7em;">3</p>
-            </div>
-            <div style="float: left; width: 10%; padding: 10px;">
-                <p style="margin: 0; font-size: 0.7em;">50</p>
-            </div>
-            <div style="padding: 10px; ">
-                <p style="margin: 0; font-size: 0.7em;"><strong>53 </strong></p>
-            </div>
-            <span style="content: ''; display: table; clear: both;"></span>
+      <!-- Courses -->
+      <div style="print-color-adjust: exact">
+        <div style="float: left; width: 10%; padding: 10px">
+          <p style="margin: 0; font-size: 0.7em">13 JAN 11</p>
         </div>
+        <div style="float: left; width: 15%; padding: 10px">
+          <p style="margin: 0; font-size: 0.7em">CLEP</p>
+        </div>
+        <div style="float: left; width: 30%; padding: 10px">
+          <p style="margin: 0; font-size: 0.7em">Intoduction Sociology</p>
+        </div>
+        <div style="float: left; width: 10%; padding: 10px">
+          <p style="margin: 0; font-size: 0.7em">3</p>
+        </div>
+        <div style="float: left; width: 10%; padding: 10px">
+          <p style="margin: 0; font-size: 0.7em">50</p>
+        </div>
+        <div style="padding: 10px">
+          <p style="margin: 0; font-size: 0.7em"><strong>53 </strong></p>
+        </div>
+        <span style="content: ''; display: table; clear: both"></span>
+      </div>
     </div>
 
-    <div style="padding-top:20px; background-color: whitesmoke; padding-bottom:15px; height:60px;"> 
-        <h2 style="text-align: center;"> END OF TRANSCRIPT</h2>
+    <div
+      style="
+        padding-top: 20px;
+        background-color: whitesmoke;
+        padding-bottom: 15px;
+        height: 60px;
+      "
+    >
+      <h2 style="text-align: center">END OF TRANSCRIPT</h2>
     </div>
-
-    </body>
-    <footer>
-
-    </footer>
+  </body>
+  <footer></footer>
 </html>

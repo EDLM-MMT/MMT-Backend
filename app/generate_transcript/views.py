@@ -23,7 +23,6 @@ from users.models import MMTUser
 logger = logging.getLogger(__name__)
 
 
-
 class TranscriptPDFView(PDFView):
     """ Generates PDFs for Transcripts"""
 
@@ -60,7 +59,8 @@ class TranscriptPDFView(PDFView):
 
             context['experiences'].append(
                 {'start_date': course_details.start_date.strftime('%d-%^b-%Y'),
-                 'end_date': course_details.end_date.strftime('%d-%^b-%Y') if course_details.end_date else "PRESENT",
+                 'end_date': course_details.end_date.strftime('%d-%^b-%Y') if
+                 course_details.end_date else "PRESENT",
                  'ACE_identifier': military_obj.ACE_identifier,
                  'rank': military_obj.rank,
                  'rank_level': military_obj.rank_level,
@@ -106,16 +106,15 @@ class TranscriptViewSet(viewsets.ReadOnlyModelViewSet):
             pdf_view = TranscriptPDFView.as_view(
                 template_name='modernizedTranscript.html')
 
-        user = MMTUser.objects.get(email=request.user)
         recipient_status_obj = TranscriptStatus.objects.filter(
-            transcript=transcript, recipient=user).first()
-        receiver = user.last_name + ", " + user.first_name
+            transcript=transcript, recipient=request.user).first()
+        receiver = request.user.last_name + ", " + request.user.first_name
 
         if recipient_status_obj:
             recipient_status_obj.status = TranscriptStatus.STATUS.Opened
             recipient_status_obj.save()
 
-        group_list = list(user.groups.all())
+        group_list = list(request.user.groups.all())
 
         for group in group_list:
             academic_group = (group.academic_institutes.all().first()
