@@ -1,7 +1,7 @@
 from django.contrib import admin
 from guardian.admin import GuardedModelAdmin
 
-from generate_transcript.models import (AcademicCourse,
+from generate_transcript.models import (ACEIdentifier, AcademicCourse,
                                         AcademicCourseArea,
                                         AreasAndHour, Degree,
                                         MilitaryCourse,
@@ -21,7 +21,8 @@ class DegreeInline(admin.TabularInline):
 
 class AreasAndHourInline(admin.TabularInline):
     model = AreasAndHour
-    fields = ('degree', 'academic_course_area', 'hours', 'level')
+    fields = ('degree', 'academic_course_area', 'ace_identifier',
+              'hours', 'level')
     extra = 3
 
 
@@ -34,6 +35,12 @@ class AcademicCourseAreaAdmin(admin.ModelAdmin):
         return qs.filter(academiccourse=None)
 
 
+@admin.register(ACEIdentifier)
+class ACEIdentifierAdmin(admin.ModelAdmin):
+    list_display = ('id', 'ace_identifier', )
+    search_fields = ['ace_identifier',]
+
+
 @admin.register(AcademicCourse)
 class AcademicCourseAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'code', 'course_area')
@@ -41,7 +48,11 @@ class AcademicCourseAdmin(admin.ModelAdmin):
 
 @admin.register(AreasAndHour)
 class AreasAndHourAdmin(admin.ModelAdmin):
-    list_display = ('degree', 'academic_course_area', 'hours')
+    list_display = ('academic_course_area', 'ace_identifier',
+                    'military_course', 'hours', 'level')
+    search_fields = ['academic_course_area__course_area',
+                     'ace_identifier__ace_identifier']
+    list_filter = ['ace_identifier__ace_identifier',]
 
     # fields to display in the admin site
     fieldsets = (
@@ -50,7 +61,7 @@ class AreasAndHourAdmin(admin.ModelAdmin):
             {
                 # on the same line
                 "fields": (
-                    "hours", "level"
+                    "hours", "level", "version"
                 )
             },
         ),
@@ -59,9 +70,21 @@ class AreasAndHourAdmin(admin.ModelAdmin):
             {
                 # on the same line
                 "fields": (
+                    "ace_identifier",
                     "academic_course_area",
                     "degree",
                     "military_course",
+                )
+            },
+        ),
+        (
+            "Dates",
+            {
+                # on the same line
+                "fields": (
+                    "start_date",
+                    "end_date",
+                    "last_updated_on",
                 )
             },
         ),
@@ -100,7 +123,8 @@ class DegreeAdmin(admin.ModelAdmin):
 
 @admin.register(MilitaryExperience)
 class MilitaryExperienceAdmin(admin.ModelAdmin):
-    list_display = ('id', 'experience_id',)
+    list_display = ('id', 'experience_id',
+                    'experience_name', 'rank')
     inlines = [AreasAndHourInline,]
 
     filter_horizontal = ("user_id",)
@@ -108,7 +132,7 @@ class MilitaryExperienceAdmin(admin.ModelAdmin):
 
 @admin.register(MilitaryCourse)
 class MilitaryCourseAdmin(admin.ModelAdmin):
-    list_display = ('experience_id', 'version')
+    list_display = ('id', 'experience_id', 'experience_name')
     inlines = [AreasAndHourInline,]
 
     # fields to display in the admin site
@@ -119,19 +143,9 @@ class MilitaryCourseAdmin(admin.ModelAdmin):
                 # on the same line
                 "fields": (
                     "experience_id",
-                    "version",
-                    "ACE_identifier",
                 )
             },
         ),
-        # (
-        #     "Users",
-        #     {
-        #         "fields": (
-        #             "user_id",
-        #         )
-        #     }
-        # ),
     )
     filter_horizontal = ("user_id",)
 

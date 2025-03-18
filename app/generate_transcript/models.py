@@ -27,6 +27,18 @@ class AcademicCourseArea(models.Model):
         return f'{self.course_area}'
 
 
+class ACEIdentifier(models.Model):
+    """Model to store academic course areas"""
+    id = models.BigAutoField(primary_key=True)
+    ace_identifier = models.CharField(max_length=500, validators=[
+        RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
+    ], unique=True)
+
+    def __str__(self):
+        """String for representing the Model object."""
+        return f'{self.ace_identifier}'
+
+
 class AcademicCourse(AcademicCourseArea):
     """Model to store academic course detail"""
     name = models.CharField(max_length=500, help_text="Set course name",
@@ -57,6 +69,12 @@ class AreasAndHour(models.Model):
                                              help_text="Choose an academic "
                                              "area from academic course area",
                                              )
+    ace_identifier = models.ForeignKey(ACEIdentifier,
+                                       on_delete=models.CASCADE,
+                                       related_name="areas_and_hours",
+                                       help_text="Choose an ace "
+                                       "identifier",
+                                       )
     degree = models.ForeignKey("Degree", related_name="areas_and_hours",
                                on_delete=models.CASCADE,
                                help_text="Choose the relevant degree",
@@ -67,10 +85,25 @@ class AreasAndHour(models.Model):
                                         help_text="Choose the relevant"
                                         " military course",
                                         blank=True, null=True)
+    version = models.CharField(max_length=500, null=True,
+                               blank=True, validators=[
+                                   RegexValidator(
+                                       regex=REGEX_CHECK,
+                                       message=REGEX_ERROR_MESSAGE),
+                               ])
     hours = models.PositiveIntegerField()
     level = models.CharField(max_length=10, blank=True, null=True, validators=[
         RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
     ])
+    start_date = models.DateField(
+        null=True, blank=True,
+        help_text="Set degree start date month and year, January 2050")
+    end_date = models.DateField(
+        null=True, blank=True,
+        help_text="Set degree start date month and year, January 2050")
+    last_updated_on = models.DateTimeField(
+        null=True, blank=True,
+        help_text="Set degree start date month and year, January 2050")
 
     def __str__(self):
         """String for representing the Model object."""
@@ -133,14 +166,7 @@ class MilitaryExperience(models.Model):
                                                message=REGEX_ERROR_MESSAGE
                                            ),
                                        ])
-    ACE_identifier = models.CharField(max_length=250, default="None Assigned",
-                                      validators=[
-                                          RegexValidator(
-                                              regex=REGEX_CHECK,
-                                              message=REGEX_ERROR_MESSAGE
-                                          ),
-                                      ])
-    Service = models.CharField(max_length=250, default="None Assigned",
+    service = models.CharField(max_length=250, default="None Assigned",
                                validators=[
                                    RegexValidator(
                                        regex=REGEX_CHECK,
@@ -153,9 +179,6 @@ class MilitaryExperience(models.Model):
     instruction = models.TextField(null=True, blank=True, validators=[
         RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
     ])
-    LastUpdatedOn = models.DateField(
-        null=True, blank=True,
-        help_text="Set degree start date month and year, January 2050")
     rank = models.CharField(max_length=500, null=True, blank=True, validators=[
         RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
     ])
@@ -171,12 +194,6 @@ class MilitaryExperience(models.Model):
 
 class MilitaryCourse(MilitaryExperience):
     """Model to store Military course details"""
-    version = models.CharField(max_length=500, null=True,
-                               blank=True, validators=[
-                                   RegexValidator(
-                                       regex=REGEX_CHECK,
-                                       message=REGEX_ERROR_MESSAGE),
-                               ])
 
     def __str__(self):
         """String for representing the Model object."""

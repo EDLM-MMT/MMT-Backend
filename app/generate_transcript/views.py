@@ -15,12 +15,14 @@ from rest_framework_guardian import filters
 from academic_institute.models import AcademicInstitute
 from generate_transcript.filters import (BranchFilter, RecentFilter,
                                          StatusFilter)
-from generate_transcript.models import (AcademicCourseArea, AreasAndHour,
+from generate_transcript.models import (ACEIdentifier, AcademicCourseArea,
+                                        AreasAndHour,
                                         MilitaryCourse,
                                         MilitaryCourse_User,
                                         MilitaryExperience,
                                         Transcript, TranscriptStatus)
-from generate_transcript.serializers import (AcademicCourseAreaSerializer,
+from generate_transcript.serializers import (ACEIdentifierSerializer,
+                                             AcademicCourseAreaSerializer,
                                              AreasAndHourSerializer,
                                              MilitaryCourseSerializer,
                                              MilitaryExperienceSerializer,
@@ -46,6 +48,7 @@ class AreasAndHourViewSet(viewsets.ReadOnlyModelViewSet,
 
         data = request.data.get('metadata')
         military_course = data['military_course']
+        ace_identifier = data['ace_identifier']
 
         if 'version' in military_course and military_course['version']:
             serializer_data = MilitaryCourseSerializer(data=military_course)
@@ -61,6 +64,16 @@ class AreasAndHourViewSet(viewsets.ReadOnlyModelViewSet,
         military_id = MilitaryExperience.objects.get(
             experience_id=military_course['experience_id'])
 
+        ace_serializer_data = ACEIdentifierSerializer(data=ace_identifier)
+
+        if not ace_serializer_data.is_valid():
+            logger.error(serializer_data.errors)
+        else:
+            ace_serializer_data.save()
+
+        ace_id = ACEIdentifier.objects.get(
+            ace_identifier=ace_identifier['ace_identifier'])
+
         if 'areaandhour' in data and data['areaandhour']['areaandhour']:
 
             area_hours_data = data['areaandhour']
@@ -69,6 +82,7 @@ class AreasAndHourViewSet(viewsets.ReadOnlyModelViewSet,
 
             for item in area_hours_list:
                 item.update({"military_course": military_id.id})
+                item.update({"ace_identifier": ace_id.id})
 
             serializer = self.get_serializer(
                 data=area_hours_list, many=True)

@@ -5,8 +5,11 @@ from rest_framework_guardian.serializers import \
     ObjectPermissionsAssignmentMixin
 
 from academic_institute.models import AcademicInstitute
-from generate_transcript.models import (AcademicCourse, AcademicCourseArea,
-                                        AreasAndHour, Degree, MilitaryCourse,
+from generate_transcript.models import (ACEIdentifier,
+                                        AcademicCourse,
+                                        AcademicCourseArea,
+                                        AreasAndHour,
+                                        Degree, MilitaryCourse,
                                         MilitaryExperience,
                                         Transcript, TranscriptStatus)
 
@@ -25,6 +28,12 @@ class AcademicCourseAreaSerializer(serializers.ModelSerializer):
         fields = ['course_area',]
 
 
+class ACEIdentifierSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ACEIdentifier
+        fields = ['ace_identifier',]
+
+
 class DegreeSerializer(serializers.ModelSerializer):
     institute = serializers.SlugRelatedField(
         slug_field='institute',
@@ -40,8 +49,8 @@ class MilitaryExperienceSerializer(serializers.ModelSerializer):
     class Meta:
         model = MilitaryExperience
         fields = ['experience_id', 'experience_name',
-                  'ACE_identifier', 'description', 'LastUpdatedOn',
-                  'instruction', 'Service']
+                  'description',
+                  'instruction', 'service', 'rank']
 
 
 class MilitaryCourseSerializer(serializers.ModelSerializer):
@@ -49,19 +58,18 @@ class MilitaryCourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = MilitaryCourse
         fields = ['experience_id', 'experience_name',
-                  'ACE_identifier', 'description', 'LastUpdatedOn',
-                  'version', 'instruction', 'Service']
+                  'description',
+                  'instruction', 'service']
 
 
 class AreasAndHourSerializer(serializers.ModelSerializer):
     academic_course_area = AcademicCourseAreaSerializer()
-    # degree = DegreeSerializer()
-    # military_course = MilitaryCourseSerializer()
 
     class Meta:
         model = AreasAndHour
         fields = ['hours', 'level', 'academic_course_area',
-                  'military_course']
+                  'military_course', 'ace_identifier',
+                  'start_date', 'end_date', 'last_updated_on']
 
     def create(self, validated_data):
 
@@ -70,6 +78,16 @@ class AreasAndHourSerializer(serializers.ModelSerializer):
         validated_data['academic_course_area'] = area
         instance = AreasAndHour.objects.create(**validated_data)
         return instance
+
+    def update(self, instance, validated_data):
+
+        if instance['last_updated_on'] > validated_data['last_updated_on']:
+
+            area_data = validated_data.pop('academic_course_area')
+            area = AcademicCourseArea.objects.update(**area_data)
+            validated_data['academic_course_area'] = area
+            instance = AreasAndHour.objects.update(**validated_data)
+            return instance
 
 
 class TranscriptSerializer(serializers.ModelSerializer):
