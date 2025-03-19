@@ -13,6 +13,11 @@ class ModelTests(TestSetUp):
         self.assertEqual(self.c_area, self.ac_course_area.course_area)
         self.assertIn(self.c_area, str(self.ac_course_area))
 
+    def test_create_ace_identifier(self):
+        self.ace_identifier.save()
+        self.assertEqual(self.ace_id, self.ace_identifier.ace_identifier)
+        self.assertIn(self.ace_id, str(self.ace_identifier))
+
     def test_create_academic_course(self):
         self.ac_course.save()
         self.assertEqual(self.course, self.ac_course.name)
@@ -26,6 +31,7 @@ class ModelTests(TestSetUp):
         self.institute.save()
         self.degree.save()
         self.ac_course_area.save()
+        self.ace_identifier.save()
         self.a_and_h.save()
         self.assertEqual(self.a_and_h.hours, self.hours)
         self.assertEqual(self.ac_course_area.course_area,
@@ -43,5 +49,10 @@ class ModelTests(TestSetUp):
     def test_military_course(self):
         self.military_course.save()
         me = MilitaryExperience.objects.get(pk=self.military_course.pk)
-        self.assertEqual(self.military_course.version, self.version)
+        self.assertEqual(self.military_course.experience_id, self.code)
         self.assertEqual(str(me), str(self.military_course))
+
+    def test_Transcript(self):
+        self.ur.save()
+        self.transcript.save()
+        self.assertEqual(self.transcript.subject, self.ur)

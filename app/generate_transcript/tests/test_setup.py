@@ -1,8 +1,11 @@
 from rest_framework.test import APITestCase
 
 from academic_institute.models import AcademicInstitute
-from generate_transcript.models import (AcademicCourse, AcademicCourseArea,
-                                        AreasAndHour, Degree, MilitaryCourse,
+from generate_transcript.models import (ACEIdentifier,
+                                        AcademicCourse,
+                                        AcademicCourseArea,
+                                        AreasAndHour, Degree,
+                                        MilitaryCourse,
                                         Transcript)
 from users.models import MMTUser, UserRecord
 
@@ -13,6 +16,7 @@ class TestSetUp(APITestCase):
     def setUp(self):
         """Function to set up necessary data for testing"""
         self.c_area = "course_area_1"
+        self.ace_id = "ACE-ID-1"
         self.course = "course1"
         self.version = "1"
         self.c_degree = "degree1"
@@ -28,14 +32,16 @@ class TestSetUp(APITestCase):
         self.transcript = Transcript(subject=self.ur)
 
         self.ac_course_area = AcademicCourseArea(course_area=self.c_area)
+        self.ace_identifier = ACEIdentifier(ace_identifier=self.ace_id)
         self.ac_course = \
             AcademicCourse(name=self.course, code=self.code,
                            course_area=self.c_area)
         self.institute = AcademicInstitute(institute=self.c_institute)
         self.degree = Degree(degree=self.c_degree, institute=self.institute)
         self.a_and_h = AreasAndHour(hours=self.hours, degree=self.degree,
-                                    academic_course_area=self.ac_course_area)
-        self.military_course = MilitaryCourse(version=self.version)
+                                    academic_course_area=self.ac_course_area,
+                                    ace_identifier=self.ace_identifier)
+        self.military_course = MilitaryCourse(experience_id=self.code)
 
         return super().setUp()
 

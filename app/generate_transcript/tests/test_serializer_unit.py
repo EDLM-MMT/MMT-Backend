@@ -2,10 +2,13 @@ from unittest.mock import Mock
 
 from django.test import tag
 
-from generate_transcript.models import (AcademicCourse, MilitaryCourse,
+from generate_transcript.models import (ACEIdentifier, AcademicCourse,
+                                        MilitaryCourse, MilitaryExperience,
                                         TranscriptStatus)
-from generate_transcript.serializers import (AcademicCourseSerializer,
+from generate_transcript.serializers import (ACEIdentifierSerializer,
+                                             AcademicCourseSerializer,
                                              MilitaryCourseSerializer,
+                                             MilitaryExperienceSerializer,
                                              TranscriptStatusSerializer)
 
 from .test_setup import TestSetUp
@@ -24,12 +27,26 @@ class SerializersTests(TestSetUp):
         self.assertEqual(
             self.course, serialized_course.data['name'])
 
+    def test_AceIdentifier_serializer(self):
+        ace_identifier = ACEIdentifier(ace_identifier=self.ace_id)
+        serialized_course = ACEIdentifierSerializer(ace_identifier)
+
+        self.assertEqual(
+            self.ace_id, serialized_course.data['ace_identifier'])
+
     def test_MilitaryCourse_serializer(self):
-        Military_Course = MilitaryCourse(version=self.version)
+        Military_Course = MilitaryCourse(experience_id=self.code)
         serialized_course = MilitaryCourseSerializer(Military_Course)
 
         self.assertEqual(
-            self.version, serialized_course.data['version'])
+            self.code, serialized_course.data['experience_id'])
+
+    def test_MilitaryExperience_serializer(self):
+        Military_Experience = MilitaryExperience(experience_id=self.code)
+        serialized_course = MilitaryExperienceSerializer(Military_Experience)
+
+        self.assertEqual(
+            self.code, serialized_course.data['experience_id'])
 
     def test_create_status(self):
         self.ur.save()
