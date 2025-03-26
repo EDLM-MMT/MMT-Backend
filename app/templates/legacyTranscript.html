@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" xml:lang="en">
   <head>
+    <style>
+      body {
+        margin: 0; /* Remove default body margin */
+        height: 100vh; /* Ensure body takes full viewport height */
+      }
+    </style>
     <title style="text-align: center">JST</title>
   </head>
 
@@ -8,8 +14,17 @@
     <style>
       @page {
         @top-right {
+          font-weight: bold;
           content: "Page " counter(page) " of " counter(pages);
         }
+      }
+      /* CSS styles for the footer */
+      footer {
+        position: fixed; /* Fix the footer to the bottom */
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        text-align: center; /* Center the text */
       }
     </style>
 
@@ -40,24 +55,24 @@
         />
       </div>
 
-      <h3 style="text-align: center">***UNOFFICIAL***</h3>
+      <h3 style="text-align: center">***OFFICIAL***</h3>
 
       <!-- Service Member Info -->
       <div>
         <div style="float: left; width: 60%; padding: 10px">
           <div style="display: flex; margin: 0">
             <h3 style="margin: 0">Name:</h3>
-            <p style="margin-left: 30px; margin-top: 0">
+            <p style="margin-left: 29px; margin-top: 0">
               {{last_name}}, {{first_name}}
             </p>
           </div>
           <div style="display: flex; margin: 0">
-            <h3 style="margin: 0">SSN:</h3>
-            <p style="margin-left: 40px; margin-top: 0">{{ssn}}</p>
+            <h3 style="margin: 0; margin-right:10px">SSN:</h3>
+            <p style="margin-left: 30px; margin-top: 0">{{ssn}}</p>
           </div>
           <div style="display: flex; margin: 0">
             <h3 style="margin: 0">Rank:</h3>
-            <p style="margin-left: 30px; margin-top: 0">{{rank}}</p>
+            <p style="margin-left: 33px; margin-top: 0">{{rank}}</p>
           </div>
           <div style="display: flex; margin: 0">
             <h3 style="margin: 0">Status:</h3>
@@ -65,7 +80,7 @@
           </div>
         </div>
         <div>
-          <h3 style="margin: 0">Transcript sent to:</h3>
+          <h3 style="margin: 0">Transcript Sent To:</h3>
           <p>{{receiver}}</p>
         </div>
       </div>
@@ -74,7 +89,7 @@
       <!-- Military Courses Section -->
 
       <h3 style="width: 100%; text-align: center; margin-bottom: 5px">
-        Military courses
+        Military Courses
       </h3>
       <div
         style="
@@ -617,7 +632,7 @@
         <div style="float: left; width: 15%; padding: 10px">
           <p style="margin: 0; font-size: 0.9em"><strong>Date Taken</strong></p>
         </div>
-        <div style="float: left; width: 30%; padding: 10px">
+        <div style="float: left; width: 30%; padding: 10px; margin-left:-10px">
           <p style="margin: 0; font-size: 0.9em"><strong>Title</strong></p>
         </div>
         <div style="float: left; width: 20%; padding: 10px">
@@ -637,7 +652,7 @@
           <div style="float: left; width: 15%; padding: 10px">
             <p style="margin: 0; font-size: 0.9em">31-OCT-1987</p>
           </div>
-          <div style="float: left; width: 30%; padding: 10px">
+          <div style="float: left; width: 30%; padding: 10px; margin-left:-10px">
             <p style="margin: 0; font-size: 0.9em">
               Basic Submarine Damage Control
             </p>
@@ -659,7 +674,7 @@
           <div style="float: left; width: 15%; padding: 10px">
             <p style="margin: 0; font-size: 0.9em">19-OCT-2005</p>
           </div>
-          <div style="float: left; width: 30%; padding: 10px">
+          <div style="float: left; width: 30%; padding: 10px; ; margin-left:-10px">
             <p style="margin: 0; font-size: 0.9em">Submarine Escape</p>
           </div>
           <div style="float: left; width: 20%; padding: 10px">
@@ -684,5 +699,13 @@
         REFER TO LEGEND FOLLOWING LAST PAGE OF TRANSCRIPT.
       </h3>
     </div>
+    <footer class="footer">
+      <div style="padding-top: 40px;  padding-bottom: 0px; margin: 0;">
+        <h6 style="margin-bottom: 0;text-align: center">
+          ** OFFICIAL COPY ** PROTECTED BY FERPA **
+        </h6>
+        <!-- <h6 style="text-align: end;">02/14/2021</h6> -->
+      </div>
+    </footer>
   </body>
 </html>
