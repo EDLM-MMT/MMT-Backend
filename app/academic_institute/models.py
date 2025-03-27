@@ -2,6 +2,7 @@ from django.contrib.auth.models import Group
 from django.core.validators import RegexValidator
 from django.db import models
 from django.urls import reverse
+from model_utils import FieldTracker
 
 from generate_transcript.regex import REGEX_CHECK, REGEX_ERROR_MESSAGE
 
@@ -24,7 +25,8 @@ class AcademicInstitute(models.Model):
                                help_text="Select the group that will manage "
                                "this Institute")
     managed_by_import = models.BooleanField(default=True)
-    # Groups - for tracking who has access
+
+    tracker = FieldTracker(fields=['group', 'admins',])
 
     def __str__(self):
         """String for representing the Model object."""
