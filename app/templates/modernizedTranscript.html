@@ -6,6 +6,24 @@
       @page {
         margin: 0;
         padding: 0;
+        margin-bottom: 5%;
+        @bottom-center {
+          color: gray;
+          font-size: 10px;
+          content: "** {{transcript_type}} COPY **  ** PROTECTED BY FERPA **";
+        }
+        @bottom-left {
+          color: gray;
+          font-size: 10px;
+          padding-left: 10px;
+          content: "Page " counter(page) " of " counter(pages);
+        }
+        @bottom-right {
+          color: gray;
+          font-size: 10px;
+          padding-right: 10px;
+          content: "{{date|date:"d-M-Y"|upper}}";
+        }
       }
 
       html,
@@ -25,7 +43,7 @@
           style="width: 40px; height: 40px; margin: 10px"
         />
         <div style="padding-top: 10px; padding-left: 8px; font-size: 12px">
-          <div><strong>O F F I C I A L</strong></div>
+          <div><strong>{{transcript_type|join:" "}}</strong></div>
           <h2 style="margin-top: 0; color: #374151; font-size: 16px">
             MILITARY TRANSCRIPT
           </h2>

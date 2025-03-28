@@ -138,7 +138,10 @@ class TranscriptViewSet(viewsets.ReadOnlyModelViewSet):
                    'status': transcript.subject.status,
                    'date': datetime.today().strftime('%d %^b %Y'),
                    'branch': transcript.subject.branch,
-                   'receiver': receiver}
+                   'receiver': receiver,
+                   'transcript_type': "UNOFFICIAL" if
+                   transcript.subject.user_profile == request.user
+                   else "OFFICIAL"}
 
         return pdf_view(request, context=context, transcript=transcript)
 
