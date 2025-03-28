@@ -31,7 +31,6 @@ class TranscriptPDFView(PDFView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context = kwargs['context']
-        context['image'] = "/static/EducationLogo1.png"
         context['experiences'] = []
         context['experiences']
 
