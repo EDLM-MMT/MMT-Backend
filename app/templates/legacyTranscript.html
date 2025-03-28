@@ -17,6 +17,13 @@
           font-weight: bold;
           content: "Page " counter(page) " of " counter(pages);
         }
+        @bottom-center {
+          color: black;
+          font-size: 12px;
+          font-weight: bold;
+          content: "** OFFICIAL COPY **  ** PROTECTED BY FERPA **";
+        }
+
       }
       /* CSS styles for the footer */
       footer {
@@ -61,21 +68,21 @@
         <div style="float: left; width: 60%; padding: 10px">
           <div style="display: flex; margin: 0">
             <h3 style="margin: 0">Name:</h3>
-            <p style="margin-left: 29px; margin-top: 0">
+            <p style="margin-left: 29px; margin-top: 2px">
               {{last_name}}, {{first_name}}
             </p>
           </div>
           <div style="display: flex; margin: 0">
-            <h3 style="margin: 0; margin-right:10px">SSN:</h3>
-            <p style="margin-left: 30px; margin-top: 0">{{ssn}}</p>
+            <h3 style="margin: 0; margin-right:7px">SSN:</h3>
+            <p style="margin-left: 33px; margin-top: 2px">{{ssn}}</p>
           </div>
           <div style="display: flex; margin: 0">
             <h3 style="margin: 0">Rank:</h3>
-            <p style="margin-left: 33px; margin-top: 0">{{rank}}</p>
+            <p style="margin-left: 33px; margin-top: 2px">{{rank}}</p>
           </div>
           <div style="display: flex; margin: 0">
             <h3 style="margin: 0">Status:</h3>
-            <p style="margin-left: 25px; margin-top: 0">{{status}}</p>
+            <p style="margin-left: 26px; margin-top: 2px">{{status}}</p>
           </div>
         </div>
         <div>
@@ -698,13 +705,5 @@
         REFER TO LEGEND FOLLOWING LAST PAGE OF TRANSCRIPT.
       </h3>
     </div>
-    <footer class="footer">
-      <div style="padding-top: 40px;  padding-bottom: 0px; margin: 0;">
-        <h6 style="margin-bottom: 0;text-align: center">
-          ** OFFICIAL COPY ** PROTECTED BY FERPA **
-        </h6>
-        <!-- <h6 style="text-align: end;">02/14/2021</h6> -->
-      </div>
-    </footer>
   </body>
 </html>
