@@ -26,7 +26,7 @@ class MMTUserAdmin(UserAdmin):
     fieldsets = (
         (None,
          {'fields': ('email', 'first_name', 'last_name', 'password',
-                     'eso_default',)}),
+                     'eso_default', 'position',)}),
         ('Permissions', {'fields': ('is_staff', 'is_active', 'groups',
                                     'user_permissions',)}),
     )
@@ -34,8 +34,8 @@ class MMTUserAdmin(UserAdmin):
         (None, {
             'classes': ('wide',),
             'fields': ('email', 'first_name', 'last_name', 'eso_default',
-                       'password1', 'password2', 'is_active', 'is_staff',
-                       'groups', 'user_permissions',)}
+                       'position', 'password1', 'password2', 'is_active',
+                       'is_staff', 'groups', 'user_permissions',)}
          ),
     )
     filter_horizontal = ['groups', 'user_permissions', ]
