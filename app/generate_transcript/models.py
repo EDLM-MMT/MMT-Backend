@@ -199,7 +199,10 @@ class MilitaryCourse_User(TimeStampedModel):
 
     def get_absolute_url(self):
         """ URL for displaying individual model records."""
-        return reverse('generate_transcript:updates-detail',
+        if hasattr(self.course_id, 'militarycourse'):
+            return reverse('generate_transcript:course-updates-detail',
+                           args=[str(self.pk)])
+        return reverse('generate_transcript:occupation-updates-detail',
                        args=[str(self.pk)])
 
 

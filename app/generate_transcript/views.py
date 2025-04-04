@@ -202,10 +202,21 @@ class TranscriptStatusViewSet(viewsets.ModelViewSet):
         return super().create(request, *args, **kwargs)
 
 
-class UpdatesViewSet(viewsets.ReadOnlyModelViewSet):
+class OccupationUpdatesViewSet(viewsets.ReadOnlyModelViewSet):
     """
     Viewset that only lists events if user has 'view' permissions
     """
-    queryset = MilitaryCourse_User.objects.all().order_by('-created')
+    queryset = MilitaryCourse_User.objects.all().filter(
+        course_id__militarycourse=None).order_by('-created')
+    serializer_class = MilitaryCourseUserSerializer
+    filter_backends = [UserExperiencesFilter, RecentFilter]
+
+
+class CourseUpdatesViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Viewset that only lists events if user has 'view' permissions
+    """
+    queryset = MilitaryCourse_User.objects.all().exclude(
+        course_id__militarycourse=None).order_by('-created')
     serializer_class = MilitaryCourseUserSerializer
     filter_backends = [UserExperiencesFilter, RecentFilter]
