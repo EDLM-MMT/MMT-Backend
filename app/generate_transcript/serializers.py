@@ -7,7 +7,8 @@ from rest_framework_guardian.serializers import \
 from academic_institute.models import AcademicInstitute
 from generate_transcript.models import (AcademicCourse, AcademicCourseArea,
                                         AreasAndHour, Degree, MilitaryCourse,
-                                        Transcript, TranscriptStatus)
+                                        MilitaryCourse_User, Transcript,
+                                        TranscriptStatus)
 
 logger = logging.getLogger(__name__)
 
@@ -113,3 +114,14 @@ class TranscriptStatusSerializer(ObjectPermissionsAssignmentMixin,
             'modified': instance.modified,
             'created': instance.created
         }
+
+
+class MilitaryCourseUserSerializer(serializers.ModelSerializer):
+    course = serializers.StringRelatedField(source='course_id')
+    experience_type = serializers.CharField(
+        source='course_id.determine_experience_type')
+
+    class Meta:
+        model = MilitaryCourse_User
+        fields = ['course', 'experience_type', 'start_date',
+                  'end_date', 'created', 'modified',]

@@ -13,10 +13,11 @@ from rest_framework_guardian import filters
 
 from academic_institute.models import AcademicInstitute
 from generate_transcript.filters import (BranchFilter, RecentFilter,
-                                         StatusFilter)
+                                         StatusFilter, UserExperiencesFilter)
 from generate_transcript.models import (AreasAndHour, MilitaryCourse_User,
                                         Transcript, TranscriptStatus)
-from generate_transcript.serializers import (TranscriptSerializer,
+from generate_transcript.serializers import (MilitaryCourseUserSerializer,
+                                             TranscriptSerializer,
                                              TranscriptStatusSerializer)
 from users.models import MMTUser
 
@@ -199,3 +200,12 @@ class TranscriptStatusViewSet(viewsets.ModelViewSet):
                                     status=status.HTTP_400_BAD_REQUEST)
 
         return super().create(request, *args, **kwargs)
+
+
+class UpdatesViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Viewset that only lists events if user has 'view' permissions
+    """
+    queryset = MilitaryCourse_User.objects.all().order_by('-created')
+    serializer_class = MilitaryCourseUserSerializer
+    filter_backends = [UserExperiencesFilter, RecentFilter]

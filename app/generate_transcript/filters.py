@@ -41,3 +41,15 @@ class BranchFilter(filters.SearchFilter):
 
     def get_search_fields(self, view, request):
         return ['=transcript__subject__branch', ]
+
+
+class UserExperiencesFilter(filters.BaseFilterBackend):
+    """
+    Filter that limits queryset to objects associated with the user's
+    user record or limits it to no objects
+    """
+
+    def filter_queryset(self, request, queryset, view):
+        if request.user.user_record:
+            return queryset.filter(user_id=request.user.user_record)
+        return queryset.none()

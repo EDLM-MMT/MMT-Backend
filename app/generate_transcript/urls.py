@@ -14,6 +14,8 @@ router.register("transcript/legacy",
 router.register(r'transcript',
                 views.TranscriptViewSet,
                 basename='transcript')
+router.register(r'updates', views.UpdatesViewSet,
+                basename='updates')
 
 urlpatterns = [
     path('', include(router.urls)),

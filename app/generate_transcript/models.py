@@ -155,11 +155,16 @@ class MilitaryExperience(models.Model):
     areas = models.ManyToManyField(
         AcademicCourseArea, related_name="mappings", through=AreasAndHour)
 
+    def determine_experience_type(self):
+        if hasattr(self, 'militarycourse'):
+            return 'Course'
+        return 'Occupation'
+
     def __str__(self):
         """String for representing the Model object."""
         if hasattr(self, 'militarycourse'):
             return str(self.militarycourse)
-        return f'{self.experience_id}'
+        return f'{self.experience_name}'
 
 
 class MilitaryCourse(MilitaryExperience):
@@ -173,7 +178,7 @@ class MilitaryCourse(MilitaryExperience):
         return f'{self.course_name}'
 
 
-class MilitaryCourse_User(models.Model):
+class MilitaryCourse_User(TimeStampedModel):
     """Model to store User and Military course through details"""
     course_id = models.ForeignKey(MilitaryExperience,
                                   related_name="militarycourse_user",
@@ -181,14 +186,21 @@ class MilitaryCourse_User(models.Model):
                                   help_text="Choose the relevant"
                                   " military course")
     user_id = models.ForeignKey(UserRecord, related_name="militarycourse_user",
-                                on_delete=models.CASCADE, max_length=250,
-                                blank=True)
+                                on_delete=models.CASCADE)
     start_date = models.DateField(
         null=True, blank=True,
         help_text="Set degree start date month and year, January 2050")
     end_date = models.DateField(
         null=True, blank=True,
         help_text="Set degree start date month and year, January 2050")
+
+    class Meta:
+        verbose_name = "Military Course User"
+
+    def get_absolute_url(self):
+        """ URL for displaying individual model records."""
+        return reverse('generate_transcript:updates-detail',
+                       args=[str(self.pk)])
 
 
 class Transcript(models.Model):
