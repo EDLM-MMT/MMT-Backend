@@ -163,13 +163,11 @@ class TranscriptStatusViewSet(viewsets.ModelViewSet):
         recipient_pk = request.data.get('recipient')
         ai_pk = request.data.get('academic_institute')
 
-        transcript = Transcript.objects.filter(
-            subject__user_profile=request.user).first()
         if ssn:
-            try:
-                transcript = get_object_or_404(Transcript, subject__ssn=ssn)
-            except Http404 as e:
-                logger.error(e)
+            transcript = get_object_or_404(Transcript, subject__ssn=ssn)
+        else:
+            transcript = Transcript.objects.filter(
+                subject__user_profile=request.user).first()
 
         request.data["transcript"] = transcript.id
 
