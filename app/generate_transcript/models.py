@@ -186,7 +186,8 @@ class MilitaryCourse_User(TimeStampedModel):
                                   help_text="Choose the relevant"
                                   " military course")
     user_id = models.ForeignKey(UserRecord, related_name="militarycourse_user",
-                                on_delete=models.CASCADE)
+                                on_delete=models.CASCADE, max_length=250,
+                                blank=True)
     start_date = models.DateField(
         null=True, blank=True,
         help_text="Set degree start date month and year, January 2050")
