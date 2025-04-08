@@ -365,7 +365,7 @@
             <span style="content: ''; display: table; clear: both"></span>
           </div>
         </div>
-
+        <!-- DAIMS Section -->
         <div>
           <p style="margin-bottom: 0">
             <strong>
@@ -415,22 +415,23 @@
             </div>
             <span style="content: ''; display: table; clear: both"></span>
           </div>
-          <!-- Conent -->
+          <!-- DAIMS Data -->
+           {% for test in tests %}
           <div>
             <div style="float: left; width: 15%; padding: 0px 10px">
-              <p style="margin: 0; font-size: 0.9em">09-FEB-2011</p>
+              <p style="margin: 0; font-size: 0.9em">{{test.date}}</p>
             </div>
             <div style="float: left; width: 15%; padding: 0px 10px">
-              <p style="margin: 0; font-size: 0.9em">Technical Writing</p>
+              <p style="margin: 0; font-size: 0.9em">{{test.name}}</p>
             </div>
             <div style="float: left; width: 10%; padding: 0px 10px">
-              <p style="margin: 0; font-size: 0.9em">3</p>
+              <p style="margin: 0; font-size: 0.9em">{{test.credit}}</p>
             </div>
             <div style="float: left; width: 10%; padding: 0px 10px">
-              <p style="margin: 0; font-size: 0.9em">46</p>
+              <p style="margin: 0; font-size: 0.9em">{{test.ace_score}}</p>
             </div>
             <div style="float: left; width: 10%; padding: 0px 10px">
-              <p style="margin: 0; font-size: 0.9em">55</p>
+              <p style="margin: 0; font-size: 0.9em">{{test.actual_score}}</p>
             </div>
             <div style="float: left; width: 5%; padding: 0px 10px">
               <p style="margin: 0; font-size: 0.9em"></p>
@@ -443,35 +444,7 @@
             </div>
             <span style="content: ''; display: table; clear: both"></span>
           </div>
-          <div>
-            <div style="float: left; width: 15%; padding: 0px 10px">
-              <p style="margin: 0; font-size: 0.9em">09-FEB-2011</p>
-            </div>
-            <div style="float: left; width: 15%; padding: 0px 10px">
-              <p style="margin: 0; font-size: 0.9em">
-                College Level Spanish Language
-              </p>
-            </div>
-            <div style="float: left; width: 10%; padding: 0px 10px">
-              <p style="margin: 0; font-size: 0.9em">6 or 12</p>
-            </div>
-            <div style="float: left; width: 10%; padding: 0px 10px">
-              <p style="margin: 0; font-size: 0.9em">50</p>
-            </div>
-            <div style="float: left; width: 10%; padding: 0px 10px">
-              <p style="margin: 0; font-size: 0.9em">62</p>
-            </div>
-            <div style="float: left; width: 5%; padding: 0px 10px">
-              <p style="margin: 0; font-size: 0.9em"></p>
-            </div>
-            <div style="float: left; width: 5%; padding: 0px 10px">
-              <p style="margin: 0; font-size: 0.9em"></p>
-            </div>
-            <div style="float: left; width: 5%; padding: 0px 10px">
-              <p style="margin: 0; font-size: 0.9em"></p>
-            </div>
-            <span style="content: ''; display: table; clear: both"></span>
-          </div>
+          {% endfor %}
         </div>
 
         <div>

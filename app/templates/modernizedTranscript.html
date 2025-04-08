@@ -245,7 +245,7 @@
       </div>
       {% endfor %}
     </div>
-    <!-- ACE Section - Currently Using Mock Data -->
+    <!-- Additional ACE Recommendations -->
     <div style="margin: 0 15px 20px 25px">
       <h2 style="margin-top: 0; font-size: 14px; color: #374151">
         Additional ACE Recommended Credits
@@ -283,74 +283,31 @@
           </p>
         </div>
       </div>
-      <!-- Mock ACE Course 1 -->
+      <!-- DAIMS Data -->
+      {% for test in tests %}
       <div style="print-color-adjust: exact; display: flex; padding-top: 10px">
         <div style="width: 15%">
-          <p style="margin: 0; font-size: 10px; color: #4b5563">13 JAN 11</p>
+          <p style="margin: 0; font-size: 10px; color: #4b5563">{{test.date}}</p>
         </div>
         <div style="width: 20%">
-          <p style="margin: 0; font-size: 10px; color: #4b5563">CLEP</p>
+          <p style="margin: 0; font-size: 10px; color: #4b5563">{{test.type}}</p>
         </div>
         <div style="width: 30%">
           <p style="margin: 0; font-size: 10px; color: #4b5563">
-            Introduction Sociology
+            {{test.name}}
           </p>
         </div>
         <div style="width: 13%">
-          <p style="margin: 0; font-size: 10px; color: #4b5563">3</p>
+          <p style="margin: 0; font-size: 10px; color: #4b5563">{{test.credit}}</p>
         </div>
         <div style="width: 13%">
-          <p style="margin: 0; font-size: 10px; color: #4b5563">50</p>
+          <p style="margin: 0; font-size: 10px; color: #4b5563">{{test.ace_score}}</p>
         </div>
         <div style="width: 10%">
-          <p style="margin: 0; font-size: 10px; color: #4b5563">53</p>
+          <p style="margin: 0; font-size: 10px; color: #4b5563">{{test.actual_score}}</p>
         </div>
       </div>
-      <!-- Mock ACE Course 2 -->
-      <div style="print-color-adjust: exact; display: flex; padding-top: 10px">
-        <div style="width: 15%">
-          <p style="margin: 0; font-size: 10px; color: #4b5563">19 JAN 11</p>
-        </div>
-        <div style="width: 20%">
-          <p style="margin: 0; font-size: 10px; color: #4b5563">DSST</p>
-        </div>
-        <div style="width: 30%">
-          <p style="margin: 0; font-size: 10px; color: #4b5563">
-            Principles of Supervision
-          </p>
-        </div>
-        <div style="width: 13%">
-          <p style="margin: 0; font-size: 10px; color: #4b5563">3</p>
-        </div>
-        <div style="width: 13%">
-          <p style="margin: 0; font-size: 10px; color: #4b5563">400</p>
-        </div>
-        <div style="width: 10%">
-          <p style="margin: 0; font-size: 10px; color: #4b5563">405</p>
-        </div>
-      </div>
-      <!-- Mock ACE Course 3 -->
-      <div style="print-color-adjust: exact; display: flex; padding-top: 10px">
-        <div style="width: 15%">
-          <p style="margin: 0; font-size: 10px; color: #4b5563">20 JAN 11</p>
-        </div>
-        <div style="width: 20%">
-          <p style="margin: 0; font-size: 10px; color: #4b5563">CLEP</p>
-        </div>
-        <div style="width: 30%">
-          <p style="margin: 0; font-size: 10px; color: #4b5563">
-            Ethics in America
-          </p>
-        </div>
-        <div style="width: 13%">
-          <p style="margin: 0; font-size: 10px; color: #4b5563">3</p>
-        </div>
-        <div style="width: 13%">
-          <p style="margin: 0; font-size: 10px; color: #4b5563">46</p>
-        </div>
-        <div style="width: 10%">
-          <p style="margin: 0; font-size: 10px; color: #4b5563">55</p>
-        </div>
+      {% endfor %}
       </div>
     </div>
 
