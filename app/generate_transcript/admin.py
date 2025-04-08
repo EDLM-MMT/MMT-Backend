@@ -49,7 +49,8 @@ class AcademicCourseAdmin(admin.ModelAdmin):
 @admin.register(AreasAndHour)
 class AreasAndHourAdmin(admin.ModelAdmin):
     list_display = ('academic_course_area', 'ace_identifier',
-                    'military_course', 'hours', 'level')
+                    'military_course', 'hours', 'level',
+                    'version')
     search_fields = ['academic_course_area__course_area',
                      'ace_identifier__ace_identifier']
     list_filter = ['ace_identifier__ace_identifier',]

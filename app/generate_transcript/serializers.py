@@ -69,7 +69,8 @@ class AreasAndHourSerializer(serializers.ModelSerializer):
         model = AreasAndHour
         fields = ['hours', 'level', 'academic_course_area',
                   'military_course', 'ace_identifier',
-                  'start_date', 'end_date', 'last_updated_on']
+                  'start_date', 'end_date', 'last_updated_on',
+                  'version']
 
     def create(self, validated_data):
 

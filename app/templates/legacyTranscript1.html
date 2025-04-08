@@ -28,13 +28,13 @@
       >
         {% load static %}
         <img
-          src="{% static 'EducationLogo1.png' %}"
-          alt="Education logo"
+          src="{% static 'Department_Logo.png' %}"
+          alt="Department logo"
           height="150"
         />
         <img
-          src="{% static 'DepartmentLogo1.png' %}"
-          alt="Department_logo"
+          src="{% static 'EducationLogo1.png' %}"
+          alt="Education logo"
           height="150"
           style="margin-left: 30%"
         />
@@ -117,7 +117,7 @@
       </div>
 
       <!-- Courses Begin -->
-      {% for exp in experiences %} {% if exp.course_name %}
+      {% for exp in experiences %} {% if exp.version %}
       <div style="padding-top: 5px">
         <div style="float: left; width: 10%; padding: 10px">
           <p style="margin: 0; font-size: 0.9em">{{exp.course_id}}</p>
@@ -209,7 +209,7 @@
       </div>
 
       <!-- Experiences Begin -->
-      {% for exp in experiences %} {% if not exp.course_name %}
+      {% for exp in experiences %} {% if not exp.version %}
       <div style="padding-top: 5px">
         <div style="float: left; width: 10%; padding: 10px">
           <p style="margin: 0; font-size: 0.9em">{{exp.course_id}}</p>

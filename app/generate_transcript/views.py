@@ -143,6 +143,8 @@ class TranscriptPDFView(PDFView):
             area = []
             hours = []
             level = []
+            ace_id = ''
+            version = ''
 
             area_hour_details = AreasAndHour.objects.filter(
                 military_course=military_obj.id)
@@ -151,12 +153,15 @@ class TranscriptPDFView(PDFView):
                             academic_course_area.course_area)
                 hours.append(areas_hours_obj.hours)
                 level.append(areas_hours_obj.level)
+                ace_id = areas_hours_obj.ace_identifier
+                version = areas_hours_obj.version
 
             context['experiences'].append(
                 {'start_date': course_details.start_date.strftime('%d-%^b-%Y'),
                  'end_date': course_details.end_date.strftime('%d-%^b-%Y') if
                  course_details.end_date else "PRESENT",
-                 'ACE_identifier': military_obj.ACE_identifier,
+                 'ACE_identifier': ace_id,
+                 'version': version,
                  'rank': military_obj.rank,
                  'course_id': military_obj.experience_id,
                  'name': military_obj.experience_name,
@@ -193,10 +198,10 @@ class TranscriptViewSet(viewsets.ReadOnlyModelViewSet):
         # Create a PDF view
         if re.search("transcript-legacy", basename, re.IGNORECASE):
             pdf_view = TranscriptPDFView.as_view(
-                template_name='legacyTranscript.html')
+                template_name='legacyTranscript1.html')
         else:
             pdf_view = TranscriptPDFView.as_view(
-                template_name='modernizedTranscript.html')
+                template_name='modernizedTranscript1.html')
 
         recipient_status_obj = TranscriptStatus.objects.filter(
             transcript=transcript, recipient=request.user).first()
@@ -229,7 +234,7 @@ class TranscriptViewSet(viewsets.ReadOnlyModelViewSet):
                    'ssn': ssn,
                    'rank': transcript.subject.rank,
                    'status': transcript.subject.status,
-                   'date': datetime.today().strftime('%d %^b %Y'),
+                   'date': datetime.today(),
                    'branch': transcript.subject.branch,
                    'receiver': receiver}
 
