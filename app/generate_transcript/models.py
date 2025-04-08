@@ -156,6 +156,9 @@ class MilitaryExperience(models.Model):
         AcademicCourseArea, related_name="mappings", through=AreasAndHour)
 
     def determine_experience_type(self):
+        if hasattr(self, 'militarycourse') and \
+                hasattr(self.militarycourse, 'militarytestresult'):
+            return self.militarycourse.militarytestresult.test_type
         if hasattr(self, 'militarycourse'):
             return 'Course'
         return 'Occupation'
@@ -175,7 +178,23 @@ class MilitaryCourse(MilitaryExperience):
 
     def __str__(self):
         """String for representing the Model object."""
+        if hasattr(self, 'militarytestresult'):
+            return str(self.militarytestresult)
         return f'{self.course_name}'
+
+
+class MilitaryTestResult(MilitaryCourse):
+    """Model to store Military Test Results details"""
+    TEST_TYPES = Choices("DSST", "CLEP")
+    test_type = models.CharField(max_length=10, choices=TEST_TYPES)
+    hours = models.CharField(max_length=10, validators=[
+        RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
+    ])
+    passing = models.IntegerField()
+
+    def __str__(self):
+        """String for representing the Model object."""
+        return f'{self.test_type} - {self.course_name}'
 
 
 class MilitaryCourse_User(TimeStampedModel):
@@ -194,12 +213,17 @@ class MilitaryCourse_User(TimeStampedModel):
     end_date = models.DateField(
         null=True, blank=True,
         help_text="Set degree start date month and year, January 2050")
+    score = models.IntegerField(null=True, blank=True)
 
     class Meta:
         verbose_name = "Military Course User"
 
     def get_absolute_url(self):
         """ URL for displaying individual model records."""
+        if hasattr(self, 'militarycourse') and \
+                hasattr(self.militarycourse, 'militarytestresult'):
+            return reverse('generate_transcript:additional-updates-detail',
+                           args=[str(self.pk)])
         if hasattr(self.course_id, 'militarycourse'):
             return reverse('generate_transcript:course-updates-detail',
                            args=[str(self.pk)])
