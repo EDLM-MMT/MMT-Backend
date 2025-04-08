@@ -3,7 +3,7 @@ from rest_framework.test import APITestCase
 from academic_institute.models import AcademicInstitute
 from generate_transcript.models import (AcademicCourse, AcademicCourseArea,
                                         AreasAndHour, Degree, MilitaryCourse,
-                                        Transcript)
+                                        MilitaryTestResult, Transcript)
 from users.models import MMTUser, UserRecord
 
 
@@ -20,6 +20,9 @@ class TestSetUp(APITestCase):
         self.hours = 10
         self.email = "admin@example.com"
         self.uname = "username"
+        self.test_type = "CLEP"
+        self.t_name = "clep test"
+        self.passing_score = 50
 
         self.user = MMTUser.objects.create_user(self.uname, "password")
         self.ur = UserRecord(user_profile=self.user, email=self.email)
@@ -35,6 +38,9 @@ class TestSetUp(APITestCase):
         self.a_and_h = AreasAndHour(hours=self.hours, degree=self.degree,
                                     academic_course_area=self.ac_course_area)
         self.military_course = MilitaryCourse(course_name=self.course)
+        self.test_result = MilitaryTestResult(
+            test_type=self.test_type, course_name=self.t_name,
+            passing=self.passing_score)
 
         return super().setUp()
 
