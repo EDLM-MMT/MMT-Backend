@@ -147,7 +147,6 @@ class MilitaryTestResultAdmin(MilitaryCourseAdmin):
                     "course_name",
                     "test_type",
                     "hours",
-                    "score",
                     "passing",
                 )
             },
