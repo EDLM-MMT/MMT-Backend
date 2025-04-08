@@ -18,6 +18,8 @@ router.register(r'occupation-updates', views.OccupationUpdatesViewSet,
                 basename='occupation-updates')
 router.register(r'course-updates', views.CourseUpdatesViewSet,
                 basename='course-updates')
+router.register(r'additional-updates', views.AdditionalUpdatesViewSet,
+                basename='additional-updates')
 
 urlpatterns = [
     path('', include(router.urls)),

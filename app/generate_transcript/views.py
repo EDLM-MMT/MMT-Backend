@@ -3,7 +3,6 @@ import re
 from datetime import datetime
 
 from django.db import IntegrityError
-from django.http.response import Http404
 from django.shortcuts import get_object_or_404
 from django_renderpdf.views import PDFView
 from guardian.shortcuts import assign_perm
@@ -34,12 +33,28 @@ class TranscriptPDFView(PDFView):
         context = kwargs['context']
         context['experiences'] = []
         context['experiences']
+        context['tests'] = []
 
         for military_obj in kwargs['transcript']. \
                 subject.militaryexperience_set.all():
             course_details = MilitaryCourse_User. \
                 objects.get(course_id=military_obj.id,
                             user_id=kwargs['transcript'].subject)
+            if hasattr(military_obj, 'militarycourse') and \
+                    hasattr(military_obj.militarycourse, 'militarytestresult'):
+                result = military_obj.militarycourse.militarytestresult
+                if course_details.score and \
+                        course_details.score >= result.passing:
+                    context['tests'].append({
+                        'date':
+                        course_details.start_date.strftime('%d-%^b-%Y'),
+                        'name': result.course_name,
+                        'credit': result.hours,
+                        'ace_score': result.passing,
+                        'actual_score': course_details.score,
+                        'type': result.test_type
+                    })
+                continue
 
             area = []
             hours = []
@@ -216,5 +231,17 @@ class CourseUpdatesViewSet(viewsets.ReadOnlyModelViewSet):
     """
     queryset = MilitaryCourse_User.objects.all().exclude(
         course_id__militarycourse=None).order_by('-created')
+    serializer_class = MilitaryCourseUserSerializer
+    filter_backends = [UserExperiencesFilter, RecentFilter]
+
+
+class AdditionalUpdatesViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Viewset that only lists events if user has 'view' permissions
+    """
+    queryset = MilitaryCourse_User.objects.all().exclude(
+        course_id__militarycourse=None,
+        course_id__militarycourse__militarytestresult=None).order_by(
+            '-created')
     serializer_class = MilitaryCourseUserSerializer
     filter_backends = [UserExperiencesFilter, RecentFilter]

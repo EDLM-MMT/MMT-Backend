@@ -1,14 +1,11 @@
 from django.contrib import admin
 from guardian.admin import GuardedModelAdmin
 
-from generate_transcript.models import (AcademicCourse,
-                                        AcademicCourseArea,
-                                        AreasAndHour, Degree,
-                                        MilitaryCourse,
+from generate_transcript.models import (AcademicCourse, AcademicCourseArea,
+                                        AreasAndHour, Degree, MilitaryCourse,
                                         MilitaryCourse_User,
-                                        MilitaryExperience,
-                                        Transcript,
-                                        TranscriptStatus)
+                                        MilitaryExperience, MilitaryTestResult,
+                                        Transcript, TranscriptStatus)
 
 # Register your models here.
 
@@ -134,6 +131,28 @@ class MilitaryCourseAdmin(admin.ModelAdmin):
         # ),
     )
     filter_horizontal = ("user_id",)
+
+
+@admin.register(MilitaryTestResult)
+class MilitaryTestResultAdmin(MilitaryCourseAdmin):
+    list_display = ('course_name', 'test_type',)
+    search_fields = ('course_name',)
+    list_filter = ('test_type',)
+    fieldsets = (
+        (
+            "Military Test Result",
+            {
+                "fields": (
+                    "experience_id",
+                    "course_name",
+                    "test_type",
+                    "hours",
+                    "score",
+                    "passing",
+                )
+            },
+        ),
+    )
 
 
 @admin.register(Transcript)
