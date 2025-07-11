@@ -52,6 +52,7 @@ def revoke_access(sender, instance, **kwargs):
 @receiver(pre_delete, sender=TranscriptStatus)
 def remove_obj_perms_connected_with_transcript_status(sender, instance,
                                                       **kwargs):
+    # remove orphaned permissions
     filters = Q(content_type=ContentType.objects.get_for_model(instance),
                 object_pk=instance.pk)
     UserObjectPermission.objects.filter(filters).delete()
@@ -61,6 +62,7 @@ def remove_obj_perms_connected_with_transcript_status(sender, instance,
 @receiver(pre_delete, sender=Transcript)
 def remove_obj_perms_connected_with_transcript(sender, instance,
                                                **kwargs):
+    # remove orphaned permissions
     filters = Q(content_type=ContentType.objects.get_for_model(instance),
                 object_pk=instance.pk)
     UserObjectPermission.objects.filter(filters).delete()
@@ -99,6 +101,8 @@ def my_post_save_group_handler(sender, instance, created, **kwargs):
         if instance.permission.codename == 'view_transcript':
 
             academic_group = None
+            # find academic institute
+            # WILL have issues if groups are reused
             if TranscriptStatus.objects.filter(
                     academic_institute__in=instance.group.
                     academic_institutes.all()).exists():
@@ -111,12 +115,14 @@ def my_post_save_group_handler(sender, instance, created, **kwargs):
             else:
                 academic_group = instance.group.managing.all().first()
 
+            # get or create transcript status
             transcript_obj, c = (TranscriptStatus.
                                  objects.
                                  update_or_create(
                                      transcript=instance.content_object,
                                      academic_institute=academic_group,
                                      defaults={"status": "Delivered"}))
+            # if new, set permissions
             if c:
                 view_ts_perm = 'generate_transcript.view_transcriptstatus'
                 change_ts_perm = 'generate_transcript.change_transcriptstatus'
@@ -131,6 +137,7 @@ def my_post_save_group_handler(sender, instance, created, **kwargs):
                     instance.content_object.subject.user_profile,
                     transcript_obj)
 
+            # send notifications
             notify.send(sender=instance.content_object.subject.user_profile,
                         recipient=instance.content_object.subject.user_profile,
                         verb=transcript_obj.status,
