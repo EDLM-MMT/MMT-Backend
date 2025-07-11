@@ -52,6 +52,8 @@ mysql-connector-python >= 8.0.28, <=8.0.29
 
 redis==4.1.2
 
+pandas[excel]
+
 python-magic >=0.4.27, <0.5
 
 psycopg2-binary >= 2.9, < 3.0
