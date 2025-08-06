@@ -1,6 +1,6 @@
 # Dockerfile
 
-FROM python:3.9-buster
+FROM python:3.9-bookworm
 
 # install nginx
 RUN apt-get update && apt-get install nginx vim libpango-1.0-0 libpangoft2-1.0-0 -y --no-install-recommends && \

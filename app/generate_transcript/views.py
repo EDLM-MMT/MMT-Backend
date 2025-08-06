@@ -5,19 +5,19 @@ from datetime import datetime
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
 from django_renderpdf.views import PDFView
-from guardian.shortcuts import (assign_perm)
-from academic_institute.models import AcademicInstitute
+from guardian.shortcuts import assign_perm
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 from rest_framework_guardian import filters
 
-from generate_transcript.models import (AreasAndHour,
-                                        MilitaryCourse_User,
-                                        Transcript,
-                                        TranscriptStatus)
-from generate_transcript. \
-    serializers import (TranscriptSerializer,
-                        TranscriptStatusSerializer)
+from academic_institute.models import AcademicInstitute
+from generate_transcript.filters import (BranchFilter, RecentFilter,
+                                         StatusFilter, UserExperiencesFilter)
+from generate_transcript.models import (AreasAndHour, MilitaryCourse_User,
+                                        Transcript, TranscriptStatus)
+from generate_transcript.serializers import (MilitaryCourseUserSerializer,
+                                             TranscriptSerializer,
+                                             TranscriptStatusSerializer)
 from users.models import MMTUser
 
 logger = logging.getLogger(__name__)
@@ -31,15 +31,30 @@ class TranscriptPDFView(PDFView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context = kwargs['context']
-        context['image'] = "/static/EducationLogo1.png"
         context['experiences'] = []
         context['experiences']
+        context['tests'] = []
 
         for military_obj in kwargs['transcript']. \
                 subject.militaryexperience_set.all():
             course_details = MilitaryCourse_User. \
                 objects.get(course_id=military_obj.id,
                             user_id=kwargs['transcript'].subject)
+            if hasattr(military_obj, 'militarycourse') and \
+                    hasattr(military_obj.militarycourse, 'militarytestresult'):
+                result = military_obj.militarycourse.militarytestresult
+                if course_details.score and \
+                        course_details.score >= result.passing:
+                    context['tests'].append({
+                        'date':
+                        course_details.start_date.strftime('%d-%^b-%Y'),
+                        'name': result.course_name,
+                        'credit': result.hours,
+                        'ace_score': result.passing,
+                        'actual_score': course_details.score,
+                        'type': result.test_type
+                    })
+                continue
 
             area = []
             hours = []
@@ -58,8 +73,9 @@ class TranscriptPDFView(PDFView):
                 course_name = military_obj.militarycourse.course_name
 
             context['experiences'].append(
-                {'start_date': course_details.start_date.strftime('%d %^b %Y'),
-                 'end_date': course_details.end_date.strftime('%d %^b %Y'),
+                {'start_date': course_details.start_date.strftime('%d-%^b-%Y'),
+                 'end_date': course_details.end_date.strftime('%d-%^b-%Y') if
+                 course_details.end_date else "PRESENT",
                  'ACE_identifier': military_obj.ACE_identifier,
                  'rank': military_obj.rank,
                  'rank_level': military_obj.rank_level,
@@ -105,16 +121,15 @@ class TranscriptViewSet(viewsets.ReadOnlyModelViewSet):
             pdf_view = TranscriptPDFView.as_view(
                 template_name='modernizedTranscript.html')
 
-        user = MMTUser.objects.get(email=request.user)
         recipient_status_obj = TranscriptStatus.objects.filter(
-            transcript=transcript, recipient=user).first()
-        receiver = user.last_name + ", " + user.first_name
+            transcript=transcript, recipient=request.user).first()
+        receiver = request.user.last_name + ", " + request.user.first_name
 
         if recipient_status_obj:
             recipient_status_obj.status = TranscriptStatus.STATUS.Opened
             recipient_status_obj.save()
 
-        group_list = list(user.groups.all())
+        group_list = list(request.user.groups.all())
 
         for group in group_list:
             academic_group = (group.academic_institutes.all().first()
@@ -127,15 +142,22 @@ class TranscriptViewSet(viewsets.ReadOnlyModelViewSet):
                 group_status_obj.status = TranscriptStatus.STATUS.Opened
                 group_status_obj.save()
 
+        # setting SSN Value
+        ssn = str(transcript.subject.ssn)[-4:]
+        ssn = "***-**-"+ssn
+
         context = {'first_name': transcript.subject.first_name,
                    'last_name': transcript.subject.last_name,
                    'dob': transcript.subject.dob.strftime('%d %^b %Y'),
-                   'ssn': transcript.subject.ssn,
+                   'ssn': ssn,
                    'rank': transcript.subject.rank,
                    'status': transcript.subject.status,
                    'date': datetime.today().strftime('%d %^b %Y'),
                    'branch': transcript.subject.branch,
-                   'receiver': receiver}
+                   'receiver': receiver,
+                   'transcript_type': "UNOFFICIAL" if
+                   transcript.subject.user_profile == request.user
+                   else "OFFICIAL"}
 
         return pdf_view(request, context=context, transcript=transcript)
 
@@ -146,19 +168,27 @@ class TranscriptStatusViewSet(viewsets.ModelViewSet):
     allows operations on individual events if user has appropriate 'view',
     'add', 'change' or 'delete' permissions.
     """
-    queryset = TranscriptStatus.objects.all()
+    queryset = TranscriptStatus.objects.all().order_by('-created')
     serializer_class = TranscriptStatusSerializer
-    filter_backends = [filters.ObjectPermissionsFilter]
+    filter_backends = [filters.ObjectPermissionsFilter,
+                       StatusFilter, BranchFilter, RecentFilter]
 
     def create(self, request, *args, **kwargs):
-        transcript_pk = request.data.get('transcript')
+        ssn = request.data.get('ssn')
         recipient_pk = request.data.get('recipient')
         ai_pk = request.data.get('academic_institute')
-        transcript = Transcript.objects.get(pk=transcript_pk)
+
+        if ssn:
+            transcript = get_object_or_404(Transcript, subject__ssn=ssn)
+        else:
+            transcript = Transcript.objects.filter(
+                subject__user_profile=request.user).first()
+
+        request.data["transcript"] = transcript.id
 
         if request.user == transcript.subject.user_profile:
             if recipient_pk:
-                recipient_user = get_object_or_404(MMTUser, id=recipient_pk)
+                recipient_user = get_object_or_404(MMTUser, email=recipient_pk)
 
             elif ai_pk:
                 recipient_user = (get_object_or_404(
@@ -182,4 +212,38 @@ class TranscriptStatusViewSet(viewsets.ModelViewSet):
                                      "check logs for details"},
                                     status=status.HTTP_400_BAD_REQUEST)
 
-            return super().create(request, *args, **kwargs)
+        return super().create(request, *args, **kwargs)
+
+
+class OccupationUpdatesViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Viewset that only lists events if user has 'view' permissions
+    """
+    queryset = MilitaryCourse_User.objects.all().filter(
+        course_id__militarycourse=None).order_by('-created')
+    serializer_class = MilitaryCourseUserSerializer
+    filter_backends = [UserExperiencesFilter, RecentFilter]
+
+
+class CourseUpdatesViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Viewset that only lists events if user has 'view' permissions
+    """
+    queryset = MilitaryCourse_User.objects.all().exclude(
+        course_id__militarycourse=None).filter(
+        course_id__militarycourse__militarytestresult=None).order_by(
+            '-created')
+    serializer_class = MilitaryCourseUserSerializer
+    filter_backends = [UserExperiencesFilter, RecentFilter]
+
+
+class AdditionalUpdatesViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Viewset that only lists events if user has 'view' permissions
+    """
+    queryset = MilitaryCourse_User.objects.all().exclude(
+        course_id__militarycourse=None).exclude(
+        course_id__militarycourse__militarytestresult=None).order_by(
+            '-created')
+    serializer_class = MilitaryCourseUserSerializer
+    filter_backends = [UserExperiencesFilter, RecentFilter]

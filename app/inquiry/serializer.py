@@ -66,7 +66,6 @@ class InquirySerializer(ObjectPermissionsAssignmentMixin,
             inquiry_owner = self.instance.email
         assigned_group = self.instance.default_assigned
         assigned = self.instance.assigned
-        logger.error(assigned)
         perms = {
             'view_inquiry': [inquiry_owner, assigned,
                              assigned_group],

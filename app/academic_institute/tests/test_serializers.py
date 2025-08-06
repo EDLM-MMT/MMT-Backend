@@ -2,9 +2,9 @@ from django.test import tag
 
 from academic_institute.models import AcademicInstitute
 from academic_institute.serializers import (AcademicInstituteSerializer,
-                                            ManageAcademicInstituteSerializer,
-                                            MMTUserSerializer)
+                                            ManageAcademicInstituteSerializer)
 from users.models import MMTUser
+from users.serializers import MMTUserSerializer
 
 from .test_setup import TestSetUp
 
@@ -75,6 +75,7 @@ class SerializersTests(TestSetUp):
                         'email': self.ur.email
                     }
                 ],
+                'institute': 'abc'
             }, partial=True)
         serialized_ai.is_valid()
         serialized_ai.save()
@@ -82,5 +83,5 @@ class SerializersTests(TestSetUp):
         self.assertEqual(
             self.institute.pk, serialized_ai.instance.id)
         self.assertEqual(
-            self.institute.institute, serialized_ai.instance.institute)
+            self.c_institute, serialized_ai.instance.institute)
         self.assertIn(self.user, serialized_ai.instance.group.user_set.all())

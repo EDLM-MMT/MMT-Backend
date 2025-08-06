@@ -52,13 +52,17 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.admindocs',
     # External Packages
+    'corsheaders',
     'rest_framework',
     'drf_spectacular',
+    'drf_spectacular_sidecar',
     'django_filters',
     'guardian',
     'notifications',
     'django_celery_beat',
     'django_celery_results',
+    'pgcrypto',
+    'knox',
     # Internal Apps
     'users',
     'academic_institute',
@@ -70,6 +74,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -78,6 +83,15 @@ MIDDLEWARE = [
     'django.contrib.admindocs.middleware.XViewMiddleware',
     'csp.middleware.CSPMiddleware',
 ]
+
+CSRF_TRUSTED_ORIGINS = ['https://*', 'https://*',
+                        'https://mmt.deloitteopenlxp.com',]
+CORS_ALLOWED_ORIGINS = [
+    'https://*', 'https://*', 'https://mmt.deloitteopenlxp.com',
+    'https://mmt.deloitteopenlxp.com']
+CSRF_COOKIE_DOMAIN = '.deloitteopenlxp.com'
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
 
 SECURE_SSL_REDIRECT = False
 
@@ -107,12 +121,13 @@ WSGI_APPLICATION = 'mmt_backend_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': os.environ.get('DB_NAME'),
         'USER': os.environ.get('DB_USER'),
         'PASSWORD': os.environ.get('DB_PASSWORD'),
         'HOST': os.environ.get('DB_HOST'),
         'PORT': os.environ.get('DB_PORT'),
+        'PGCRYPTO_KEY': os.environ.get('DB_ENC_PASS'),
     }
 }
 
@@ -176,6 +191,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTHENTICATION_BACKENDS = (
+    'knox.auth.TokenAuthentication',
     'django.contrib.auth.backends.ModelBackend',
     'guardian.backends.ObjectPermissionBackend',
 )
@@ -184,6 +200,7 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS':
         'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'knox.auth.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
     "DEFAULT_PERMISSION_CLASSES": [
@@ -196,7 +213,10 @@ SPECTACULAR_SETTINGS = {
     'TITLE': 'Django MMT Endpoints',
     'DESCRIPTION': 'Your project description',
     'VERSION': '1.0.0',
-    'SERVE_INCLUDE_SCHEMA': False,
+    # 'SERVE_INCLUDE_SCHEMA': False,
+    'SWAGGER_UI_DIST': 'SIDECAR',  # shorthand to use the sidecar instead
+    'SWAGGER_UI_FAVICON_HREF': 'SIDECAR',
+    'REDOC_DIST': 'SIDECAR',
 }
 
 # Celery Settings
@@ -221,3 +241,15 @@ DJANGO_NOTIFICATIONS_CONFIG = {
 NOTIFICATIONS_EXPIRE_AFTER = datetime.timedelta(days=30)
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880
+
+# Knox settings
+
+if os.environ.get('TOKEN_LIFE_HOURS') is not None:
+    REST_KNOX_TOKEN_TTL = datetime.timedelta(
+        hours=float(os.environ.get('TOKEN_LIFE_HOURS')))
+elif os.environ.get('TOKEN_LIFE_FOREVER') is not None:
+    REST_KNOX_TOKEN_TTL = None
+
+if os.environ.get('TOKEN_COUNT_PER_USER') is not None:
+    REST_KNOX_TOKEN_LIMIT_PER_USER = int(
+        os.environ.get('TOKEN_COUNT_PER_USER'))
