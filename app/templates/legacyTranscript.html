@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
+  <head>
+    <style>
+      body {
+        margin: 0; /* Remove default body margin */
+        height: 100vh; /* Ensure body takes full viewport height */
+      }
+    </style>
+    <title style="text-align: center">JST</title>
+  </head>
+
+  <body>
+    <style>
+      @page {
+        @top-right {
+          font-weight: bold;
+          content: "Page " counter(page) " of " counter(pages);
+        }
+        @bottom-center {
+          color: black;
+          font-size: 12px;
+          font-weight: bold;
+          content: "** {{transcript_type}} COPY **  ** PROTECTED BY FERPA **";
+        }
+        @bottom-right {
+          color: black;
+          font-size: 12px;
+          padding-right: 12px;
+          content: "{{date|date:"d-M-Y"|upper}}";
+        }
+
+      }
+      /* CSS styles for the footer */
+      footer {
+        position: fixed; /* Fix the footer to the bottom */
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        text-align: center; /* Center the text */
+      }
+    </style>
+
+    <div style="margin: 0px; font-size: 0.6em">
+      <div style="columns: 2"></div>
+      <h1 style="text-align: center; margin-bottom: 0">JOINT SERVICES</h1>
+      <h1 style="text-align: center; margin-top: 0">TRANSCRIPT</h1>
+
+      <div
+        style="
+          display: flex;
+          justify-content: space-between;
+          margin-left: 10%;
+          margin-right: 10%;
+        "
+      >
+        {% load static %}
+        <img
+          src="{% static 'EducationLogo1.png' %}"
+          alt="Education logo"
+          height="150"
+        />
+        <img
+          src="{% static 'DepartmentLogo2.png' %}"
+          alt="Department_logo"
+          height="150"
+          style="margin-left: 30%"
+        />
+      </div>
+
+      <h3 style="text-align: center">***{{transcript_type}}***</h3>
+
+      <!-- Service Member Info -->
+      <div>
+        <div style="float: left; width: 60%; padding: 10px">
+          <div style="display: flex; margin: 0">
+            <h3 style="margin: 0">Name:</h3>
+            <p style="margin-left: 29px; margin-top: 2px">
+              {{last_name}}, {{first_name}}
+            </p>
+          </div>
+          <div style="display: flex; margin: 0">
+            <h3 style="margin: 0; margin-right:7px">SSN:</h3>
+            <p style="margin-left: 33px; margin-top: 2px">{{ssn}}</p>
+          </div>
+          <div style="display: flex; margin: 0">
+            <h3 style="margin: 0">Rank:</h3>
+            <p style="margin-left: 33px; margin-top: 2px">{{rank}}</p>
+          </div>
+          <div style="display: flex; margin: 0">
+            <h3 style="margin: 0">Status:</h3>
+            <p style="margin-left: 26px; margin-top: 2px">{{status}}</p>
+          </div>
+        </div>
+        <div>
+          <h3 style="margin: 0">Transcript Sent To:</h3>
+          <p>{{receiver}}</p>
+        </div>
+      </div>
+      <span style="content: ''; display: table; clear: both"></span>
+
+      <!-- Military Courses Section -->
+
+      <h3 style="width: 100%; text-align: center; margin-bottom: 5px">
+        Military Courses
+      </h3>
+      <div
+        style="
+          padding: 5px;
+          background-color: #bfbfbf;
+          border: 2px solid black;
+          print-color-adjust: exact;
+        "
+      >
+        <div style="float: left; width: 10%; padding: 10px">
+          <p style="margin: 0; font-size: 0.9em">
+            <strong>Military Course ID </strong>
+          </p>
+        </div>
+        <div style="float: left; width: 30%; padding: 10px">
+          <p style="margin: 0; font-size: 0.9em">
+            <strong>ACE Identifier </strong>
+          </p>
+          <p style="margin-top: 5px; margin-bottom: 0; font-size: 0.9em">
+            <strong>Course Title </strong>
+          </p>
+          <p style="margin: 5px 0px 3px; font-size: 0.9em">
+            <strong>Location-Description-Credit Areas </strong>
+          </p>
+        </div>
+        <div style="float: left; width: 15%; padding: 10px">
+          <p style="margin: 0; font-size: 0.9em">
+            <strong>Dates Taken </strong>
+          </p>
+        </div>
+        <div style="float: left; width: 25%; padding: 10px">
+          <p style="margin: 0; font-size: 0.9em">
+            <strong>ACE Credit Recommendation </strong>
+          </p>
+        </div>
+        <div style="padding: 10px">
+          <p style="margin: 0; font-size: 0.9em"><strong>Level </strong></p>
+        </div>
+        <span style="content: ''; display: table; clear: both"></span>
+      </div>
+
+      <!-- Courses Begin -->
+      {% for exp in experiences %} {% if exp.course_name %}
+      <div style="padding-top: 5px">
+        <div style="float: left; width: 10%; padding: 10px">
+          <p style="margin: 0; font-size: 0.9em">{{exp.course_id}}</p>
+        </div>
+        <div style="float: left; width: 30%; padding: 10px">
+          <strong style="margin: 0; font-size: 0.9em">
+            {{exp.ACE_identifier}}
+          </strong>
+        </div>
+        <div style="float: left; width: 35%; padding: 10px">
+          {{exp.start_date}} to {{exp.end_date}}
+        </div>
+        <span style="content: ''; display: table; clear: both"></span>
+
+        <div style="float: left; width: 10%; padding: 10px">
+          <p style="margin: 0"></p>
+        </div>
+        <div style="float: left; width: 80%; padding-left: 10px">
+          <p style="margin-top: 0; margin-bottom: 0; font-size: 0.9em">
+            <strong>{{exp.course_name}} </strong>
+          </p>
+          <p style="margin: 5px 0px 3px; font-size: 0.9em">
+            {{exp.description}}
+          </p>
+
+          <div style="font-size: 0.9em; padding-bottom: 0">
+            <ul style="float: left; width: 55%; padding-left: 10px">
+              {% for area in exp.areas %}
+              <li style="padding: 5px">{{area}}</li>
+              {% endfor %}
+            </ul>
+            <ul style="float: left; width: 10%; list-style-type: none">
+              {% for hour in exp.hours %}
+              <li style="padding: 5px">{{hour}}</li>
+              {% endfor %}
+            </ul>
+            <ul style="float: right; width: 10%; list-style-type: none">
+              {% for level in exp.level %}
+              <li style="padding: 5px">{{level}}</li>
+              {% endfor %}
+            </ul>
+            <span style="content: ''; display: table; clear: both"></span>
+          </div>
+        </div>
+        <span style="content: ''; display: table; clear: both"></span>
+      </div>
+
+      {% endif %} {% endfor %}
+
+      <!-- Courses End -->
+
+      <!-- Military Experiences -->
+      <h3 style="width: 100%; text-align: center; margin-bottom: 5px">
+        Military Experience
+      </h3>
+      <div
+        style="padding: 5px; background-color: #bfbfbf; border: 2px solid black"
+      >
+        <div style="float: left; width: 10%; padding: 10px">
+          <p style="margin: 0; font-size: 0.9em">
+            <strong>Occupation ID </strong>
+          </p>
+        </div>
+        <div style="float: left; width: 30%; padding: 10px">
+          <p style="margin: 0; font-size: 0.9em">
+            <strong>ACE Identifier </strong>
+          </p>
+          <p style="margin-top: 5px; margin-bottom: 0; font-size: 0.9em">
+            <strong>Title </strong>
+          </p>
+          <p style="margin: 5px 0px 3px; font-size: 0.9em">
+            <strong>Description-Credit Areas </strong>
+          </p>
+        </div>
+        <div style="float: left; width: 15%; padding: 10px">
+          <p style="margin: 0; font-size: 0.9em">
+            <strong>Dates Held </strong>
+          </p>
+        </div>
+        <div style="float: left; width: 25%; padding: 10px">
+          <p style="margin: 0; font-size: 0.9em">
+            <strong>ACE Credit Recommendation </strong>
+          </p>
+        </div>
+        <div style="padding: 10px">
+          <p style="margin: 0; font-size: 0.9em"><strong>Level </strong></p>
+        </div>
+        <span style="content: ''; display: table; clear: both"></span>
+      </div>
+
+      <!-- Experiences Begin -->
+      {% for exp in experiences %} {% if not exp.course_name %}
+      <div style="padding-top: 5px">
+        <div style="float: left; width: 10%; padding: 10px">
+          <p style="margin: 0; font-size: 0.9em">{{exp.course_id}}</p>
+        </div>
+        <div style="float: left; width: 30%; padding: 10px">
+          <strong style="margin: 0; font-size: 0.9em">
+            {{exp.ACE_identifier}}
+          </strong>
+        </div>
+        <div style="float: left; width: 35%; padding: 10px">
+          {{exp.start_date}} to {{exp.end_date|default_if_none:"PRESENT"}}
+        </div>
+        <span style="content: ''; display: table; clear: both"></span>
+
+        <div style="float: left; width: 10%; padding: 10px">
+          <p style="margin: 0"></p>
+        </div>
+        <div style="float: left; width: 80%; padding-left: 10px">
+          <p style="margin-top: 0; margin-bottom: 0; font-size: 0.9em">
+            <strong>{{exp.occupation_name}}: </strong>
+          </p>
+          <p style="margin: 5px 0px 3px; font-size: 0.9em">
+            {{exp.description}}
+          </p>
+
+          <div style="font-size: 0.9em; padding-bottom: 0">
+            <ul style="float: left; width: 55%; padding-left: 10px">
+              {% for area in exp.areas %}
+              <li style="padding: 5px">{{area}}</li>
+              {% endfor %}
+            </ul>
+            <ul style="float: left; width: 10%; list-style-type: none">
+              {% for hour in exp.hours %}
+              <li style="padding: 5px">{{hour}}</li>
+              {% endfor %}
+            </ul>
+            <ul style="float: right; width: 10%; list-style-type: none">
+              {% for level in exp.level %}
+              <li style="padding: 5px">{{level}}</li>
+              {% endfor %}
+            </ul>
+            <span style="content: ''; display: table; clear: both"></span>
+          </div>
+        </div>
+        <span style="content: ''; display: table; clear: both"></span>
+      </div>
+      {% endif %} {% endfor %}
+
+      <!-- Experiences End -->
+
+      <!-- College Level Test Scores -->
+      <h3 style="width: 100%; text-align: center; margin-bottom: 5px">
+        College Level Test Scores
+      </h3>
+      <div
+        style="
+          padding: 5px;
+          background-color: #bfbfbf;
+          border: 2px solid black;
+          margin-bottom: 5px;
+        "
+      >
+        <p></p>
+      </div>
+
+      <!-- Tests Begin -->
+      <div>
+        <div>
+          <p style="margin-bottom: 0">
+            <strong>
+              Excelsior College Examinations (ECE) formerly ACT PEP Regents
+              College Examinations
+            </strong>
+          </p>
+          <!-- Titles -->
+          <div>
+            <div style="float: left; width: 15%; padding: 10px">
+              <p style="margin: 0; font-size: 0.9em">
+                <strong>Date Taken</strong>
+              </p>
+            </div>
+            <div style="float: left; width: 15%; padding: 10px">
+              <p style="margin: 0; font-size: 0.9em"><strong>Title</strong></p>
+            </div>
+            <div style="float: left; width: 10%; padding: 10px">
+              <p style="margin: 0; font-size: 0.9em">
+                <strong>Recmed Credit</strong>
+              </p>
+            </div>
+            <div style="float: left; width: 10%; padding: 10px">
+              <p style="margin: 0; font-size: 0.9em"><strong>Level</strong></p>
+            </div>
+            <div style="float: left; width: 10%; padding: 10px">
+              <p style="margin: 0; font-size: 0.9em">
+                <strong>Required by ACE</strong>
+              </p>
+            </div>
+            <div style="float: left; width: 10%; padding: 10px">
+              <p style="margin: 0; font-size: 0.9em">
+                <strong>Student's Score</strong>
+              </p>
+            </div>
+            <span style="content: ''; display: table; clear: both"></span>
+          </div>
+          <!-- Conent -->
+          <div>
+            <div style="float: left; width: 15%; padding: 0px 10px">
+              <p style="margin: 0; font-size: 0.9em">09-FEB-2011</p>
+            </div>
+            <div style="float: left; width: 15%; padding: 0px 10px">
+              <p style="margin: 0; font-size: 0.9em">World Conflict</p>
+            </div>
+            <div style="float: left; width: 10%; padding: 0px 10px">
+              <p style="margin: 0; font-size: 0.9em">3</p>
+            </div>
+            <div style="float: left; width: 10%; padding: 0px 10px">
+              <p style="margin: 0; font-size: 0.9em">U</p>
+            </div>
+            <div style="float: left; width: 10%; padding: 0px 10px">
+              <p style="margin: 0; font-size: 0.9em">C</p>
+            </div>
+            <div style="float: left; width: 10%; padding: 0px 10px">
+              <p style="margin: 0; font-size: 0.9em">A</p>
+            </div>
+            <span style="content: ''; display: table; clear: both"></span>
+          </div>
+        </div>
+        <!-- DAIMS Section -->
+        <div>
+          <p style="margin-bottom: 0">
+            <strong>
+              College Level Examination Program (CLEP) & DANTES Subject
+              Standardized Tests (DSST)
+            </strong>
+          </p>
+          <!-- Titles -->
+          <div>
+            <div style="float: left; width: 15%; padding: 10px">
+              <p style="margin: 0; font-size: 0.9em">
+                <strong>Date Taken</strong>
+              </p>
+            </div>
+            <div style="float: left; width: 15%; padding: 10px">
+              <p style="margin: 0; font-size: 0.9em"><strong>Title</strong></p>
+            </div>
+            <div style="float: left; width: 10%; padding: 10px">
+              <p style="margin: 0; font-size: 0.9em">
+                <strong>Recmed Credit</strong>
+              </p>
+            </div>
+            <div style="float: left; width: 10%; padding: 10px">
+              <p style="margin: 0; font-size: 0.9em">
+                <strong>Required by ACE</strong>
+              </p>
+            </div>
+            <div style="float: left; width: 10%; padding: 10px">
+              <p style="margin: 0; font-size: 0.9em">
+                <strong>Student's Score</strong>
+              </p>
+            </div>
+            <div style="float: left; width: 5%; padding: 10px">
+              <p style="margin: 0; font-size: 0.9em">
+                <strong>Sub Score 1</strong>
+              </p>
+            </div>
+            <div style="float: left; width: 5%; padding: 10px">
+              <p style="margin: 0; font-size: 0.9em">
+                <strong>Sub Score 2</strong>
+              </p>
+            </div>
+            <div style="float: left; width: 5%; padding: 10px">
+              <p style="margin: 0; font-size: 0.9em">
+                <strong>Verbal Score</strong>
+              </p>
+            </div>
+            <span style="content: ''; display: table; clear: both"></span>
+          </div>
+          <!-- DAIMS Data -->
+           {% for test in tests %}
+          <div>
+            <div style="float: left; width: 15%; padding: 0px 10px">
+              <p style="margin: 0; font-size: 0.9em">{{test.date}}</p>
+            </div>
+            <div style="float: left; width: 15%; padding: 0px 10px">
+              <p style="margin: 0; font-size: 0.9em">{{test.name}}</p>
+            </div>
+            <div style="float: left; width: 10%; padding: 0px 10px">
+              <p style="margin: 0; font-size: 0.9em">{{test.credit}}</p>
+            </div>
+            <div style="float: left; width: 10%; padding: 0px 10px">
+              <p style="margin: 0; font-size: 0.9em">{{test.ace_score}}</p>
+            </div>
+            <div style="float: left; width: 10%; padding: 0px 10px">
+              <p style="margin: 0; font-size: 0.9em">{{test.actual_score}}</p>
+            </div>
+            <div style="float: left; width: 5%; padding: 0px 10px">
+              <p style="margin: 0; font-size: 0.9em"></p>
+            </div>
+            <div style="float: left; width: 5%; padding: 0px 10px">
+              <p style="margin: 0; font-size: 0.9em"></p>
+            </div>
+            <div style="float: left; width: 5%; padding: 0px 10px">
+              <p style="margin: 0; font-size: 0.9em"></p>
+            </div>
+            <span style="content: ''; display: table; clear: both"></span>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div>
+          <p style="margin-bottom: 0">
+            <strong> Defense Language Proficiency Test (DLPT) </strong>
+          </p>
+          <!-- Titles -->
+          <div>
+            <div style="float: left; width: 15%; padding: 10px">
+              <p style="margin: 0; font-size: 0.9em">
+                <strong>Date Taken</strong>
+              </p>
+            </div>
+            <div style="float: left; width: 15%; padding: 10px">
+              <p style="margin: 0; font-size: 0.9em"><strong>Title</strong></p>
+            </div>
+            <div style="float: left; width: 10%; padding: 10px">
+              <p style="margin: 0; font-size: 0.9em">
+                <strong>Student Score</strong>
+              </p>
+            </div>
+            <div style="float: left; width: 45%; padding: 10px">
+              <p style="margin: 0; font-size: 0.9em; padding-left: 10%">
+                <strong>ACE Recommended Credit</strong>
+              </p>
+              <div style="float: left; width: 15%; padding: 10px">
+                <p style="margin: 2px; font-size: 0.9em">
+                  <strong>Listening</strong>
+                </p>
+              </div>
+              <div style="float: left; width: 15%; padding: 10px">
+                <p style="margin: 2px 5px 0px; font-size: 0.9em">
+                  <strong>Reading</strong>
+                </p>
+              </div>
+              <div style="float: left; width: 15%; padding: 10px">
+                <p style="margin: 2px; font-size: 0.9em">
+                  <strong>Speaking</strong>
+                </p>
+              </div>
+            </div>
+            <span style="content: ''; display: table; clear: both"></span>
+          </div>
+          <!-- Conent -->
+          <div>
+            <div style="float: left; width: 15%; padding: 0px 10px">
+              <p style="margin: 0; font-size: 0.9em">01-SEP-2010</p>
+            </div>
+            <div style="float: left; width: 15%; padding: 0px 10px">
+              <p style="margin: 0; font-size: 0.9em">Spanish</p>
+            </div>
+            <div style="float: left; width: 10%; padding: 0px 10px">
+              <p style="margin: 0; font-size: 0.9em">3</p>
+            </div>
+            <div style="float: left; width: 45%; padding: 0px 10px">
+              <div style="float: left; width: 15%; padding: 0 10px">
+                <p style="margin: 2px; font-size: 0.9em">4L&6U</p>
+              </div>
+              <div style="float: left; width: 15%; padding: 0 10px">
+                <p style="margin: 2px 5px 0px; font-size: 0.9em"></p>
+              </div>
+              <div style="float: left; width: 15%; padding: 0 10px">
+                <p style="margin: 2px; font-size: 0.9em"></p>
+              </div>
+            </div>
+            <span style="content: ''; display: table; clear: both"></span>
+          </div>
+          <div>
+            <div style="float: left; width: 15%; padding: 0px 10px">
+              <p style="margin: 0; font-size: 0.9em">15-SEP-2010</p>
+            </div>
+            <div style="float: left; width: 15%; padding: 0px 10px">
+              <p style="margin: 0; font-size: 0.9em">Spanish</p>
+            </div>
+            <div style="float: left; width: 10%; padding: 0px 10px">
+              <p style="margin: 0; font-size: 0.9em">3+</p>
+            </div>
+            <div style="float: left; width: 45%; padding: 0px 10px">
+              <div style="float: left; width: 15%; padding: 0 10px">
+                <p style="margin: 2px; font-size: 0.9em"></p>
+              </div>
+              <div style="float: left; width: 15%; padding: 0 10px">
+                <p style="margin: 2px 5px 0px; font-size: 0.9em"></p>
+              </div>
+              <div style="float: left; width: 15%; padding: 0 10px">
+                <p style="margin: 2px; font-size: 0.9em">4L&7U</p>
+              </div>
+            </div>
+            <span style="content: ''; display: table; clear: both"></span>
+          </div>
+          <div>
+            <div style="float: left; width: 15%; padding: 0px 10px">
+              <p style="margin: 0; font-size: 0.9em">01-SEP-2012</p>
+            </div>
+            <div style="float: left; width: 15%; padding: 0px 10px">
+              <p style="margin: 0; font-size: 0.9em">Spanish</p>
+            </div>
+            <div style="float: left; width: 10%; padding: 0px 10px">
+              <p style="margin: 0; font-size: 0.9em">2+</p>
+            </div>
+            <div style="float: left; width: 45%; padding: 0px 10px">
+              <div style="float: left; width: 15%; padding: 0 10px">
+                <p style="margin: 2px; font-size: 0.9em"></p>
+              </div>
+              <div style="float: left; width: 15%; padding: 0 10px">
+                <p style="margin: 2px 5px 0px; font-size: 0.9em"></p>
+              </div>
+              <div style="float: left; width: 15%; padding: 0 10px">
+                <p style="margin: 2px; font-size: 0.9em"></p>
+              </div>
+            </div>
+            <span style="content: ''; display: table; clear: both"></span>
+          </div>
+        </div>
+
+        <p style="margin: 20px 0px 0px; font-size: 0.7em">
+          <strong
+            >Exams taken after 31 October 2011 may have recommended college
+            credit via the ACE National Guide.
+          </strong>
+        </p>
+        <p style="margin-top: 0px; font-size: 0.7em">
+          <strong
+            >Go to
+            http://www2.acenet.edu/credit/?fuseaction=browse.getOrganizationDetail&FICE=190163
+            and look for your exam.
+          </strong>
+        </p>
+      </div>
+      <!-- Tests End -->
+
+      <!-- Other Learning Experiences Begin-->
+      <h3 style="width: 100%; text-align: center; margin-bottom: 5px">
+        Other Learning Experiences {{page}}
+      </h3>
+      <div
+        style="
+          padding: 5px;
+          background-color: #bfbfbf;
+          border: 2px solid black;
+          margin-bottom: 5px;
+          print-color-adjust: exact;
+        "
+      >
+        <p style="margin: 0">
+          This section provides a record of the service member's learning
+          experiences that do not have credit recommended for one or more of the
+          following reasons:
+        </p>
+      </div>
+      <p style="margin-bottom: 0; font-size: 0.9em">
+        (1) Course has not been evaluated by ACE.
+      </p>
+      <p style="margin: 0; font-size: 0.9em">
+        (2) Class attendance dates were not recorded in the service member's
+        record.
+      </p>
+      <p style="margin: 0; font-size: 0.9em">
+        (3) Course was not completed during the ACE evaluation period.
+      </p>
+      <p style="margin-top: 0; font-size: 0.9em">
+        (4) Course was not evaluated by ACE at this specific location.
+      </p>
+
+      <!-- Courses Table -->
+      <!-- Titles -->
+      <div>
+        <div style="float: left; width: 15%; padding: 10px">
+          <p style="margin: 0; font-size: 0.9em"><strong>Course ID</strong></p>
+        </div>
+        <div style="float: left; width: 15%; padding: 10px">
+          <p style="margin: 0; font-size: 0.9em"><strong>Date Taken</strong></p>
+        </div>
+        <div style="float: left; width: 30%; padding: 10px; margin-left:-10px">
+          <p style="margin: 0; font-size: 0.9em"><strong>Title</strong></p>
+        </div>
+        <div style="float: left; width: 20%; padding: 10px">
+          <p style="margin: 0; font-size: 0.9em"><strong>Location</strong></p>
+        </div>
+        <div style="float: left; width: 5%; padding: 10px">
+          <p style="margin: 0; font-size: 0.9em"><strong>Reason</strong></p>
+        </div>
+        <span style="content: ''; display: table; clear: both"></span>
+      </div>
+      <!-- Content -->
+      <div>
+        <div>
+          <div style="float: left; width: 15%; padding: 10px">
+            <p style="margin: 0; font-size: 0.9em">A-495-2039</p>
+          </div>
+          <div style="float: left; width: 15%; padding: 10px">
+            <p style="margin: 0; font-size: 0.9em">31-OCT-1987</p>
+          </div>
+          <div style="float: left; width: 30%; padding: 10px; margin-left:-10px">
+            <p style="margin: 0; font-size: 0.9em">
+              Basic Submarine Damage Control
+            </p>
+          </div>
+          <div style="float: left; width: 20%; padding: 10px">
+            <p style="margin: 0; font-size: 0.9em">
+              Submarine School Groton CT
+            </p>
+          </div>
+          <div style="float: left; width: 5%; padding: 10px">
+            <p style="margin: 0; font-size: 0.9em">1</p>
+          </div>
+          <span style="content: ''; display: table; clear: both"></span>
+        </div>
+        <div>
+          <div style="float: left; width: 15%; padding: 10px">
+            <p style="margin: 0; font-size: 0.9em">F-000-0080</p>
+          </div>
+          <div style="float: left; width: 15%; padding: 10px">
+            <p style="margin: 0; font-size: 0.9em">19-OCT-2005</p>
+          </div>
+          <div style="float: left; width: 30%; padding: 10px; ; margin-left:-10px">
+            <p style="margin: 0; font-size: 0.9em">Submarine Escape</p>
+          </div>
+          <div style="float: left; width: 20%; padding: 10px">
+            <p style="margin: 0; font-size: 0.9em">
+              Submarine School Groton CT
+            </p>
+          </div>
+          <div style="float: left; width: 5%; padding: 10px">
+            <p style="margin: 0; font-size: 0.9em">1</p>
+          </div>
+          <span style="content: ''; display: table; clear: both"></span>
+        </div>
+      </div>
+      <!-- Other Learning Experiences End-->
+
+      <h3 style="text-align: center">END OF TRANSCRIPT</h3>
+      <h3 style="text-align: center; margin-bottom: 0">
+        *NOTICE TO ALL TRANSCRIPT REVIEWERS:
+      </h3>
+      <h3 style="text-align: center; margin: 0">
+        FOR FULL EXPLANATIONS OF ALL ITEMS FLAGGED ON THIS TRANSCRIPT, PLEASE
+        REFER TO LEGEND FOLLOWING LAST PAGE OF TRANSCRIPT.
+      </h3>
+    </div>
+  </body>
+</html>

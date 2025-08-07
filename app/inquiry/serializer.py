@@ -1,10 +1,9 @@
 import logging
 
+from inquiry.models import Inquiry, InquiryComment, InquiryFAQ
 from rest_framework import serializers
 from rest_framework_guardian.serializers import \
     ObjectPermissionsAssignmentMixin
-
-from inquiry.models import Inquiry, InquiryComment, InquiryFAQ
 from users.models import MMTUser
 
 logger = logging.getLogger(__name__)
@@ -67,7 +66,6 @@ class InquirySerializer(ObjectPermissionsAssignmentMixin,
             inquiry_owner = self.instance.email
         assigned_group = self.instance.default_assigned
         assigned = self.instance.assigned
-        logger.error(assigned)
         perms = {
             'view_inquiry': [inquiry_owner, assigned,
                              assigned_group],

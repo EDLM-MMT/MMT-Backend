@@ -1,10 +1,12 @@
+from django.core.validators import RegexValidator
 from django.db import models
 from django.urls import reverse
 from model_utils import Choices
 from model_utils.models import StatusField, TimeStampedModel
 
-from generate_transcript.models import (AcademicCourseArea, AcademicInstitute,
-                                        Degree)
+from academic_institute.models import AcademicInstitute
+from generate_transcript.models import AcademicCourseArea, Degree
+from generate_transcript.regex import REGEX_CHECK, REGEX_ERROR_MESSAGE
 from users.models import MMTUser, UserRecord
 
 
@@ -32,11 +34,13 @@ class CareerPlan(models.Model):
 
     def get_absolute_url(self):
         """ URL for displaying individual model records."""
-        return reverse('career-plan-detail', args=[str(self.id)])
+        return reverse('counseling:career-plan-detail', args=[str(self.id)])
 
 
 class Comment(TimeStampedModel):
-    comment = models.TextField(help_text="Set comment text")
+    comment = models.TextField(help_text="Set comment text", validators=[
+        RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
+    ])
     plan = models.ForeignKey(CareerPlan, related_name='comments',
                              on_delete=models.CASCADE,
                              help_text="Select associated plan")
@@ -62,7 +66,9 @@ class Comment(TimeStampedModel):
 class ESONote(TimeStampedModel):
     PURPOSE_CHOICES = Choices('Advised', 'Updated', 'Approved')
     purpose = StatusField(choices_name='PURPOSE_CHOICES')
-    note = models.TextField(help_text="Set note text")
+    note = models.TextField(help_text="Set note text", validators=[
+        RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
+    ])
     plan = models.ForeignKey(CareerPlan, related_name='eso_notes',
                              on_delete=models.CASCADE,
                              help_text="Select associated plan")

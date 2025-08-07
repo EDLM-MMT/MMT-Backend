@@ -2,16 +2,29 @@ import re
 
 from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
                                         PermissionsMixin)
+from django.core.validators import (MaxValueValidator, MinValueValidator,
+                                    RegexValidator)
 from django.db import models
 from django.forms import ValidationError
 from django.utils import timezone
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
+from pgcrypto.fields import IntegerPGPSymmetricKeyField
+
+from generate_transcript.regex import REGEX_CHECK, REGEX_ERROR_MESSAGE
 
 
 # Create your models here.
 class MOS(models.Model):
-    code = models.CharField(max_length=100, help_text="Set MOS code")
-    name = models.CharField(max_length=255, help_text="Set MOS name")
+    code = models.CharField(max_length=100, help_text="Set MOS code",
+                            validators=[
+                                RegexValidator(regex=REGEX_CHECK,
+                                               message=REGEX_ERROR_MESSAGE),
+                            ])
+    name = models.CharField(max_length=255, help_text="Set MOS name",
+                            validators=[
+                                RegexValidator(regex=REGEX_CHECK,
+                                               message=REGEX_ERROR_MESSAGE),
+                            ])
 
     def __str__(self):
         """String for representing the Model object."""
@@ -25,7 +38,35 @@ class MOS(models.Model):
 class UserRecord(models.Model):
     """Model to store user records"""
     id = models.BigAutoField(primary_key=True)
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=True, validators=[
+        RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
+    ])
+    first_name = models.CharField(max_length=200, validators=[
+        RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
+    ])
+    last_name = models.CharField(max_length=200, validators=[
+        RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
+    ])
+    rank = models.CharField(max_length=200, blank=True, null=True, validators=[
+        RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
+    ])
+    dob = models.DateField(blank=True, null=True)
+    ssn = IntegerPGPSymmetricKeyField(
+        validators=[MinValueValidator(100000000),
+                    MaxValueValidator(999999999)],
+        null=True)
+    status = models.CharField(max_length=200, blank=True, null=True,
+                              validators=[
+                                  RegexValidator(
+                                      regex=REGEX_CHECK,
+                                      message=REGEX_ERROR_MESSAGE),
+                              ])
+    branch = models.CharField(max_length=200, blank=True, null=True,
+                              validators=[
+                                  RegexValidator(
+                                      regex=REGEX_CHECK,
+                                      message=REGEX_ERROR_MESSAGE),
+                              ])
     user_profile = models.OneToOneField(
         'MMTUser', related_name='user_record', on_delete=models.SET_NULL,
         null=True, blank=True)
@@ -74,16 +115,30 @@ class MMTUser(AbstractBaseUser, PermissionsMixin):
     """Model to store user login details"""
 # User attributes
     username = None
-    email = models.EmailField(max_length=200, unique=True)
-    first_name = models.CharField(max_length=200)
-    last_name = models.CharField(max_length=200)
+    email = models.EmailField(max_length=200, unique=True, validators=[
+        RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
+    ])
+    first_name = models.CharField(max_length=200, validators=[
+        RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
+    ])
+    last_name = models.CharField(max_length=200, validators=[
+        RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
+    ])
     date_joined = models.DateTimeField(default=timezone.now)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    position = models.CharField(max_length=200)
-    sector = models.CharField(max_length=200)
-    rank = models.CharField(max_length=200)
-    location = models.CharField(max_length=200)
+    position = models.CharField(max_length=200, blank=True, validators=[
+        RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
+    ])
+    sector = models.CharField(max_length=200, validators=[
+        RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
+    ])
+    rank = models.CharField(max_length=200, validators=[
+        RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
+    ])
+    location = models.CharField(max_length=200, validators=[
+        RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
+    ])
     eso_default = models.ForeignKey('self', related_name='service_members',
                                     on_delete=models.SET_NULL, blank=True,
                                     null=True)

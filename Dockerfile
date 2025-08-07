@@ -1,9 +1,10 @@
 # Dockerfile
 
-FROM python:3.9-buster
+FROM python:3.9-bookworm
 
 # install nginx
-RUN apt-get update && apt-get install nginx vim libpango-1.0-0 libpangoft2-1.0-0 -y --no-install-recommends
+RUN apt-get update && apt-get install nginx vim libpango-1.0-0 libpangoft2-1.0-0 -y --no-install-recommends && \
+    apt-get clean
 COPY nginx.default /etc/nginx/sites-available/default
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log

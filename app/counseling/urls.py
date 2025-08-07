@@ -3,6 +3,7 @@ from rest_framework.routers import DefaultRouter
 
 from counseling import views
 
+app_name = 'counseling'
 # Create a router and register our ViewSets with it.
 router = DefaultRouter()
 router.register(r'career-plan', views.CareerPlanViewSet,

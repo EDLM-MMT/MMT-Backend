@@ -1,14 +1,13 @@
 import logging
 
 from django_filters.rest_framework import DjangoFilterBackend
+from inquiry.serializer import (InquiryCommentSerializer, InquiryFAQSerializer,
+                                InquirySerializer)
 from rest_framework import filters as filter
 from rest_framework import mixins, status, viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework_guardian import filters
-
-from inquiry.serializer import (InquiryCommentSerializer, InquiryFAQSerializer,
-                                InquirySerializer)
 
 from .models import Inquiry, InquiryComment, InquiryFAQ
 

@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en" xml:lang="en">
+  <head>
+    <title style="text-align: center">Modernized MMT Transcript</title>
+    <style>
+      @page {
+        margin: 0;
+        padding: 0;
+        background-color: #fcfff5;
+        margin-bottom: 5%;
+        @bottom-center {
+          color: gray;
+          font-size: 10px;
+          content: "** {{transcript_type}} COPY **  ** PROTECTED BY FERPA **";
+        }
+        @bottom-left {
+          color: gray;
+          font-size: 10px;
+          padding-left: 10px;
+          content: "Page " counter(page) " of " counter(pages);
+        }
+        @bottom-right {
+          color: gray;
+          font-size: 10px;
+          padding-right: 10px;
+          content: "{{date|date:"d-M-Y"|upper}}";
+        }
+      }
+
+      html,
+      body {
+        background-color: #fcfff5;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Transcript Header section -->
+    <div style="background-color: #f7fbf1; padding: 10px 15px">
+      <div style="display: flex; align-items: center">
+        {% load static %}
+        <img
+          src="{% static 'EducationLogo1.png' %}"
+          alt="Education logo"
+          style="width: 40px; height: 40px; margin: 10px"
+        />
+        <div style="padding-top: 10px; padding-left: 8px; font-size: 12px">
+          <div><strong>{{transcript_type|join:" "}}</strong></div>
+          <h2 style="margin-top: 0; color: #374151; font-size: 16px">
+            MILITARY TRANSCRIPT
+          </h2>
+        </div>
+      </div>
+      <!-- User info Section -->
+      <div style="display: flex; font-size: 12px">
+        <div style="width: 30%; padding: 10px">
+          <p style="margin: 0; font-size: 10px; display: flex">
+            <strong style="color: gray; flex: 0 0 60px">NAME </strong>
+            {{first_name}} {{last_name}}
+          </p>
+          <p
+            style="
+              margin-top: 5px;
+              margin-bottom: 0;
+              font-size: 10px;
+              display: flex;
+            "
+          >
+            <strong style="color: gray; flex: 0 0 60px">DOB </strong>
+            {{dob}}
+          </p>
+          <p
+            style="
+              margin-top: 5px;
+              margin-bottom: 0;
+              font-size: 10px;
+              display: flex;
+            "
+          >
+            <strong style="color: gray; flex: 0 0 60px">SSN </strong>
+            {{ssn}}
+          </p>
+        </div>
+        <div style="width: 30%; padding: 10px">
+          <p style="margin: 0; font-size: 10px; display: flex">
+            <strong style="color: gray; flex: 0 0 70px">RANK </strong>
+            {{rank}}
+          </p>
+          <p
+            style="
+              margin-top: 5px;
+              margin-bottom: 0;
+              font-size: 10px;
+              display: flex;
+            "
+          >
+            <strong style="color: gray; flex: 0 0 70px">STATUS </strong>
+            {{status}}
+          </p>
+        </div>
+        <div style="width: 30%; padding: 10px">
+          <p style="margin: 0; font-size: 10px; display: flex">
+            <strong style="color: gray; flex: 0 0 80px">DATE </strong>
+            {{date}}
+          </p>
+          <p
+            style="
+              margin-top: 5px;
+              margin-bottom: 0;
+              font-size: 10px;
+              display: flex;
+            "
+          >
+            <strong style="color: gray; flex: 0 0 80px">BRANCH </strong
+            >{{branch}}
+          </p>
+        </div>
+      </div>
+    </div>
+    <!-- Military Courses and Military Experience Section  -->
+    <div style="margin: 20px 15px 20px 25px">
+      <h2 style="margin-top: 0; font-size: 14px; color: #374151">
+        Military Courses and Occupational Experience
+      </h2>
+      <!-- Titles -->
+      <div style="display: flex; padding-top: 5px">
+        <div style="width: 15%">
+          <p style="margin: 0; font-size: 10px; color: #9ca3af">
+            <strong>START DATE</strong>
+          </p>
+          <p style="margin: 5px 0px; font-size: 10px; color: #9ca3af">
+            <strong>END DATE </strong>
+          </p>
+        </div>
+        <div style="width: 20%">
+          <p style="margin: 0; font-size: 10px; color: #9ca3af">
+            <strong>ACE IDENTIFIER </strong>
+          </p>
+          <p style="margin: 5px 0px; font-size: 10px; color: #9ca3af">
+            <strong>RANK </strong>
+          </p>
+        </div>
+        <div style="width: 40%">
+          <p style="margin: 0; font-size: 10px; color: #9ca3af">
+            <strong>ID </strong>
+          </p>
+          <p style="margin: 5px 0px; font-size: 10px; color: #9ca3af">
+            <strong>TITLE </strong>
+          </p>
+        </div>
+        <div style="width: 15%">
+          <p style="margin: 0; font-size: 10px; color: #9ca3af">
+            <strong>ACE CRED</strong>
+          </p>
+        </div>
+        <div style="width: 10%">
+          <p style="margin: 0; font-size: 10px; color: #9ca3af">
+            <strong>LEVEL </strong>
+          </p>
+        </div>
+      </div>
+      <!-- Military courses and experience section -->
+      {% for exp in experiences %}
+      <div style="display: flex; padding-top: 10px">
+        <div style="width: 15%">
+          {% if exp.course_name %}
+          <p style="margin: 0; font-size: 10px; color: #4b5563">
+            {{exp.start_date}}
+          </p>
+          <p style="margin: 5px 0px; font-size: 10px; color: #4b5563">
+            {{exp.end_date}}
+          </p>
+          {% else %}
+          <p style="margin: 0; font-size: 10px; color: #1b1128">
+            <strong>{{exp.start_date}}</strong>
+          </p>
+          <p style="margin: 5px 0px; font-size: 10px; color: #1b1128">
+            <strong>{{exp.end_date}}</strong>
+          </p>
+          {% endif %}
+        </div>
+        <div style="width: 20%">
+          {% if exp.ACE_identifier and exp.ACE_identifier != "None Assigned" %}
+          <p style="margin: 0; font-size: 10px; color: #3366cc">
+            {{exp.ACE_identifier}}
+          </p>
+          <p style="margin: 0; font-size: 10px; color: gray"></p>
+          {% else %}
+          <p style="margin: 0; font-size: 10px; color: #1b1128">
+            <strong>{{exp.ACE_identifier}}</strong>
+          </p>
+          <p style="margin: 0; font-size: 10px; color: gray"></p>
+          {% endif %} {% if exp.rank %}
+          <p style="margin: 5px 0px; font-size: 10px; color: #1b1128">
+            <strong>{{exp.rank}} · {{exp.rank_level}}</strong>
+          </p>
+          {% endif %}
+        </div>
+        <div style="width: 40%">
+          {% if exp.course_name %}
+          <p style="margin: 0; font-size: 10px; color: #6b7280">
+            {{exp.course_id}}
+          </p>
+          <p style="margin: 5px 0; font-size: 10px; color: #6b7280">
+            <strong>{{exp.course_name}}</strong>
+          </p>
+          <ul style="margin: 5px 0 0 15px; padding-left: 0">
+            {% for area in exp.areas %}
+            <li style="font-size: 10px; padding-bottom: 3px; color: #4b5563">
+              {{area}}
+            </li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p style="margin: 0; font-size: 10px; color: #1b1128">
+            <strong>{{exp.course_id}}</strong>
+          </p>
+          <p style="margin: 5px 0; font-size: 10px; color: #1b1128">
+            <strong>{{exp.occupation_name}}</strong>
+          </p>
+          <ul style="margin: 5px 0 0 15px; padding-left: 0">
+            <li style="font-size: 10px; padding-bottom: 3px; color: #4b5563">
+              {{exp.description}}
+            </li>
+          </ul>
+          {% endif %}
+        </div>
+        <div style="width: 15%; padding-top: 35px">
+          <ul style="list-style-type: none; margin: 0; padding: 0">
+            {% for hours in exp.hours %}
+            <li style="padding-bottom: 3px; font-size: 10px; color: #4b5563">
+              {{hours}} SH
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div style="width: 10%; padding-top: 35px">
+          <ul style="list-style-type: none; margin: 0; padding: 0">
+            {% for level in exp.level %}
+            <li style="padding-bottom: 3px; font-size: 10px; color: #4b5563">
+              {{level}}
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <!-- Additional ACE Recommendations -->
+    <div style="margin: 0 15px 20px 25px">
+      <h2 style="margin-top: 0; font-size: 14px; color: #374151">
+        Additional ACE Recommended Credits
+      </h2>
+      <!-- Titles -->
+      <div style="padding: 5px 0; print-color-adjust: exact; display: flex">
+        <div style="width: 15%">
+          <p style="margin: 0; font-size: 10px; color: #9ca3af">
+            <strong> DATES</strong>
+          </p>
+        </div>
+        <div style="width: 20%">
+          <p style="margin: 0; font-size: 10px; color: #9ca3af">
+            <strong>TEST TYPE </strong>
+          </p>
+        </div>
+        <div style="width: 30%">
+          <p style="margin: 0; font-size: 10px; color: #9ca3af">
+            <strong>TITLE </strong>
+          </p>
+        </div>
+        <div style="width: 13%">
+          <p style="margin: 0; font-size: 10px; color: #9ca3af">
+            <strong>REC HRS</strong>
+          </p>
+        </div>
+        <div style="width: 13%">
+          <p style="margin: 0; font-size: 10px; color: #9ca3af">
+            <strong>ACE RQD</strong>
+          </p>
+        </div>
+        <div style="width: 10%">
+          <p style="margin: 0; font-size: 10px; color: #9ca3af">
+            <strong>SCORE </strong>
+          </p>
+        </div>
+      </div>
+      <!-- DAIMS Data -->
+      {% for test in tests %}
+      <div style="print-color-adjust: exact; display: flex; padding-top: 10px">
+        <div style="width: 15%">
+          <p style="margin: 0; font-size: 10px; color: #4b5563">{{test.date}}</p>
+        </div>
+        <div style="width: 20%">
+          <p style="margin: 0; font-size: 10px; color: #4b5563">{{test.type}}</p>
+        </div>
+        <div style="width: 30%">
+          <p style="margin: 0; font-size: 10px; color: #4b5563">
+            {{test.name}}
+          </p>
+        </div>
+        <div style="width: 13%">
+          <p style="margin: 0; font-size: 10px; color: #4b5563">{{test.credit}}</p>
+        </div>
+        <div style="width: 13%">
+          <p style="margin: 0; font-size: 10px; color: #4b5563">{{test.ace_score}}</p>
+        </div>
+        <div style="width: 10%">
+          <p style="margin: 0; font-size: 10px; color: #4b5563">{{test.actual_score}}</p>
+        </div>
+      </div>
+      {% endfor %}
+      </div>
+    </div>
+
+    <div
+      style="padding-top: 20px; background-color: #f7fbf1; padding-bottom: 20px"
+    >
+      <h2 style="text-align: center; font-size: 16px">END OF TRANSCRIPT</h2>
+    </div>
+  </body>
+  <footer></footer>
+  </body>
+  <footer></footer>
+</html>
+

@@ -3,11 +3,27 @@ from rest_framework import serializers
 from rest_framework_guardian.serializers import \
     ObjectPermissionsAssignmentMixin
 
+from academic_institute.models import AcademicInstitute
 from counseling.models import CareerPlan, Comment, CoursePlan, ESONote
-from generate_transcript.models import (AcademicCourseArea, AcademicInstitute,
-                                        Degree)
+from generate_transcript.models import AcademicCourseArea, Degree
 from generate_transcript.serializers import DegreeSerializer
 from users.models import MMTUser, UserRecord
+
+
+class RestrictedDegreeSerializer(DegreeSerializer):
+    class Meta(DegreeSerializer.Meta):
+        validators = []
+
+    def validate(self, attrs):
+        """
+        Check that Degree and Academic Institute match
+        """
+        if self.instance or Degree.objects.filter(
+                degree=attrs['degree'],
+                institute__institute=attrs['institute']).exists():
+            return attrs
+        raise serializers.ValidationError(
+            "No Degree found for given Academic Institute")
 
 
 class CommentSerializer(ObjectPermissionsAssignmentMixin,
@@ -150,7 +166,7 @@ class CareerPlanSerializer(ObjectPermissionsAssignmentMixin,
         slug_field='email', queryset=UserRecord.objects.all())
     eso = serializers.SlugRelatedField(
         slug_field='email', queryset=MMTUser.objects.all())
-    degree = DegreeSerializer()
+    degree = RestrictedDegreeSerializer()
     academic_institute = serializers.SlugRelatedField(
         slug_field='institute', queryset=AcademicInstitute.objects.all())
     comments = ListCommentSerializer(many=True, read_only=True)

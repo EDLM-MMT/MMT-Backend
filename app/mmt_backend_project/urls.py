@@ -13,9 +13,11 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+import notifications.urls
 from django.contrib import admin
 from django.urls import include, path
-# from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+from drf_spectacular.views import (SpectacularAPIView,
+                                   SpectacularSwaggerSplitView)
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
@@ -26,7 +28,11 @@ urlpatterns = [
     path('api/', include('generate_transcript.urls')),
     path('api/', include('counseling.urls')),
     path('api/', include('inquiry.urls')),
-    # path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
-    # path("api/schema/docs/",
-    #      SpectacularSwaggerView.as_view(url_name="schema")),
+    path('api/', include('academic_institute.urls')),
+    path('auth/', include('users.urls')),
+    path('notifications/', include(notifications.urls,
+                                   namespace='notifications')),
+    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+    path("api/schema/docs/",
+         SpectacularSwaggerSplitView.as_view(url_name="schema")),
 ]

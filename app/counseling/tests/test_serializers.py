@@ -1,3 +1,5 @@
+from unittest.mock import Mock
+
 from django.contrib.auth.models import Group
 from django.test import tag
 
@@ -11,8 +13,11 @@ from .test_setup import TestSetUp
 @tag('unit')
 class SerializersTests(TestSetUp):
     def test_serialize_career_plan(self):
+        self.ur.save()
         cp = CareerPlan(degree_start_date=self.date,
-                        expected_graduation_date=self.date)
+                        expected_graduation_date=self.date,
+                        owner=self.ur)
+        cp.save()
         serialized_cp = CareerPlanSerializer(cp)
 
         self.assertEqual(
@@ -22,14 +27,13 @@ class SerializersTests(TestSetUp):
 
     def test_create_serialize_career_plan(self):
         self.ur.save()
-        self.user.save()
         self.institute.save()
         self.degree.save()
         serialized_cp = CareerPlanSerializer(data={
             'degree_start_date': str(self.date),
             'expected_graduation_date': str(self.date),
             'owner': self.email,
-            'eso': self.uname,
+            'eso': self.email,
             'academic_institute': self.institute.institute,
             'degree': {
                 'institute': self.institute.institute,
@@ -62,7 +66,7 @@ class SerializersTests(TestSetUp):
             'degree_start_date': str(self.date.today()),
             'expected_graduation_date': str(self.date.today()),
             'owner': self.email,
-            'eso': self.uname,
+            'eso': self.email,
             'academic_institute': self.institute.institute,
             'degree': {
                 'institute': self.institute.institute,
@@ -128,6 +132,21 @@ class SerializersTests(TestSetUp):
         self.assertListEqual(perms['view_comment'], [
                              self.ur.user_profile, self.user, eso_group])
 
+    def test_create_comment(self):
+        mock = Mock()
+        mock.user = self.user
+        self.ur.save()
+        self.cp.eso = self.user
+        self.cp.save()
+        data = {"comment": self.text, "poster": self.user.email,
+                "plan": self.cp.pk}
+        serialized_comment = CommentSerializer(
+            data=data, context={"request": mock})
+        serialized_comment.is_valid()
+        serialized_comment.save()
+
+        self.assertEqual(Comment.objects.all().count(), 1)
+
     def test_serialize_eso_note(self):
         self.ur.save()
         self.cp.save()
@@ -161,6 +180,22 @@ class SerializersTests(TestSetUp):
         self.assertEqual(len(perms), 1)
         self.assertIn('view_esonote', perms)
         self.assertListEqual(perms['view_esonote'], [self.user, eso_group])
+
+    def test_create_eso_note(self):
+        mock = Mock()
+        mock.user = self.user
+        self.ur.save()
+        self.cp.eso = self.user
+        self.cp.save()
+        data = {"purpose": ESONote.PURPOSE_CHOICES.Advised,
+                "note": self.text, "poster": self.user.email,
+                "plan": self.cp.pk}
+        serialized_note = ESONoteSerializer(
+            data=data, context={"request": mock})
+        serialized_note.is_valid()
+        serialized_note.save()
+
+        self.assertEqual(ESONote.objects.all().count(), 1)
 
     def test_serialize_course_plan(self):
         self.ur.save()

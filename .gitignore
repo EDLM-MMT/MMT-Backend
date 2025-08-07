@@ -222,3 +222,6 @@ dmypy.json
 
 # DB artifacts
 sqlite3
+
+# test artifacts
+app/inquiries
