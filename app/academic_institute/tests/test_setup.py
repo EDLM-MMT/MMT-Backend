@@ -1,4 +1,5 @@
 # from unittest.mock import patch
+from pathlib import Path
 
 from django.test import override_settings
 from rest_framework.test import APITestCase
@@ -26,4 +27,15 @@ class TestSetUp(APITestCase):
         self.ur = UserRecord(user_profile=self.user, email=self.email)
         self.institute = AcademicInstitute(institute=self.c_institute)
 
+        self.file = Path().joinpath("/tmp", "imports", "test.csv").absolute()
+        self.file.parent.mkdir(exist_ok=True, parents=True)
+        with open(self.file, 'w', encoding="utf-8") as f:
+            f.write("FirstName,LastName,Email,Name\n")
+            f.write("John,Smith,js@example.com,Fake University\n")
+
         return super().setUp()
+
+    def tearDown(self):
+        """Remove temp file when completed"""
+        self.file.unlink(missing_ok=True)
+        return super().tearDown()

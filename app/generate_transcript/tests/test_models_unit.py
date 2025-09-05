@@ -1,4 +1,5 @@
 from django.test import tag
+from django.urls import reverse
 
 from generate_transcript.models import AcademicCourseArea, MilitaryExperience
 
@@ -63,3 +64,15 @@ class ModelTests(TestSetUp):
                       str(tr))
         self.assertEqual(tr.determine_experience_type(),
                          self.test_type)
+
+    def test_create_transcript(self):
+        self.assertEqual(str(self.transcript), str(self.ur))
+        expected_url = reverse('generate_transcript:transcript-detail',
+                               args=[self.transcript.pk])
+        self.assertEqual(self.transcript.get_absolute_url(), expected_url)
+
+    def test_transcript_status(self):
+        expected_url = reverse('generate_transcript:transcript-status-detail',
+                               args=[self.transcript_status.pk])
+        self.assertEqual(self.transcript_status.get_absolute_url(),
+                         expected_url)

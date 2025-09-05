@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 import datetime
 import os
+import sys
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -69,6 +70,7 @@ INSTALLED_APPS = [
     'generate_transcript',
     'counseling',
     'inquiry',
+    'configuration',
 ]
 
 MIDDLEWARE = [
@@ -83,17 +85,22 @@ MIDDLEWARE = [
     'django.contrib.admindocs.middleware.XViewMiddleware',
     'csp.middleware.CSPMiddleware',
 ]
+csrf_domain = os.environ.get('CSRF_TRUSTED_DOMAIN')
+CSRF_TRUSTED_ORIGINS = [csrf_domain] if csrf_domain else []
+cors_origin = os.environ.get('CORS_ALLOWED_ORIGINS')
+CORS_ALLOWED_ORIGINS = [cors_origin] if cors_origin else []
+CSRF_COOKIE_DOMAIN = os.environ.get('CSRF_COOKIE_DOMAIN')
 
-CSRF_TRUSTED_ORIGINS = ['https://*', 'https://*',
-                        'https://mmt.deloitteopenlxp.com',]
-CORS_ALLOWED_ORIGINS = [
-    'https://*', 'https://*', 'https://mmt.deloitteopenlxp.com',
-    'https://mmt.deloitteopenlxp.com']
-CSRF_COOKIE_DOMAIN = '.deloitteopenlxp.com'
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_CREDENTIALS = True
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SECURE = True
 
-SECURE_SSL_REDIRECT = False
+SESSION_COOKIE_SECURE = True
+
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_SSL_REDIRECT = True
+SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
 
 ROOT_URLCONF = 'mmt_backend_project.urls'
 
@@ -182,8 +189,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+MEDIA_URL = 'media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+if os.environ.get('FORCE_SCRIPT_NAME') is not None:
+    FORCE_SCRIPT_NAME = os.environ.get('FORCE_SCRIPT_NAME')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -207,6 +219,42 @@ REST_FRAMEWORK = {
         "mmt_backend_project.permissions.CustomObjectPermissions",
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+}
+
+LOG_PATH = os.environ.get('LOG_PATH')
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+
+    'loggers': {
+        'dict_config_logger': {
+            'handlers': ['console', 'file_logs'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'stream': sys.stdout,
+            'formatter': 'simpleRe',
+        },
+        'file_logs': {
+            'level': 'WARNING',
+            'class': 'logging.FileHandler',
+            'filename': LOG_PATH,
+            'formatter': 'simpleRe',
+        },
+    },
+
+    'formatters': {
+        'simpleRe': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        }
+    }
 }
 
 SPECTACULAR_SETTINGS = {

@@ -68,7 +68,7 @@ class AreasAndHour(models.Model):
                                         " military course",
                                         blank=True, null=True)
     hours = models.PositiveIntegerField()
-    level = models.CharField(max_length=3, blank=True, null=True, validators=[
+    level = models.CharField(max_length=3, blank=True, validators=[
         RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
     ])
 
@@ -126,7 +126,7 @@ class MilitaryExperience(models.Model):
     experience_id = models.CharField(max_length=500, unique=True, validators=[
         RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
     ])
-    experience_name = models.CharField(max_length=500, blank=True, null=True,
+    experience_name = models.CharField(max_length=500, blank=True,
                                        validators=[
                                            RegexValidator(
                                                regex=REGEX_CHECK,
@@ -140,13 +140,13 @@ class MilitaryExperience(models.Model):
                                               message=REGEX_ERROR_MESSAGE
                                           ),
                                       ])
-    description = models.TextField(null=True, blank=True, validators=[
+    description = models.TextField(blank=True, validators=[
         RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
     ])
-    rank = models.CharField(max_length=500, null=True, blank=True, validators=[
+    rank = models.CharField(max_length=500, blank=True, validators=[
         RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
     ])
-    rank_level = models.CharField(max_length=500, null=True, blank=True,
+    rank_level = models.CharField(max_length=500, blank=True,
                                   validators=[
                                       RegexValidator(
                                           regex=REGEX_CHECK,

@@ -3,7 +3,7 @@ from unittest.mock import Mock
 from django.test import tag
 
 from generate_transcript.models import (AcademicCourse, MilitaryCourse,
-                                        TranscriptStatus)
+                                        Transcript, TranscriptStatus)
 from generate_transcript.serializers import (AcademicCourseSerializer,
                                              MilitaryCourseSerializer,
                                              TranscriptStatusSerializer)
@@ -33,15 +33,15 @@ class SerializersTests(TestSetUp):
 
     def test_create_status(self):
         self.ur.save()
-        self.transcript.save()
+        transcript = Transcript.objects.get(subject=self.ur)
         self.institute.save()
 
         mock = Mock()
         mock.user = self.user
-        mock.data = {'transcript': self.transcript.pk}
+        mock.data = {'transcript': transcript.pk}
 
         tss = TranscriptStatusSerializer(data={
-            "transcript": self.transcript.pk,
+            "transcript": transcript.pk,
             "academic_institute": self.institute.pk,
             "status": TranscriptStatus.STATUS.Pending
         }, context={'request': mock})
@@ -50,11 +50,11 @@ class SerializersTests(TestSetUp):
 
         self.assertEqual(TranscriptStatus.objects.all().count(), 1)
         self.assertEqual(tss.instance.academic_institute, self.institute)
-        self.assertEqual(tss.instance.transcript, self.transcript)
+        self.assertEqual(tss.instance.transcript, transcript)
 
     def test_status_perms(self):
         self.ur.save()
-        self.transcript.save()
+        transcript = Transcript.objects.get(subject=self.ur)
         self.institute.save()
         self.institute.refresh_from_db()
         expected_perms = {
@@ -66,12 +66,12 @@ class SerializersTests(TestSetUp):
 
         mock = Mock()
         mock.user = self.user
-        mock.data = {'transcript': self.transcript.pk}
+        mock.data = {'transcript': transcript.pk}
         mock.academic_institute = self.institute
         mock.recipient = None
 
         tss = TranscriptStatusSerializer(data={
-            "transcript": self.transcript.pk,
+            "transcript": transcript.pk,
             "academic_institute": self.institute.pk,
             "status": TranscriptStatus.STATUS.Pending
         }, context={'request': mock})

@@ -12,10 +12,8 @@ class MMTUserSerializer(serializers.ModelSerializer):
         model = MMTUser
         fields = ['email', 'first_name', 'last_name', 'position', 'rank',]
 
-        def validate_email(attrs):
-            return attrs
         extra_kwargs = {
-            'email': {'validators': [validate_email]},
+            'email': {'validators': []},
             'position': {'default': ''}
         }
 

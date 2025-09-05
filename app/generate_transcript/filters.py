@@ -1,7 +1,6 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from rest_framework import filters
-
 from generate_transcript.models import TranscriptStatus
 
 
@@ -14,7 +13,8 @@ class RecentFilter(filters.BaseFilterBackend):
     def filter_queryset(self, request, queryset, view):
         if 'recent' in request.query_params:
             return queryset.filter(
-                created__gt=datetime.utcnow() - timedelta(days=31))
+                created__gt=datetime.now(timezone.utc) - timedelta(days=31)
+            )
         return queryset
 
 
@@ -24,8 +24,7 @@ class StatusFilter(filters.SearchFilter):
     """
     search_param = 'status'
     search_title = 'Search Status'
-    search_description = 'A status of: ' + \
-        str({i[0] for i in TranscriptStatus.STATUS})
+    search_description = 'A status of: ' + str({i[0] for i in TranscriptStatus.STATUS})
 
     def get_search_fields(self, view, request):
         return ['=status', ]

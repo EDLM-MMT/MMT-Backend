@@ -1,5 +1,6 @@
-from counseling.models import CareerPlan, Comment, CoursePlan, ESONote
 from django.test import tag
+
+from counseling.models import CareerPlan, Comment, CoursePlan, ESONote
 
 from .test_setup import TestSetUp
 

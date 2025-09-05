@@ -209,4 +209,5 @@ class TranscriptStatusAdmin(GuardedModelAdmin):
 
 @admin.register(MilitaryCourse_User)
 class MilitaryCourse_UserAdmin(GuardedModelAdmin):
-    list_display = ('start_date', 'end_date')
+    list_display = ('start_date', 'end_date', 'course_id', 'user_id',)
+    list_filter = ('course_id', 'user_id',)

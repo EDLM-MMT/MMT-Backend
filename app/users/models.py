@@ -1,4 +1,5 @@
 import re
+import uuid
 
 from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
                                         PermissionsMixin)
@@ -38,7 +39,10 @@ class MOS(models.Model):
 class UserRecord(models.Model):
     """Model to store user records"""
     id = models.BigAutoField(primary_key=True)
-    email = models.EmailField(unique=True, validators=[
+    elrr_id = models.UUIDField(unique=True, validators=[
+        RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
+    ], default=uuid.uuid4)
+    email = models.EmailField(blank=True, validators=[
         RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
     ])
     first_name = models.CharField(max_length=200, validators=[
@@ -47,7 +51,7 @@ class UserRecord(models.Model):
     last_name = models.CharField(max_length=200, validators=[
         RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
     ])
-    rank = models.CharField(max_length=200, blank=True, null=True, validators=[
+    rank = models.CharField(max_length=200, blank=True, validators=[
         RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
     ])
     dob = models.DateField(blank=True, null=True)
@@ -55,13 +59,13 @@ class UserRecord(models.Model):
         validators=[MinValueValidator(100000000),
                     MaxValueValidator(999999999)],
         null=True)
-    status = models.CharField(max_length=200, blank=True, null=True,
+    status = models.CharField(max_length=200, blank=True,
                               validators=[
                                   RegexValidator(
                                       regex=REGEX_CHECK,
                                       message=REGEX_ERROR_MESSAGE),
                               ])
-    branch = models.CharField(max_length=200, blank=True, null=True,
+    branch = models.CharField(max_length=200, blank=True,
                               validators=[
                                   RegexValidator(
                                       regex=REGEX_CHECK,
@@ -86,7 +90,6 @@ class MMTUserProfileManager(BaseUserManager):
         """Create a new user"""
         if not email:
             raise ValueError('Email is required')
-        # if not first_name:
         #     raise ValueError('First name is required')
         # if not last_name:
         #     raise ValueError('Last name is required')

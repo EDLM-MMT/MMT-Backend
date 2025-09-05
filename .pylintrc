@@ -1,0 +1,43 @@
+[DESIGN]
+max-attributes=29
+
+[TYPECHECK]
+
+[MASTER]
+; DJANGO_SETTINGS_MODULE=mmt_backend_project.settings
+
+disable=arguments-differ,
+        duplicate-code,
+        import-error,
+        import-outside-toplevel,
+        invalid-name,
+        invalid-str-returned,
+        line-too-long,
+        missing-class-docstring,
+        missing-function-docstring,
+        missing-module-docstring,
+        no-member,
+        redefined-builtin,
+        superfluous-parens,
+        super-with-arguments,
+        too-few-public-methods,
+        too-many-ancestors,
+        too-many-instance-attributes,
+        unused-argument,
+        unused-import,
+        useless-object-inheritance,      
+        useless-super-delegation
+
+ignore-paths=^.*/app/generate_transcript/migrations\/.*$,
+             ^.*/app/inquiry/migrations\/.*$,
+             ^.*/app/counseling/migrations\/.*$,
+             ^.*/app/users/migrations\/.*$,
+             ^.*/inquiry/migrations\/.*$,
+             ^.*\.cache\/*\/.*$
+
+init-hook="from pylint.config import find_pylintrc; import os, sys; sys.path.append(os.path.dirname(find_pylintrc()))"
+
+[MESSAGES CONTROL]
+
+[FORMAT]
+max-line-length=100

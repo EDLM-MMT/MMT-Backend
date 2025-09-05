@@ -1,6 +1,8 @@
 from rest_framework.test import APITestCase
 from users.models import MMTUser
 
+TEST_EMAIL = "test@test.com"
+
 
 class TestSetUp(APITestCase):
     """Class with setup and teardown for tests in XDS"""
@@ -21,7 +23,7 @@ class TestSetUp(APITestCase):
                                     is_superuser=True)
         self.auth_user = MMTUser.objects.get(email=self.auth_email)
 
-        self.email = "test@test.com"
+        self.email = TEST_EMAIL
         self.password = "test1234"
         self.first_name = "Jill"
         self.last_name = "doe"
@@ -37,7 +39,7 @@ class TestSetUp(APITestCase):
         }
 
         self.userDict_login_fail = {
-            "username": "test@test.com",
+            "username": TEST_EMAIL,
             "password": "test"
         }
 
@@ -46,7 +48,7 @@ class TestSetUp(APITestCase):
         }
 
         self.userDict_login_fail_no_password = {
-            "username": "test@test.com"
+            "username": TEST_EMAIL
         }
 
         self.user_1_email = "test3@test.com"

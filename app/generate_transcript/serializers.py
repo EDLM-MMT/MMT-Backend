@@ -96,14 +96,16 @@ class TranscriptStatusSerializer(ObjectPermissionsAssignmentMixin,
                 validated_data['status'] = TranscriptStatus.STATUS.Delivered
             else:
                 validated_data['status'] = TranscriptStatus.STATUS.Pending
-        transcriptStatus, c = TranscriptStatus.objects.update_or_create(
-            **validated_data)
+        transcriptStatus = TranscriptStatus.objects.update_or_create(
+            **validated_data)[0]
         return transcriptStatus
 
     def to_representation(self, instance):
         return {
             'pk': instance.pk,
             'transcript': {
+                "branch": instance.transcript.subject.branch
+                if instance.transcript.subject.branch else "Unknown",
                 "dob": instance.transcript.subject.dob,
                 "first_name": instance.transcript.subject.first_name,
                 "last_name": instance.transcript.subject.last_name,

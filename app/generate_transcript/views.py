@@ -22,6 +22,8 @@ from users.models import MMTUser
 
 logger = logging.getLogger(__name__)
 
+DATE_TIME = '%d-%^b-%Y'
+
 
 class TranscriptPDFView(PDFView):
     """ Generates PDFs for Transcripts"""
@@ -29,17 +31,14 @@ class TranscriptPDFView(PDFView):
     download_name = 'resume'
 
     def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
         context = kwargs['context']
         context['experiences'] = []
-        context['experiences']
         context['tests'] = []
 
-        for military_obj in kwargs['transcript']. \
-                subject.militaryexperience_set.all():
-            course_details = MilitaryCourse_User. \
-                objects.get(course_id=military_obj.id,
-                            user_id=kwargs['transcript'].subject)
+        for course_details in kwargs['transcript']. \
+                subject.militarycourse_user.all().order_by("-end_date",
+                                                           "-start_date"):
+            military_obj = course_details.course_id
             if hasattr(military_obj, 'militarycourse') and \
                     hasattr(military_obj.militarycourse, 'militarytestresult'):
                 result = military_obj.militarycourse.militarytestresult
@@ -73,9 +72,10 @@ class TranscriptPDFView(PDFView):
                 course_name = military_obj.militarycourse.course_name
 
             context['experiences'].append(
-                {'start_date': course_details.start_date.strftime('%d-%^b-%Y'),
-                 'end_date': course_details.end_date.strftime('%d-%^b-%Y') if
-                 course_details.end_date else "PRESENT",
+                {'start_date': course_details.start_date.strftime(DATE_TIME),
+                 'end_date':
+                 course_details.end_date.strftime(
+                     DATE_TIME) if course_details.end_date else "PRESENT",
                  'ACE_identifier': military_obj.ACE_identifier,
                  'rank': military_obj.rank,
                  'rank_level': military_obj.rank_level,
@@ -101,7 +101,7 @@ class TranscriptViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = TranscriptSerializer
     filter_backends = [filters.ObjectPermissionsFilter]
 
-    def retrieve(self, request, pk=None, *args, **kwargs):
+    def retrieve(self, request, pk=None):
 
         basename = self.basename
 
@@ -148,11 +148,11 @@ class TranscriptViewSet(viewsets.ReadOnlyModelViewSet):
 
         context = {'first_name': transcript.subject.first_name,
                    'last_name': transcript.subject.last_name,
-                   'dob': transcript.subject.dob.strftime('%d %^b %Y'),
+                   'dob': transcript.subject.dob.strftime(DATE_TIME),
                    'ssn': ssn,
                    'rank': transcript.subject.rank,
                    'status': transcript.subject.status,
-                   'date': datetime.today().strftime('%d %^b %Y'),
+                   'date': datetime.today(),
                    'branch': transcript.subject.branch,
                    'receiver': receiver,
                    'transcript_type': "UNOFFICIAL" if
@@ -205,12 +205,11 @@ class TranscriptStatusViewSet(viewsets.ModelViewSet):
                     logger.error("Duplicate entry detected!")
                     return Response({'detail': "Permission Already Assigned"},
                                     status=status.HTTP_400_BAD_REQUEST)
-                else:
-                    # Handle other IntegrityError cases
-                    logger.error("Other IntegrityError occurred:", e)
-                    return Response({'detail': "Other IntegrityError, " +
-                                     "check logs for details"},
-                                    status=status.HTTP_400_BAD_REQUEST)
+                # Handle other IntegrityError cases
+                logger.error("Other IntegrityError occurred: %s", e)
+                return Response({'detail': "Other IntegrityError, " +
+                                 "check logs for details"},
+                                status=status.HTTP_400_BAD_REQUEST)
 
         return super().create(request, *args, **kwargs)
 
