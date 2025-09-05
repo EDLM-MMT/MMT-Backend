@@ -148,8 +148,8 @@ class UtilsTests(TestSetUp):
                'extensions': {
                    'http://xapi.edlm/elrr/extensions/employment/rank': 'ssgt',  # noqa: E501
                    'http://xapi.edlm/elrr/extensions/employment/rankLevel': 'e4'}}  # noqa: E501
-        bad2 = {'positionTitle': 'job title',
-                'employmentStartDate': '2025-08-06',
+        bad2 = {'employmentStartDate': '2025-08-06',
+                'positionDescription': 'job desc',
                 'extensions': {
                     'http://xapi.edlm/elrr/extensions/employment/rank': 'ssgt',  # noqa: E501
                     'http://xapi.edlm/elrr/extensions/employment/rankLevel': 'e4',  # noqa: E501
