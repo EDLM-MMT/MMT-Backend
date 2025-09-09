@@ -46,12 +46,14 @@ gunicorn>=23.0.0, <23.1.0
 
 isort>=5.13.2,<5.14.0
 
-redis==4.5.4
-
 pandas[excel]
 
 python-magic >=0.4.27, <0.5
 
 psycopg2-binary >= 2.9, < 3.0
+
+redis==4.5.4
+
+requests>=2.32.5, <2.33.0
 
 weasyprint==52.5
