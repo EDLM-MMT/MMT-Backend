@@ -1,8 +1,8 @@
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
 from django.test import tag
 
-from generate_transcript.tasks import ai_admin_workflow
+from generate_transcript.tasks import workflow_to_load_ELRR_data
 
 from .test_setup import TestSetUp
 
@@ -12,13 +12,14 @@ class TestAIAdminWorkflowTask(TestSetUp):
 
     @patch('generate_transcript.tasks.Command')
     @patch('generate_transcript.tasks.logger')
-    def test_ai_admin_workflow_runs_command(self, mock_logger, mock_command):
+    def test_workflow_to_load_ELRR_data_runs_command(self, mock_logger,
+                                                     mock_command):
         # Arrange
         mock_handle = MagicMock()
         mock_command.return_value.handle = mock_handle
 
         # Act
-        ai_admin_workflow()
+        workflow_to_load_ELRR_data()
 
         # Assert
         mock_logger.info.assert_any_call('STARTING DATA LOADING FROM ELRR')

@@ -9,8 +9,8 @@ logger = logging.getLogger(__name__)
 
 
 @shared_task(name="workflow_to_load_ELRR_data")
-def ai_admin_workflow():
-    """AI automated workflow"""
+def workflow_to_load_ELRR_data():
+    """load ELRR data workflow"""
 
     logger.info('STARTING DATA LOADING FROM ELRR')
     start = datetime.now()
