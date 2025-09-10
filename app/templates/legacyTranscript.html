@@ -60,12 +60,42 @@
           alt="Education logo"
           height="150"
         />
-        <img
-          src="{% static 'DepartmentLogo2.png' %}"
-          alt="Department_logo"
-          height="150"
-          style="margin-left: 30%"
-        />
+        {% if branch == "Navy" %}
+          <img
+            src="{% static 'Seal-Navy.png' %}"
+            alt="Navy_logo"
+            height="150"
+            style="margin-left: 30%"
+          />
+        {% elif branch == "Coast Guard" %}
+          <img
+            src="{% static 'Seal-Coast-Guard.png' %}"
+            alt="Coast_Guard_Logo"
+            height="150"
+            style="margin-left: 30%"
+          />  
+        {% elif branch == "Marine Corps" %}
+          <img
+            src="{% static 'Seal-USMC.png' %}"
+            alt="Marine_Corps_Logo"
+            height="150"
+            style="margin-left: 30%"
+          /> 
+        {% elif branch == "Air Force" %}
+          <img
+            src="{% static 'USAF-Seal.png' %}"
+            alt="Air_Force_logo"
+            height="150"
+            style="margin-left: 30%"
+          />      
+        {% else %}
+          <img
+            src="{% static 'Department-of-Defense-Seal.png' %}"
+            alt="DOD_logo"
+            height="150"
+            style="margin-left: 30%"
+          /> 
+        {% endif %}
       </div>
 
       <h3 style="text-align: center">***{{transcript_type}}***</h3>
