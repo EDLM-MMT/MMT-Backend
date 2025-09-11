@@ -32,7 +32,7 @@ class Command(BaseCommand):
                 record['person'] = person
                 record = self.validate_record(record)
                 if isinstance(record, bool):
-                    break
+                    continue
                 ur = self.load_person(record)
                 occupations = self.load_occupations(ur, record)  # noqa E841
                 courses = self.load_courses(ur, record)  # noqa E841

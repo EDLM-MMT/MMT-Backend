@@ -83,8 +83,9 @@ class Command(BaseCommand):
                 for obj in objects:
                     print(f"- {obj.key}")
                     # download file to import dir
-                    s3.download_fileobj(
-                        bucket_name, obj.key, import_dir.joinpath(obj.key))
+                    with open(import_dir.joinpath(obj.key), 'wb') as f:
+                        boto3.client('s3').download_fileobj(
+                            bucket_name, obj.key, f)
             except Exception as e:
                 print(f"Error accessing bucket: {e}")
 
