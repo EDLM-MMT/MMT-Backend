@@ -198,10 +198,9 @@ class CareerPlanSerializer(ObjectPermissionsAssignmentMixin,
     def create(self, validated_data):
         if 'degree' in validated_data:
             degree_dict = validated_data.pop('degree')
-            degree = Degree.objects.get(degree=degree_dict.get(
-                'degree'),
-                institute__institute=validated_data.get('academic_institute'))
             career_plan = super().create(validated_data)
+            degree = career_plan.academic_institute.degrees.get(
+                degree=degree_dict.get('degree'))
             career_plan.degree = degree
             career_plan.save()
             return career_plan

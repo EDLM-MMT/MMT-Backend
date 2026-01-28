@@ -1,5 +1,7 @@
+import os
 import pathlib
 
+import boto3
 import pandas
 from django.core.management.base import BaseCommand
 
@@ -17,10 +19,9 @@ class Command(BaseCommand):
         Get list of emails and associated AIs
         """
         if file.suffix == '.csv':
-            data_frame = pandas.read_csv(file)
+            data_frame = pandas.read_csv(file, usecols=['Name', 'Email'])
         else:
-            data_frame = pandas.read_excel(file)
-        data_frame = data_frame.drop(columns=['FirstName', 'LastName',])
+            data_frame = pandas.read_excel(file, usecols=['Name', 'Email'])
         return data_frame
 
     def format_admin_list(self, admin_list: pandas.DataFrame):
@@ -66,7 +67,32 @@ class Command(BaseCommand):
         return admins
 
     def handle(self, *args, **options):
-        for file in pathlib.Path("/mnt/imports").iterdir():
+        # check import dir exists
+        import_dir = pathlib.Path().joinpath("/opt", "imports")
+        if not import_dir.exists():
+            return f"Unable to access {import_dir.absolute()}"
+
+        # connect to S3 if able
+        bucket_name = os.getenv("S3_BUCKET_NAME")
+        if bucket_name:
+            s3 = boto3.resource('s3')
+            try:
+                objects = list(s3.Bucket(bucket_name).objects.all())
+                print("Downloading objects in bucket:")
+                # iterate items in bucket
+                for obj in objects:
+                    print(f"- {obj.key}")
+                    # download file to import dir
+                    with open(import_dir.joinpath(obj.key), 'wb') as f:
+                        boto3.client('s3').download_fileobj(
+                            bucket_name, obj.key, f, ExtraArgs={
+                                "ExpectedBucketOwner": "partybus"
+                            })
+            except Exception as e:
+                print(f"Error accessing bucket: {e}")
+
+        # iterate files and attempt import
+        for file in import_dir.iterdir():
             try:
                 admin_list = self.retrieve_admin_list(file)
                 admin_dict = self.format_admin_list(admin_list)
@@ -76,6 +102,9 @@ class Command(BaseCommand):
                 admins_updated = len(admin_users)
 
                 print(f"{ais_imported} AI retrieved\n{admins_updated}" +
-                    f" AI admins updated\nFrom {file}")
+                      f" AI admins updated\nFrom {file}")
             except Exception:
                 print(f"Issue with {file}")
+            finally:
+                # delete files so downloaded files aren't kept
+                file.unlink(missing_ok=True)

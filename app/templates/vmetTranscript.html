@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" xml:lang="en">
+  <head>
+    <title style="text-align: center">Verification of Military Experience and Training</title>
+    <style>
+      @page {
+        margin: 60px 40px;
+        @top-center {
+          content: "";
+          border-top: 2px solid #000;
+          width: 97.75%;
+          margin-left: 0px;
+          margin-right: 0px;
+          margin-top: 60px;
+          display: flex;
+        }
+        @bottom-center {
+          content: "";
+          border-bottom: 2px solid #000;
+          width: 97.75%;
+          display: flex;
+          margin-left: 0px;
+          margin-right: 0px;
+          margin-bottom: 60px;
+        }
+      }
+      @page:first {
+        @top-center {
+          content: none;
+        }
+      }
+      html,
+      body {
+        background-color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      style="border-left: 1px solid black; border-right: 1px solid black; border-top: 2px solid black; font-family: Arial, sans-serif;"
+    >
+      <div style="text-align: center; font-size: 16px; border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black; padding-top:10px; padding-bottom: 25px; font-weight: bold;">
+        <div style="padding-bottom: 15px;">VERIFICATION OF MILITARY EXPERIENCE AND TRAINING</div> 
+        <div style="display: flex; font-weight: normal; align-items: center; border-left: padding-top:15px;">
+          <span style="width:8%; text-align: left; padding-left: 20px; margin-top: 3px;"> ** </span>
+          <span style="padding-left: 8px; font-size: 10px; width: 84%; text-align: center;">This document is intended solely as a verification record of military education and training. It is not an official transcript and should not be used as a substitute for one. Course descriptions included herein are for reference only and may not reflect full academic credit or certification status.</span>
+          <span style="width:8%; text-align: right; padding-right: 20px; margin-top: 3px;"> ** </span>
+        </div>
+      </div>
+
+      <div style="display:flex; box-sizing: border-box; flex-direction: row;">
+        <div style="display: flex; width: 60%; border: 1px solid black; height: 20px; box-sizing: border-box">
+        </div>
+        <div style="display: flex; width: 20%; border: 1px solid black; height: 20px; box-sizing: border-box">
+        </div>
+        <div style="display: flex; width: 20%; border: 1px solid black; height: 20px; box-sizing: border-box">
+        </div>
+      </div>
+
+      <div style="font-size: 12px; display:flex; box-sizing: border-box; flex-direction: row;">
+        <div style="width: 60%; border: 1px solid black;">
+          <div style="display: flex; font-size: 10px; padding: 4px"> 1. LAST NAME - FIRST NAME - MIDDLE NAME </div>
+          <div style="padding-left: 15px; padding-top:10px; padding-bottom:10px;">{{last_name|upper}} {{first_name|upper}}</div>
+        </div>
+        <div style="width: 20%; border: 1px solid black;">
+          <div style="display: flex; font-size: 10px; padding: 4px"> 2. PAY GRADE </div>
+         <div style="padding-left: 15px; padding-top:10px; padding-bottom:10px;">{{rank|upper}}</div>
+        </div>
+        <div style="width: 20%; border: 1px solid black;">
+          <div style="display: flex; font-size: 10px; padding: 4px"> 3. YEAR(S) IN SERVICE </div>
+          <div style="padding-left: 15px; padding-top:10px; padding-bottom:10px;">temp</div>
+        </div>
+      </div>
+
+      <div style="display:flex; box-sizing: border-box; flex-direction: row; font-size: 12px;">
+        <div style="width: 80.75%; border: 1px solid black; padding: 4px">
+          <div style="display: flex; font-size: 10px"> 4. MILITARY SERVICE AND COMPONENT </div>
+          <div style="padding-left: 12px; padding-top:10px; padding-bottom:5px;">{{branch|upper}}, {{status|upper}}</div> 
+        </div>
+        <div style="width: 19.25%; border: 1px solid black; padding: 4px">
+          <div style="display: flex; font-size: 10px"> 5. DATE OF INFORMATION </div>
+          <div style="padding-left: 12px; padding-top:10px; padding-bottom:5px;"> {{date|date:"Y M d"|upper}}</div> 
+        </div>
+      </div>
+
+      <!-- Section 6: Experience and Training History -->
+      <div style="border-top: 1px solid black; border-left: 1px solid black; border-right: 1px solid black;">
+        <div style="font-size: 10px; padding-top: 5px; padding-left: 5px;"> 6. EXPERIENCE AND TRAINING HISTORY (In reverse chronological order) AND RELATED INFORMATION </div>
+        <div style="display: flex; align-items: center; width: 100%; padding-top: 15px;">
+          <span style="flex: 1; height: 1px; background-color: black; margin-left: 10px; margin-right: 5px"></span>
+          <span style="font-weight: bold; font-size: 14px; padding-bottom: 1px;">EXPERIENCE HISTORY: </span>
+          <span style="flex: 1; height: 1px; background-color: black; margin-right: 10px; margin-left: 5px"></span>
+        </div>
+
+        <!-- Experience History Entries -->
+        {% for exp in experiences %} {% if not exp.course %}
+          {% if not forloop.first %}
+            <div style="height: 1px; background-color: black; width: 33%; margin-top: 25px; margin-left: 10px; margin-bottom: 15px;"></div>
+          {% endif %}
+
+          <div style="font-size: 12px; font-weight: bold; padding-top: 10px; padding-left: 10px;"> OCCUPATION: {{exp.occupation_name}} </div>
+          
+          <div style="font-size: 12px; font-weight: bold; padding-top: 15px; padding-left: 10px;"> PRIMARY OCCUPATION: </div>
+          <!-- Repeat the following block for each primary occupation -->
+          <div style="font-size: 12px; padding-top: 2px; padding-left: 20px;"> {{branch|upper}}, {{status|upper}}: {{exp.rank_level|upper}}, Pay Grade {{exp.rank}} </div>
+          <div style="font-size: 12px; padding-top: 2px; padding-left: 20px; padding-bottom: 10px"> {{exp.start_date}} - {{exp.end_date}}, {{exp.course_id}} </div>
+        
+          <div style="font-size: 12px; font-weight: bold; padding-top: 10px; padding-left: 10px;"> DUTY OCCUPATION: </div>
+          <!-- Repeat the following block for each duty occupation -->
+          <div style="font-size: 12px; padding-top: 2px; padding-left: 20px;"> {{branch|upper}}, {{status|upper}}: {{exp.rank_level|upper}}, Pay Grade {{exp.rank}} </div>
+          <div style="font-size: 12px; padding-top: 2px; padding-left: 20px; padding-bottom: 10px"> {{exp.start_date}} - {{exp.end_date}}, {{exp.course_id}} </div>
+        
+          <div style="font-size: 12px; font-weight: bold; padding-top: 10px; padding-left: 10px;"> OCCUPATION DESCRIPTION FROM AMERICAN COUNCIL ON EDUCATION: </div>
+          <div style="font-size: 12px; padding-top: 5px; padding-left: 10px; padding-right:10px;"> {{exp.description}} </div>
+        {%endif%} {% endfor %}
+      </div>
+      
+      <div style="border-left: 1px solid black; border-right: 1px solid black; padding-left: 5px;">
+        <div style="display: flex; align-items: center; padding-top: 15px;">
+          <span style="height: 1px; background-color: black; margin-left: 5px; margin-right: 5px; width: 29.5%"></span>
+          <span style="font-weight: bold; font-size: 14px; white-space: nowrap; padding-bottom: 1px;">ADDITIONAL QUALIFICATION(S): </span>
+        </div>
+
+        <div style="font-weight: bold; font-size: 12px; padding-top: 10px"> AIR FORCE:</div>
+        <div style="font-weight: bold; font-size: 12px; padding-top: 10px; padding-bottom: 5px"> AUTHORIZED PREFIXES:</div>
+        <div style="font-size: 12px; padding-top: 1px;"> Q - Aircrew Standardization/Flight Examiner</div>
+        <div style="font-size: 12px; padding-left: 21px; padding-bottom: 5px"> AUG 2000 - DEC 2002</div>
+        <div style="font-size: 12px; padding-top: 1px;"> K - Aircrew Instructor</div>
+        <div style="font-size: 12px; padding-left: 21px; padding-bottom: 5px"> SEP 1992 - FEB 2001, JUN 1987 - SEP 1987</div>
+        <div style="font-size: 12px; padding-top: 1px;"> X - Aircrew</div>
+        <div style="font-size: 12px; padding-left: 21px; padding-bottom: 5px"> AUG 1998 - NOV 1998, OCT 1993 - JUL 1997</div>
+        <div style="font-size: 12px; padding-top: 1px;"> A - Aircrew</div>
+        <div style="font-size: 12px; padding-left: 21px; padding-bottom: 5px"> JUN 1993 - OCT 1993, MAR 1981 - SEP 1992</div>
+        <div style="font-size: 12px; padding-top: 1px;"> M - Aircrew Starboard/Flight Examiner</div>
+        <div style="font-size: 12px; padding-left: 21px; padding-bottom: 10px"> SEP 1987 - SEP 1988</div>
+      </div>
+
+
+      <div style="display: flex; align-items: center; border-left: 1px solid black; border-right: 1px solid black;">
+        <span style="font-weight: bold; width:5%; text-align: left; padding-left: 10px; margin-top: 3px;"> ** </span>
+        <span style="padding-left: 8px; font-weight: bold; font-size: 10px; width: 90%; text-align: left;">Note: Experience history data not available prior to FY 75</span>
+        <span style="font-weight: bold; width:5%; text-align: right; padding-right: 10px; margin-top: 3px;"> ** </span>
+      </div>
+
+      <div style="border-left: 1px solid black; border-right: 1px solid black;">
+        <div style="display: flex; align-items: center; width: 100%; padding-top: 15px;">
+          <span style="flex: 1; height: 1px; background-color: black; margin-left: 10px; margin-right: 5px"></span>
+          <span style="font-weight: bold; font-size: 14px; padding-bottom: 1px;">TRAINING HISTORY: COURSES SUCCESSFULLY COMPLETED </span>
+          <span style="flex: 1; height: 1px; background-color: black; margin-right: 10px; margin-left: 5px"></span>
+        </div>
+        <div style="padding-top: 10px; display: flex; align-items: center;">
+          <span style="font-weight: bold; width:5%; text-align: left; padding-left: 10px; margin-top: 3px;"> ** </span>
+          <span style="padding-left: 8px; font-weight: bold; font-size: 10px; width: 90%; text-align: left;">Note: Description, Length, or Credit Recommendation will not be displayed for a course if that information is not available</span>
+          <span style="font-weight: bold; width:5%; text-align: right; padding-right: 10px; margin-top: 3px;"> ** </span>
+        </div>
+
+        <!-- Military Courses History Entries -->
+       {% for exp in experiences %} {% if exp.course %}
+          <div style="height: 1px; background-color: black; width: 33%; margin-top: 10px; margin-left: 10px;"></div>
+          <div style="font-size: 12px; font-weight: bold; padding-top: 15px; padding-left: 10px;"> MILITARY TRAINING: {{exp.start_date}} to {{exp.end_date}} </div>
+          <div style="font-size: 12px; font-weight: bold; padding-top: 15px; padding-left: 10px;"> {{exp.service}} COURSE: {{exp.course_id}}, {{exp.occupation_name}} </div>
+          <div style="font-size: 12px; font-weight: bold; padding-top: 15px; padding-left: 10px;"> 
+            LENGTH:
+            {% for hour in exp.hours %}
+              <span> LENGTH: {{hour}}</span>
+            {% endfor %}
+          </div>
+          <div style="font-size: 12px; font-weight: bold; padding-top: 15px; padding-left: 10px;"> COURSE DESCRIPTION FROM AMERICAN COUNCIL ON EDUCATION: </div>
+          <div style="font-size: 12px; padding-top: 2px; padding-left: 15px; padding-bottom: 15px;"> {{exp.description}} </div>
+        {% endif %} {% endfor %}
+      </div>
+
+      <div style="padding-top: 20px; display: flex; align-items: center; border-left: 1px solid black; border-right: 1px solid black;">
+        <span style="font-weight: bold; width:5%; text-align: left; padding-left: 10px; margin-top: 3px;"> ** </span>
+        <span style="padding-left: 8px; font-weight: bold; font-size: 10px; width: 90%; text-align: left;">Note: Limited training history is available prior to FY 84 (ARMY); FY 78 (NAVY); FY 70 (AIR FORCE); FY 67 (MARINE CORPS)</span>
+        <span style="font-weight: bold; width:5%; text-align: right; padding-right: 10px; margin-top: 3px;"> ** </span>
+      </div>
+
+      <div style="text-align: center; font-size: 14px; border-left: 1px solid black; border-right: 1px solid black; font-weight: bold; padding-top: 20px; padding-bottom: 10px;">
+        END OF AUTOMATED MILITARY EXPERIENCE AND TRAINING HISTORY DATA 
+      </div>
+
+      <div style="padding-left: 10px; padding-right:10px; border-left: 1px solid black; border-right: 1px solid black; padding-top: 20px; padding-bottom: 5px;">
+        <div style="background-color: black; height: 1px; border-left: 1px solid black; border-right: 1px solid black; width: 100%"></div>
+      </div> 
+
+      <div style="padding-top: 10px; display: flex; align-items: center; border-left: 1px solid black; border-right: 1px solid black;">
+        <span style="font-weight: bold; width:5%; text-align: left; padding-left: 10px; margin-top: 3px;"> ** </span>
+        <span style="padding-left: 8px; font-weight: bold; font-size: 10px; width: 90%; text-align: left;"> Note: This history includes only the centrally automated experience and training information that the services maintained on your military record</span>
+        <span style="font-weight: bold; width:5%; text-align: right; padding-right: 10px; margin-top: 3px;"> ** </span>
+      </div>
+
+      <div style="font-size: 12px; padding-left: 10px; padding-right:10px; border-left: 1px solid black; border-right: 1px solid black; border-bottom: 2px solid black; padding-top: 20px; padding-bottom: 20px;">
+        <div>LEGEND CODE:</div>
+        <div style="padding-left: 7px;">DOT: Dictionary of Occupational Titles published by the Department of Labor</div>
+        <div style="padding-left: 7px;">OES: Occupational Employment Statistics published by the Office of Personnel Management</div>
+        <div style="padding-left: 7px;">ONET: Occupational Information Network </div>
+      </div>
+
+    </div>
+  </body>
+  <footer>
+
+  </footer>
+</html>

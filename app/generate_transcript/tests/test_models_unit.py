@@ -1,4 +1,5 @@
 from django.test import tag
+from django.urls import reverse
 
 from generate_transcript.models import AcademicCourseArea, MilitaryExperience
 
@@ -24,6 +25,7 @@ class ModelTests(TestSetUp):
 
     def test_create_areas_and_hours(self):
         self.institute.save()
+        self.ace.save()
         self.degree.save()
         self.ac_course_area.save()
         self.a_and_h.save()
@@ -43,23 +45,34 @@ class ModelTests(TestSetUp):
     def test_military_course(self):
         self.military_course.save()
         me = MilitaryExperience.objects.get(pk=self.military_course.pk)
-        self.assertEqual(self.military_course.course_name, self.course)
+        self.assertEqual(self.military_course.experience_name, self.course)
         self.assertEqual(str(me), str(self.military_course))
-        self.assertEqual(str(self.military_course.course_name),
-                         str(self.military_course))
+        self.assertEqual(str(self.military_course.experience_name),
+                         str(self.course))
         self.assertEqual(self.military_course.determine_experience_type(),
                          "Course")
 
     def test_military_test_result(self):
         self.test_result.save()
         tr = MilitaryExperience.objects.get(pk=self.test_result.pk)
-        self.assertEqual(tr.militarycourse.course_name, self.t_name)
-        self.assertEqual(str(tr), str(self.test_result))
+        print(tr)
+        self.assertEqual(tr.militarycourse.experience_name, self.t_name)
+        self.assertEqual(str(tr), str(self.test_result.experience_name))
         self.assertEqual(
             tr.militarycourse.militarytestresult.test_type, self.test_type)
-        self.assertIn(str(self.test_result.course_name),
-                      str(tr))
-        self.assertIn(str(self.test_result.test_type),
+        self.assertIn(str(self.test_result.experience_name),
                       str(tr))
         self.assertEqual(tr.determine_experience_type(),
                          self.test_type)
+
+    def test_create_transcript(self):
+        self.assertEqual(str(self.transcript), str(self.ur))
+        expected_url = reverse('generate_transcript:transcript-detail',
+                               args=[self.transcript.pk])
+        self.assertEqual(self.transcript.get_absolute_url(), expected_url)
+
+    def test_transcript_status(self):
+        expected_url = reverse('generate_transcript:transcript-status-detail',
+                               args=[self.transcript_status.pk])
+        self.assertEqual(self.transcript_status.get_absolute_url(),
+                         expected_url)

@@ -1,0 +1,59 @@
+{% extends "admin/change_list.html" %} {% block content %}
+<h2>Total Transcripts</h2>
+{{all_transcripts}}
+<h2>Unique Shared Transcripts</h2>
+{{unique_shared_transcripts}}
+<h2>Total Transcript Shares</h2>
+{{shared_transcripts}}
+<h2>Active Service Member Transcript Shares</h2>
+{{service_member_transcripts}} ({{service_member_transcripts_percent}}%)
+<h2>Veteran Transcript Shares</h2>
+{{veteran_transcripts}} ({{veteran_transcripts_percent}}%)
+<h2>Academic Institute Transcript Shares</h2>
+<table>
+  <tr>
+    <th>Academic Institute</th>
+    <th>Transcripts Shared To</th>
+  </tr>
+  {% for ai in ai_shares %}
+  <tr>
+    <td>{{ai.institute}}</td>
+    <td>
+      {{ai.transcript_status__count}} ({{ai.transcript_status__count_percent}}%)
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+<h2>Service Transcript Shares</h2>
+<table>
+  <tr>
+    <th>Service</th>
+    <th>Transcripts Shared By</th>
+  </tr>
+  {% for service, counts in services.items %}
+  <tr>
+    <td>{{service}}</td>
+    <td>{{counts|first}} ({{counts|last}}%)</td>
+  </tr>
+  {% endfor %}
+</table>
+<h2>Transcript Formats Accessed</h2>
+{% for days_back, services in transcript_events.items %}
+<h3>Last {{days_back}} Days</h3>
+<table>
+  <tr>
+    <th>Service</th>
+    <th>Legacy</th>
+    <th>Modernized</th>
+    <th>VMET</th>
+  </tr>
+  {% for service, formats in services.items %}
+  <tr>
+    <td>{{service}}</td>
+    <td>{{formats.legacy|first}} ({{formats.legacy|last}}%)</td>
+    <td>{{formats.modern|first}} ({{formats.modern|last}}%)</td>
+    <td>{{formats.vmet|first}} ({{formats.vmet|last}}%)</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endfor %} {% endblock %}

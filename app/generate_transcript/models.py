@@ -27,6 +27,18 @@ class AcademicCourseArea(models.Model):
         return f'{self.course_area}'
 
 
+class ACEIdentifier(models.Model):
+    """Model to store academic course areas"""
+    id = models.BigAutoField(primary_key=True)
+    ace_identifier = models.CharField(max_length=500, validators=[
+        RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
+    ], unique=True)
+
+    def __str__(self):
+        """String for representing the Model object."""
+        return f'{self.ace_identifier}'
+
+
 class AcademicCourse(AcademicCourseArea):
     """Model to store academic course detail"""
     name = models.CharField(max_length=500, help_text="Set course name",
@@ -57,6 +69,12 @@ class AreasAndHour(models.Model):
                                              help_text="Choose an academic "
                                              "area from academic course area",
                                              )
+    ace_identifier = models.ForeignKey(ACEIdentifier,
+                                       on_delete=models.CASCADE,
+                                       related_name="areas_and_hours",
+                                       help_text="Choose an ace "
+                                       "identifier", null=True
+                                       )
     degree = models.ForeignKey("Degree", related_name="areas_and_hours",
                                on_delete=models.CASCADE,
                                help_text="Choose the relevant degree",
@@ -67,10 +85,25 @@ class AreasAndHour(models.Model):
                                         help_text="Choose the relevant"
                                         " military course",
                                         blank=True, null=True)
+    version = models.CharField(max_length=500,
+                               blank=True, validators=[
+                                   RegexValidator(
+                                       regex=REGEX_CHECK,
+                                       message=REGEX_ERROR_MESSAGE),
+                               ])
     hours = models.PositiveIntegerField()
-    level = models.CharField(max_length=3, blank=True, null=True, validators=[
+    level = models.CharField(max_length=10, blank=True, validators=[
         RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
     ])
+    start_date = models.DateField(
+        null=True, blank=True,
+        help_text="Set degree start date month and year, January 2050")
+    end_date = models.DateField(
+        null=True, blank=True,
+        help_text="Set degree end date month and year, January 2050")
+    last_updated_on = models.DateTimeField(
+        null=True, blank=True,
+        help_text="Set degree last updated date month and year, January 2050")
 
     def __str__(self):
         """String for representing the Model object."""
@@ -123,35 +156,44 @@ class MilitaryExperience(models.Model):
         models.ManyToManyField(
             UserRecord,
             max_length=250, blank=True, through="MilitaryCourse_User")
-    experience_id = models.CharField(max_length=500, unique=True, validators=[
+    experience_id = models.CharField(max_length=500, validators=[
         RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
     ])
-    experience_name = models.CharField(max_length=500, blank=True, null=True,
+    experience_name = models.CharField(max_length=500, blank=True,
                                        validators=[
                                            RegexValidator(
                                                regex=REGEX_CHECK,
                                                message=REGEX_ERROR_MESSAGE
                                            ),
                                        ])
-    ACE_identifier = models.CharField(max_length=250, default="None Assigned",
-                                      validators=[
-                                          RegexValidator(
-                                              regex=REGEX_CHECK,
-                                              message=REGEX_ERROR_MESSAGE
-                                          ),
-                                      ])
-    description = models.TextField(null=True, blank=True, validators=[
+    service = models.CharField(max_length=250, default="None Assigned",
+                               validators=[
+                                   RegexValidator(
+                                       regex=REGEX_CHECK,
+                                       message=REGEX_ERROR_MESSAGE
+                                   ),
+                               ])
+    description = models.TextField(blank=True, validators=[
         RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
     ])
-    rank = models.CharField(max_length=500, null=True, blank=True, validators=[
+    instruction = models.TextField(blank=True, validators=[
         RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
     ])
-    rank_level = models.CharField(max_length=500, null=True, blank=True,
+    rank = models.CharField(max_length=500, blank=True, validators=[
+        RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
+    ])
+    rank_level = models.CharField(max_length=500, blank=True,
                                   validators=[
                                       RegexValidator(
                                           regex=REGEX_CHECK,
                                           message=REGEX_ERROR_MESSAGE),
                                   ])
+    skill_level = models.CharField(max_length=500, blank=True,
+                                   validators=[
+                                       RegexValidator(
+                                           regex=REGEX_CHECK,
+                                           message=REGEX_ERROR_MESSAGE),
+                                   ])
     areas = models.ManyToManyField(
         AcademicCourseArea, related_name="mappings", through=AreasAndHour)
 
@@ -167,20 +209,22 @@ class MilitaryExperience(models.Model):
         """String for representing the Model object."""
         if hasattr(self, 'militarycourse'):
             return str(self.militarycourse)
-        return f'{self.experience_name}'
+        return f'{self.experience_name} - {self.skill_level}'
 
 
 class MilitaryCourse(MilitaryExperience):
     """Model to store Military course details"""
-    course_name = models.CharField(max_length=500, validators=[
-        RegexValidator(regex=REGEX_CHECK, message=REGEX_ERROR_MESSAGE),
-    ])
+
+    version = models.CharField(max_length=20, blank=True,
+                               validators=[
+                                   RegexValidator(
+                                       regex=REGEX_CHECK,
+                                       message=REGEX_ERROR_MESSAGE),
+                               ])
 
     def __str__(self):
         """String for representing the Model object."""
-        if hasattr(self, 'militarytestresult'):
-            return str(self.militarytestresult)
-        return f'{self.course_name}'
+        return f'{self.experience_id}'
 
 
 class MilitaryTestResult(MilitaryCourse):
@@ -194,7 +238,7 @@ class MilitaryTestResult(MilitaryCourse):
 
     def __str__(self):
         """String for representing the Model object."""
-        return f'{self.test_type} - {self.course_name}'
+        return f'{self.test_type} - {self.experience_name}'
 
 
 class MilitaryCourse_User(TimeStampedModel):
@@ -212,7 +256,7 @@ class MilitaryCourse_User(TimeStampedModel):
         help_text="Set degree start date month and year, January 2050")
     end_date = models.DateField(
         null=True, blank=True,
-        help_text="Set degree start date month and year, January 2050")
+        help_text="Set degree end date month and year, January 2050")
     score = models.IntegerField(null=True, blank=True)
 
     class Meta:
@@ -245,6 +289,12 @@ class Transcript(models.Model):
         """String for representing the Model object."""
         return f'{self.subject}'
 
+    class Meta:
+        permissions = [
+            ("view_transcript_override", "Can view any transcript"),
+            ("view_service_transcript_override", "Can view service transcript"),
+        ]
+
 
 class TranscriptStatus(StatusModel, TimeStampedModel):
     """Model to track Transcript status"""
@@ -270,3 +320,41 @@ class TranscriptStatus(StatusModel, TimeStampedModel):
 
     class Meta:
         verbose_name_plural = 'Transcript Status'
+        permissions = [
+            ("view_transcript_status_override",
+             "Can view any transcript status"),
+            ("view_service_transcript_status_override",
+             "Can view service transcript status"),
+        ]
+
+
+class TranscriptMetrics(models.Model):
+    class Meta:
+        verbose_name_plural = "Transcript Metrics"
+        managed = False
+        permissions = [
+            ("view_transcript_metric_override",
+             "Can view all transcript metrics"),
+            ("view_service_transcript_metric_override",
+             "Can view service transcript metrics"),
+        ]
+
+
+class MetricEvent(TimeStampedModel):
+    class Events(models.TextChoices):
+        VMET_ACCESSED = "va", "VMET Accessed"
+        LEGACY_ACCESSED = "la", "Legacy Accessed"
+        MMT_ACCESSED = "ma", "MMT Accessed"
+
+    event = models.CharField(max_length=10, choices=Events.choices,
+                             blank=False,
+                             help_text="Select event type that occurred")
+    initiator = models.ForeignKey(MMTUser, related_name="events_triggered",
+                                  on_delete=models.CASCADE,
+                                  help_text="Select User that "
+                                  "triggered the event")
+    transcript = models.ForeignKey(Transcript, related_name="events",
+                                   on_delete=models.CASCADE,
+                                   blank=True, null=True,
+                                   help_text="Select Transcript that "
+                                   "had the event")
