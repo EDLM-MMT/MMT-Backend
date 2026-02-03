@@ -1,18 +1,21 @@
 import logging
 
 from django_filters.rest_framework import DjangoFilterBackend
-from inquiry.serializer import (InquiryCommentSerializer, InquiryFAQSerializer,
-                                InquirySerializer)
 from rest_framework import filters as filter
 from rest_framework import mixins, status, viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework_guardian import filters
 
+from inquiry.serializer import (InquiryCommentSerializer, InquiryFAQSerializer,
+                                InquirySerializer)
+
 from .models import Inquiry, InquiryComment, InquiryFAQ
 
 logger = logging.getLogger(__name__)
 
+INQUIRY_CHANGE = "inquiry.change_inquiry"
+FORBID_PERMISSION = "You do not have permission"
 
 # Create your views here.
 
@@ -42,9 +45,8 @@ class InquiryCommentViewSet(viewsets.ReadOnlyModelViewSet,
     def create(self, request, *args, **kwargs):
         inquiry_pk = request.data.get('inquiry')
         inquiry = Inquiry.objects.get(pk=inquiry_pk)
-        if not (request.user.has_perm('inquiry.change_inquiry', inquiry)):
-            return Response({'detail': 'You do not have permission'
-                            ' to perform this action'},
+        if not (request.user.has_perm(INQUIRY_CHANGE, inquiry)):
+            return Response({'detail': f'{FORBID_PERMISSION} to perform this action'},  # noqa: E501
                             status=status.HTTP_403_FORBIDDEN)
         return super().create(request, *args, **kwargs)
 
@@ -63,9 +65,8 @@ class InquiryViewSet(viewsets.ReadOnlyModelViewSet, mixins.CreateModelMixin,
     def update(self, request, *args, **kwargs):
         inquiry_pk = request.data.get('id')
         inquiry = Inquiry.objects.get(pk=inquiry_pk)
-        if not (request.user.has_perm('inquiry.change_inquiry', inquiry)):
-            return Response({'detail': 'You do not have permission'
-                            ' to perform this action'},
+        if not (request.user.has_perm(INQUIRY_CHANGE, inquiry)):
+            return Response({'detail': f'{FORBID_PERMISSION} to perform this action'},  # noqa: E501
                             status=status.HTTP_403_FORBIDDEN)
 
         return super().update(request, *args, **kwargs)
@@ -73,9 +74,8 @@ class InquiryViewSet(viewsets.ReadOnlyModelViewSet, mixins.CreateModelMixin,
     def partial_update(self, request, *args, **kwargs):
         inquiry_pk = request.data.get('id')
         inquiry = Inquiry.objects.get(pk=inquiry_pk)
-        if not (request.user.has_perm('inquiry.change_inquiry', inquiry)):
-            return Response({'detail': 'You do not have permission'
-                            ' to perform this action'},
+        if not (request.user.has_perm(INQUIRY_CHANGE, inquiry)):
+            return Response({'detail': f'{FORBID_PERMISSION} to perform this action'},  # noqa: E501
                             status=status.HTTP_403_FORBIDDEN)
 
         return super().partial_update(request, *args, **kwargs)

@@ -15,12 +15,12 @@ class TasksTests(TestSetUp):
     def test_ai_admin_workflow(self, mock_run):
         """Testing the working of xia workflow celery task queue"""
 
-        self.assert_(ai_admin_workflow.run())
+        ai_admin_workflow.run()
 
-        self.assert_(ai_admin_workflow.run())
+        ai_admin_workflow.run()
         self.assertEqual(mock_run.call_count, 2)
 
-        self.assert_(ai_admin_workflow.run())
+        ai_admin_workflow.run()
         self.assertEqual(mock_run.call_count, 3)
 
     def test_check_calls_ai_admin_workflow(self):

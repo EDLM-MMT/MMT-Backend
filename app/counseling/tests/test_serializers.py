@@ -40,7 +40,7 @@ class SerializersTests(TestSetUp):
                 'degree': self.degree.degree
             }
         })
-        serialized_cp.is_valid()
+        serialized_cp.is_valid(raise_exception=True)
         serialized_cp.save()
 
         self.assertEqual(
@@ -73,7 +73,7 @@ class SerializersTests(TestSetUp):
                 'degree': self.degree.degree
             }
         })
-        serialized_cp.is_valid()
+        serialized_cp.is_valid(raise_exception=True)
         serialized_cp.save()
 
         self.assertEqual(

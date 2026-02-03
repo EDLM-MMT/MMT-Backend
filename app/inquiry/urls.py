@@ -1,6 +1,7 @@
 from django.urls import include, path
-from inquiry import views
 from rest_framework.routers import DefaultRouter
+
+from inquiry import views
 
 # Create a router and register our ViewSets with it.
 router = DefaultRouter()

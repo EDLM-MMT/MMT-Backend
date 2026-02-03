@@ -7,8 +7,12 @@ from counseling.models import CareerPlan, Comment, CoursePlan, ESONote
 from counseling.serializers import (CareerPlanSerializer, CommentSerializer,
                                     CoursePlanSerializer, ESONoteSerializer)
 
+COUNSELING_CHANGE_CAREERPLAN = "counseling.change_careerplan"
+FORBID_PERMISSION = "You do not have permission"
 
 # Create your views here.
+
+
 class CareerPlanViewSet(viewsets.ReadOnlyModelViewSet, mixins.CreateModelMixin,
                         mixins.UpdateModelMixin):
     """
@@ -46,10 +50,11 @@ class CommentViewSet(viewsets.ReadOnlyModelViewSet, mixins.CreateModelMixin):
     def create(self, request, *args, **kwargs):
         plan_pk = request.data.get('plan')
         plan = CareerPlan.objects.get(pk=plan_pk)
-        if not request.user.has_perm('counseling.change_careerplan', plan):
-            return Response({'detail': 'You do not have permission'
-                             ' to perform this action'},
-                            status=status.HTTP_403_FORBIDDEN)
+        if not request.user.has_perm(COUNSELING_CHANGE_CAREERPLAN, plan):
+            return Response({
+                'detail': f'{FORBID_PERMISSION} to perform this action'
+            },
+                status=status.HTTP_403_FORBIDDEN)
         return super().create(request, *args, **kwargs)
 
 
@@ -66,11 +71,12 @@ class ESONoteViewSet(viewsets.ReadOnlyModelViewSet, mixins.CreateModelMixin):
     def create(self, request, *args, **kwargs):
         plan_pk = request.data.get('plan')
         plan = CareerPlan.objects.get(pk=plan_pk)
-        if not request.user.has_perm('counseling.change_careerplan', plan) or\
+        if not request.user.has_perm(COUNSELING_CHANGE_CAREERPLAN, plan) or\
                 request.user == plan.owner.user_profile:
-            return Response({'detail': 'You do not have permission'
-                             ' to perform this action'},
-                            status=status.HTTP_403_FORBIDDEN)
+            return Response({
+                'detail': f'{FORBID_PERMISSION} to perform this action'
+            },
+                status=status.HTTP_403_FORBIDDEN)
         return super().create(request, *args, **kwargs)
 
 
@@ -87,10 +93,11 @@ class CoursePlanViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         plan_pk = request.data.get('plan')
         plan = CareerPlan.objects.get(pk=plan_pk)
-        if not request.user.has_perm('counseling.change_careerplan', plan):
-            return Response({'detail': 'You do not have permission'
-                             ' to perform this action'},
-                            status=status.HTTP_403_FORBIDDEN)
+        if not request.user.has_perm(COUNSELING_CHANGE_CAREERPLAN, plan):
+            return Response({
+                'detail': f'{FORBID_PERMISSION} to perform this action'
+            },
+                status=status.HTTP_403_FORBIDDEN)
         if request.user == plan.owner.user_profile:
             request.data['approved'] = False
         return super().create(request, *args, **kwargs)

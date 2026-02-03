@@ -68,6 +68,14 @@ class SerializersTests(TestSetUp):
                     {
                         'email': self.ur.email,
                         'position': 'tester'
+                    },
+                    {
+                        'email': self.ur.email,
+                        'position': 'tester'
+                    },
+                    {
+                        'email': self.ur.email,
+                        'position': 'tester'
                     }
                 ],
                 'administrators': [
