@@ -81,7 +81,7 @@ graph TD;
     -  ```example: ~/PycharmProjects/mmt-backend```
 
 3. Run command to install all the requirements from requirements.txt 
-    - ```docker-compose build.```
+    - ```docker-compose build .```
 
 4. Once the installation and build are done, run the below command to start the server.
     - ```docker-compose up```
