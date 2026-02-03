@@ -25,9 +25,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY_VAL')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [os.environ.get("HOSTS")]
 
 # Content Security Policy (CSP)
 SELF_VALUE = "'self'"  # defining a constant
@@ -38,11 +38,8 @@ CSP_IMG_SRC = (SELF_VALUE,)
 CSP_STYLE_SRC = (SELF_VALUE,)
 CSP_FRAME_SRC = (SELF_VALUE,)
 CSP_FONT_SRC = (SELF_VALUE,)
-# Application definition
-
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -84,16 +81,14 @@ MIDDLEWARE = [
     'csp.middleware.CSPMiddleware',
 ]
 
-CSRF_TRUSTED_ORIGINS = ['https://*', 'https://*',
-                        'https://mmt.deloitteopenlxp.com',]
-CORS_ALLOWED_ORIGINS = [
-    'https://*', 'https://*', 'https://mmt.deloitteopenlxp.com',
-    'https://mmt.deloitteopenlxp.com']
-CSRF_COOKIE_DOMAIN = '.deloitteopenlxp.com'
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_CREDENTIALS = True
+csrf_domain = os.environ.get('CSRF_TRUSTED_DOMAIN')
+CSRF_TRUSTED_ORIGINS = [csrf_domain] if csrf_domain else []
+cors_origin = os.environ.get('CORS_ALLOWED_ORIGINS')
+CORS_ALLOWED_ORIGINS = [cors_origin] if cors_origin else []
+CSRF_COOKIE_DOMAIN = os.environ.get('CSRF_COOKIE_DOMAIN')
+CORS_ALLOW_CREDENTIALS = os.environ.get('CORS_ALLOWED_CREDENTIALS')
 
-SECURE_SSL_REDIRECT = False
+SECURE_SSL_REDIRECT = True
 
 ROOT_URLCONF = 'mmt_backend_project.urls'
 
@@ -213,7 +208,7 @@ SPECTACULAR_SETTINGS = {
     'TITLE': 'Django MMT Endpoints',
     'DESCRIPTION': 'Your project description',
     'VERSION': '1.0.0',
-    # 'SERVE_INCLUDE_SCHEMA': False,
+    'SERVE_INCLUDE_SCHEMA': False,
     'SWAGGER_UI_DIST': 'SIDECAR',  # shorthand to use the sidecar instead
     'SWAGGER_UI_FAVICON_HREF': 'SIDECAR',
     'REDOC_DIST': 'SIDECAR',
