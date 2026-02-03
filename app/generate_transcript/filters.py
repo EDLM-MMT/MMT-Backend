@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from rest_framework import filters
 
@@ -14,7 +14,8 @@ class RecentFilter(filters.BaseFilterBackend):
     def filter_queryset(self, request, queryset, view):
         if 'recent' in request.query_params:
             return queryset.filter(
-                created__gt=datetime.utcnow() - timedelta(days=31))
+                created__gt=datetime.now(timezone.utc) - timedelta(days=31)
+            )
         return queryset
 
 

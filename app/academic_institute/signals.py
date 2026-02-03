@@ -37,63 +37,73 @@ def create_groups(sender, instance, created, **kwargs):
             instance.save()
 
 
+VIEW_AI_PERM = 'view_academicinstitute'
+CHANGE_AI_PERM = 'change_academicinstitute'
+VIEW_T_PERM = 'generate_transcript.view_transcript'
+VIEW_TS_PERM = 'generate_transcript.view_transcriptstatus'
+CHANGE_TS_PERM = 'generate_transcript.change_transcriptstatus'
+ACCEPTED_STATE = ['Delivered', 'Opened', 'Downloaded',]
+
+
 @receiver(post_save, sender=AcademicInstitute)
 def update_permissions(sender, instance, created, **kwargs):
-    view_ai_perm = 'view_academicinstitute'
-    change_ai_perm = 'change_academicinstitute'
-    view_t_perm = 'generate_transcript.view_transcript'
-    view_ts_perm = 'generate_transcript.view_transcriptstatus'
-    change_ts_perm = 'generate_transcript.change_transcriptstatus'
-    accepted_state = ['Delivered', 'Opened', 'Downloaded',]
 
     # add new permissions if new or changed
     if (created or instance.tracker.has_changed('group')) and instance.group:
-        assign_perm(view_ai_perm, instance.group, instance)
-        # add perms to associated Transcript Status objects
-        for ts in TranscriptStatus.objects.filter(academic_institute=instance):
-            assign_perm(view_ts_perm, instance.group, ts)
-            assign_perm(change_ts_perm, instance.group, ts)
-            # if Transcript Status in accepted state, give access to Transcript
-            if ts.status in accepted_state:
-                assign_perm(view_t_perm, instance.group, ts.transcript)
+        add_group_permissions(instance)
 
     # if not new and had prior and prior is not admin
     if not created and instance.tracker.previous('group') and\
             instance.admins.pk != instance.tracker.previous('group'):
-        group = Group.objects.get(pk=instance.tracker.previous('group'))
-        # remove view permission
-        remove_perm(view_ai_perm, group, instance)
-        # remove perms from associated Transcript Status objects
-        for ts in TranscriptStatus.objects.filter(academic_institute=instance):
-            remove_perm(view_ts_perm, group, ts)
-            remove_perm(change_ts_perm, group, ts)
-            # if Transcript Status in accepted state and access not granted
-            # somewhere else, remove access to Transcript
-            # complex query is:
-            # check if there exists a TS where status is in accepted state,
-            # AI group is this prior group, and it isn't for this AI.
-            # if that does not exist, we need to revoke access to the
-            # transcript
-            if ts.status in accepted_state and not\
-                    TranscriptStatus.objects.filter(
-                        academic_institute__group=group,
-                        status__in=accepted_state
-                    ).exclude(academic_institute=instance).exists():
-                remove_perm(view_t_perm, group, ts.transcript)
+        remove_group_permissions(instance)
 
     if created or instance.tracker.has_changed('admins'):
         # add new permissions if new or changed
-        assign_perm(view_ai_perm, instance.admins, instance)
-        assign_perm(change_ai_perm, instance.admins, instance)
+        assign_perm(VIEW_AI_PERM, instance.admins, instance)
+        assign_perm(CHANGE_AI_PERM, instance.admins, instance)
         # skip if new or no prior
         if not created and instance.tracker.previous('admins'):
             # else remove change permission
-            remove_perm(change_ai_perm, Group.objects.get(
+            remove_perm(CHANGE_AI_PERM, Group.objects.get(
                 pk=instance.tracker.previous('admins')), instance)
             # if prior is not members group remove view permission
             if instance.tracker.previous('admins') != instance.group.pk:
-                remove_perm(view_ai_perm, Group.objects.get(
+                remove_perm(VIEW_AI_PERM, Group.objects.get(
                     pk=instance.tracker.previous('admins')), instance)
+
+
+def remove_group_permissions(instance):
+    group = Group.objects.get(pk=instance.tracker.previous('group'))
+    # remove view permission
+    remove_perm(VIEW_AI_PERM, group, instance)
+    # remove perms from associated Transcript Status objects
+    for ts in TranscriptStatus.objects.filter(academic_institute=instance):
+        remove_perm(VIEW_TS_PERM, group, ts)
+        remove_perm(CHANGE_TS_PERM, group, ts)
+        # if Transcript Status in accepted state and access not granted
+        # somewhere else, remove access to Transcript
+        # complex query is:
+        # check if there exists a TS where status is in accepted state,
+        # AI group is this prior group, and it isn't for this AI.
+        # if that does not exist, we need to revoke access to the
+        # transcript
+        if ts.status in ACCEPTED_STATE and not\
+                TranscriptStatus.objects.filter(
+                    academic_institute__group=group,
+                    status__in=ACCEPTED_STATE
+                ).exclude(academic_institute=instance).exists():
+            remove_perm(VIEW_T_PERM, group, ts.transcript)
+
+
+def add_group_permissions(instance):
+    assign_perm(VIEW_AI_PERM, instance.group, instance)
+    # add perms to associated Transcript Status objects
+    for ts in TranscriptStatus.objects.filter(academic_institute=instance):
+        assign_perm(VIEW_TS_PERM, instance.group, ts)
+        assign_perm(CHANGE_TS_PERM, instance.group, ts)
+        # if Transcript Status in accepted state, give access to Transcript
+        if ts.status in ACCEPTED_STATE:
+            assign_perm(VIEW_T_PERM, instance.group, ts.transcript)
 
 
 @receiver(pre_delete, sender=AcademicInstitute)

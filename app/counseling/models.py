@@ -9,8 +9,10 @@ from generate_transcript.models import AcademicCourseArea, Degree
 from generate_transcript.regex import REGEX_CHECK, REGEX_ERROR_MESSAGE
 from users.models import MMTUser, UserRecord
 
-
+SELECT_ASSOCIATED_PLAN_HELP_TEXT = "Select associated plan"
 # Create your models here.
+
+
 class CareerPlan(models.Model):
     owner = models.ForeignKey(UserRecord, related_name='career_plan',
                               on_delete=models.CASCADE,
@@ -43,7 +45,7 @@ class Comment(TimeStampedModel):
     ])
     plan = models.ForeignKey(CareerPlan, related_name='comments',
                              on_delete=models.CASCADE,
-                             help_text="Select associated plan")
+                             help_text=SELECT_ASSOCIATED_PLAN_HELP_TEXT)
     poster = models.ForeignKey(MMTUser, related_name='counseling_comments',
                                on_delete=models.SET_NULL, blank=True,
                                null=True, help_text="Select comment poster")
@@ -71,7 +73,7 @@ class ESONote(TimeStampedModel):
     ])
     plan = models.ForeignKey(CareerPlan, related_name='eso_notes',
                              on_delete=models.CASCADE,
-                             help_text="Select associated plan")
+                             help_text=SELECT_ASSOCIATED_PLAN_HELP_TEXT)
     poster = models.ForeignKey(MMTUser, related_name='counseling_notes',
                                on_delete=models.SET_NULL, blank=True,
                                null=True, help_text="Select note poster")
@@ -100,7 +102,7 @@ class CoursePlan(models.Model):
                                help_text="Select associated course")
     plan = models.ForeignKey(CareerPlan, related_name='courses',
                              on_delete=models.CASCADE,
-                             help_text="Select associated plan")
+                             help_text=SELECT_ASSOCIATED_PLAN_HELP_TEXT)
     required = models.BooleanField(default=False,
                                    help_text="Set required status")
     approved = models.BooleanField(default=False,

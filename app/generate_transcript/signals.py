@@ -12,22 +12,28 @@ from .models import Transcript, TranscriptStatus
 
 logger = logging.getLogger(__name__)
 
+TRANS_DELIVERED = 'Transcript Delivered'
+VIEW_TR = "generate_transcript.view_transcript"
+VIEW_TS = "generate_transcript.view_transcriptstatus"
+CHANGE_TS = "generate_transcript.change_transcriptstatus"
+
 
 @receiver(post_save, sender=Transcript)
 def set_permission(sender, instance, **kwargs):
-    assign_perm("generate_transcript.view_transcript",
-                instance.subject.user_profile, instance)
+    if instance.subject.user_profile:
+        assign_perm(VIEW_TR,
+                    instance.subject.user_profile, instance)
 
 
 @receiver(post_save, sender=TranscriptStatus)
 def create_transcript(sender, instance, created, **kwargs):
-    if instance.status and instance.status != 'Delivered':
+    if instance.status and instance.status != 'Delivered' and instance.transcript.subject.user_profile:
 
         notify.send(sender=instance.transcript.subject.user_profile,
                     recipient=instance.transcript.subject.user_profile,
                     verb=instance.status,
                     status_val=instance.status)
-        if instance.academic_institute.group:
+        if instance.academic_institute and instance.academic_institute.group:
             notify.send(sender=instance.transcript.subject.user_profile,
                         recipient=instance.academic_institute.group,
                         verb=instance.status,
@@ -42,10 +48,10 @@ def create_transcript(sender, instance, created, **kwargs):
 @receiver(post_delete, sender=TranscriptStatus)
 def revoke_access(sender, instance, **kwargs):
     if instance.recipient:
-        remove_perm("generate_transcript.view_transcript",
+        remove_perm(VIEW_TR,
                     instance.recipient, instance.transcript)
     if instance.academic_institute:
-        remove_perm("generate_transcript.view_transcript",
+        remove_perm(VIEW_TR,
                     instance.academic_institute.group, instance.transcript)
 
 
@@ -71,27 +77,25 @@ def remove_obj_perms_connected_with_transcript(sender, instance,
 
 @receiver(post_save, sender=UserObjectPermission)
 def my_post_save_user_handler(sender, instance, created, **kwargs):
-    if created:
-        if instance.permission.codename == 'view_transcript':
+    if created and instance.permission.codename == 'view_transcript':
+        if instance.content_object.subject.user_profile != instance.user:
 
-            if instance.content_object.subject.user_profile != instance.user:
-
-                transcript_obj, c = (
-                    TranscriptStatus.objects.
-                    update_or_create(transcript=instance.content_object,
-                                     recipient=instance.user,
-                                     defaults={"status": "Delivered"}))
-                notify.send(sender=(instance.content_object.
-                                    subject.user_profile),
-                            recipient=(instance.content_object.
-                                       subject.user_profile),
-                            verb=transcript_obj.status,
-                            status_val=transcript_obj.status)
-                notify.send(sender=(instance.content_object.
-                                    subject.user_profile),
-                            recipient=instance.user,
-                            verb=transcript_obj.status,
-                            status_val=transcript_obj.status)
+            transcript_obj = (
+                TranscriptStatus.objects.
+                update_or_create(transcript=instance.content_object,
+                                 recipient=instance.user,
+                                 defaults={"status": "Delivered"}))[0]
+            notify.send(sender=(instance.content_object.
+                                subject.user_profile),
+                        recipient=(instance.content_object.
+                                   subject.user_profile),
+                        verb=TRANS_DELIVERED,
+                        status_val=transcript_obj.status)
+            notify.send(sender=(instance.content_object.
+                                subject.user_profile),
+                        recipient=instance.user,
+                        verb=TRANS_DELIVERED,
+                        status_val=transcript_obj.status)
 
 
 @receiver(post_save, sender=GroupObjectPermission)
@@ -124,26 +128,24 @@ def my_post_save_group_handler(sender, instance, created, **kwargs):
                                      defaults={"status": "Delivered"}))
             # if new, set permissions
             if c:
-                view_ts_perm = 'generate_transcript.view_transcriptstatus'
-                change_ts_perm = 'generate_transcript.change_transcriptstatus'
-                assign_perm(view_ts_perm, instance.group, transcript_obj)
+                assign_perm(VIEW_TS, instance.group, transcript_obj)
                 assign_perm(
-                    view_ts_perm,
+                    VIEW_TS,
                     instance.content_object.subject.user_profile,
                     transcript_obj)
-                assign_perm(change_ts_perm, instance.group, transcript_obj)
+                assign_perm(CHANGE_TS, instance.group, transcript_obj)
                 assign_perm(
-                    change_ts_perm,
+                    CHANGE_TS,
                     instance.content_object.subject.user_profile,
                     transcript_obj)
 
             # send notifications
             notify.send(sender=instance.content_object.subject.user_profile,
                         recipient=instance.content_object.subject.user_profile,
-                        verb=transcript_obj.status,
+                        verb=TRANS_DELIVERED,
                         status_val=transcript_obj.status)
 
             notify.send(sender=instance.content_object.subject.user_profile,
                         recipient=instance.group,
-                        verb=transcript_obj.status,
+                        verb=TRANS_DELIVERED,
                         status_val=transcript_obj.status)

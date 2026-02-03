@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 import datetime
 import os
+import sys
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,20 +28,34 @@ SECRET_KEY = os.environ.get('SECRET_KEY_VAL')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = [os.environ.get("HOSTS")]
-
+hosts_env = os.environ.get('HOSTS')
+ALLOWED_HOSTS = hosts_env.split(';') if hosts_env else []
 # Content Security Policy (CSP)
 SELF_VALUE = "'self'"  # defining a constant
+IMG_DATA_VALUE = "data:"
+BASE_URL = os.environ.get('BASE_URL')
 
-CSP_DEFAULT_SRC = (SELF_VALUE,)
+
+CSP_DEFAULT_SRC = (SELF_VALUE, BASE_URL)
 CSP_SCRIPT_SRC = (SELF_VALUE,)
-CSP_IMG_SRC = (SELF_VALUE,)
-CSP_STYLE_SRC = (SELF_VALUE,)
+CSP_IMG_SRC = (SELF_VALUE, IMG_DATA_VALUE)
+CSP_STYLE_SRC = (SELF_VALUE, BASE_URL)
 CSP_FRAME_SRC = (SELF_VALUE,)
 CSP_FONT_SRC = (SELF_VALUE,)
 
+STYLE_SHA = os.environ.get('STYLE_SHA', False)
+if STYLE_SHA:
+    CSP_STYLE_SRC += (STYLE_SHA,)
+
+X_FRAME_OPTIONS = "SAMEORIGIN"
+SILENCED_SYSTEM_CHECKS = ["security.w019"]
+
+
 # Application definition
 INSTALLED_APPS = [
+    # admin override
+    'admin_interface',
+    'colorfield',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -66,6 +81,7 @@ INSTALLED_APPS = [
     'generate_transcript',
     'counseling',
     'inquiry',
+    'configuration',
 ]
 
 MIDDLEWARE = [
@@ -80,15 +96,22 @@ MIDDLEWARE = [
     'django.contrib.admindocs.middleware.XViewMiddleware',
     'csp.middleware.CSPMiddleware',
 ]
-
 csrf_domain = os.environ.get('CSRF_TRUSTED_DOMAIN')
 CSRF_TRUSTED_ORIGINS = [csrf_domain] if csrf_domain else []
 cors_origin = os.environ.get('CORS_ALLOWED_ORIGINS')
 CORS_ALLOWED_ORIGINS = [cors_origin] if cors_origin else []
 CSRF_COOKIE_DOMAIN = os.environ.get('CSRF_COOKIE_DOMAIN')
-CORS_ALLOW_CREDENTIALS = os.environ.get('CORS_ALLOWED_CREDENTIALS')
 
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SECURE = True
+
+SESSION_COOKIE_SECURE = True
+
+SECURE_BROWSER_XSS_FILTER = True
 SECURE_SSL_REDIRECT = True
+SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
 
 ROOT_URLCONF = 'mmt_backend_project.urls'
 
@@ -177,8 +200,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+MEDIA_URL = 'media/'
+MEDIA_ROOT = '/opt/shared/media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -204,11 +229,46 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
 }
 
+LOG_PATH = os.environ.get('LOG_PATH')
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+
+    'loggers': {
+        'dict_config_logger': {
+            'handlers': ['console', 'file_logs'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'stream': sys.stdout,
+            'formatter': 'simpleRe',
+        },
+        'file_logs': {
+            'level': 'WARNING',
+            'class': 'logging.FileHandler',
+            'filename': LOG_PATH,
+            'formatter': 'simpleRe',
+        },
+    },
+
+    'formatters': {
+        'simpleRe': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        }
+    }
+}
+
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Django MMT Endpoints',
     'DESCRIPTION': 'Your project description',
     'VERSION': '1.0.0',
-    'SERVE_INCLUDE_SCHEMA': False,
     'SWAGGER_UI_DIST': 'SIDECAR',  # shorthand to use the sidecar instead
     'SWAGGER_UI_FAVICON_HREF': 'SIDECAR',
     'REDOC_DIST': 'SIDECAR',

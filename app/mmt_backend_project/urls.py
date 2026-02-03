@@ -15,7 +15,7 @@ Including another URLconf
 """
 import notifications.urls
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, re_path
 from drf_spectacular.views import (SpectacularAPIView,
                                    SpectacularSwaggerSplitView)
 from rest_framework.routers import DefaultRouter
@@ -23,16 +23,16 @@ from rest_framework.routers import DefaultRouter
 router = DefaultRouter()
 
 urlpatterns = [
-    path('admin/doc/', include('django.contrib.admindocs.urls')),
-    path('admin/', admin.site.urls),
-    path('api/', include('generate_transcript.urls')),
-    path('api/', include('counseling.urls')),
-    path('api/', include('inquiry.urls')),
-    path('api/', include('academic_institute.urls')),
-    path('auth/', include('users.urls')),
-    path('notifications/', include(notifications.urls,
-                                   namespace='notifications')),
-    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
-    path("api/schema/docs/",
-         SpectacularSwaggerSplitView.as_view(url_name="schema")),
+    re_path('admin/doc/', include('django.contrib.admindocs.urls')),
+    re_path('admin/', admin.site.urls),
+    re_path('api/', include('generate_transcript.urls')),
+    re_path('api/', include('counseling.urls')),
+    re_path('api/', include('inquiry.urls')),
+    re_path('api/', include('academic_institute.urls')),
+    re_path('auth/', include('users.urls')),
+    re_path('notifications/', include(notifications.urls,
+                                      namespace='notifications')),
+    re_path("api/schema/docs/",
+            SpectacularSwaggerSplitView.as_view(url_name="schema")),
+    re_path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
 ]

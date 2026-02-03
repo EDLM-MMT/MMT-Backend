@@ -6,8 +6,9 @@ from rest_framework_guardian.serializers import \
 
 from academic_institute.models import AcademicInstitute
 from generate_transcript.models import (AcademicCourse, AcademicCourseArea,
-                                        AreasAndHour, Degree, MilitaryCourse,
-                                        MilitaryCourse_User, Transcript,
+                                        ACEIdentifier, AreasAndHour, Degree,
+                                        MilitaryCourse, MilitaryCourse_User,
+                                        MilitaryExperience, Transcript,
                                         TranscriptStatus)
 
 logger = logging.getLogger(__name__)
@@ -25,6 +26,22 @@ class AcademicCourseAreaSerializer(serializers.ModelSerializer):
         fields = ['course_area',]
 
 
+class ACEIdentifierSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ACEIdentifier
+        fields = ['ace_identifier',]
+
+    def create(self, validated_data):
+        ace_id = validated_data.get('ace_identifier')
+        obj, created = ACEIdentifier.objects.get_or_create(
+            ace_identifier=ace_id)
+        if created:
+            logger.info('Created ACEIdentifier: %s', obj)
+        else:
+            logger.info('ACEIdentifier already exists: %s', obj)
+        return obj
+
+
 class DegreeSerializer(serializers.ModelSerializer):
     institute = serializers.SlugRelatedField(
         slug_field='institute',
@@ -35,20 +52,179 @@ class DegreeSerializer(serializers.ModelSerializer):
         fields = ['institute', 'degree',]
 
 
+class MilitaryExperienceSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = MilitaryExperience
+        fields = ['experience_id', 'experience_name',
+                  'description',
+                  'instruction', 'service',
+                  'skill_level']
+
+
 class MilitaryCourseSerializer(serializers.ModelSerializer):
+
+    skill_level = serializers.CharField(write_only=True,
+                                        required=False, allow_null=True,
+                                        allow_blank=True)
+    version = serializers.CharField(required=False, allow_null=True,
+                                    allow_blank=True)
+
     class Meta:
         model = MilitaryCourse
-        fields = ['course_name',]
+        fields = ['experience_id', 'experience_name',
+                  'description',
+                  'instruction', 'service', 'version', 'skill_level']
+
+    def create(self, validated_data):
+        experience_id = validated_data.get('experience_id')
+        experience_name = validated_data.get('experience_name')
+        skill_level = validated_data.get('skill_level', '') or ''
+        validated_data['skill_level'] = skill_level  # Ensure it's never None
+        if validated_data.get('version'):
+            obj, created = MilitaryCourse.objects.get_or_create(
+                experience_id=experience_id, defaults=validated_data)
+            if created:
+                logger.info('Created MilitaryCourse: %s', obj)
+            else:
+                logger.info('MilitaryCourse already exists: %s', obj)
+            return obj
+        validated_data.pop('version', '')
+        obj, created = MilitaryExperience.objects.get_or_create(
+            experience_name=experience_name,
+            skill_level=skill_level or '',
+            defaults=validated_data
+        )
+        if created:
+            logger.info('Created MilitaryExperience: %s', obj)
+        else:
+            logger.info('MilitaryExperience already exists: %s', obj)
+        return obj
+
+    def update(self, instance, validated_data):
+        def update_instance_fields(inst, data):
+            for attr, value in data.items():
+                setattr(inst, attr, value)
+            inst.save()
+            return inst
+
+        experience_id = validated_data.get('experience_id')
+        version = validated_data.get('version', '')
+        experience_name = validated_data.get('experience_name')
+        skill_level = validated_data.get('skill_level', '') or ''
+
+        if version:
+            if instance.experience_id == experience_id:
+                updated = update_instance_fields(instance, validated_data)
+                logger.info('Updated MilitaryCourse: %s', updated)
+            else:
+                logger.warning('MilitaryCourse experience_id mismatch: %s',
+                               experience_id)
+            return instance
+
+        validated_data.pop('version', None)
+        if hasattr(instance, 'experience_name') and \
+                instance.experience_name == experience_name:
+            if hasattr(instance, 'skill_level') and \
+                    instance.skill_level == skill_level:
+                updated = update_instance_fields(instance, validated_data)
+                logger.info('Updated MilitaryExperience: %s', updated)
+                return updated
+            if not hasattr(instance, 'skill_level'):
+                updated = update_instance_fields(instance, validated_data)
+                logger.info('Updated MilitaryExperience with '
+                            'no skill level: %s', updated)
+                return updated
+            logger.warning('MilitaryExperience skill_level mismatch: %s',
+                           skill_level)
+        else:
+            logger.warning('MilitaryExperience experience_name mismatch: %s',
+                           experience_name)
+        return instance
 
 
 class AreasAndHourSerializer(serializers.ModelSerializer):
     academic_course_area = AcademicCourseAreaSerializer()
-    degree = DegreeSerializer()
-    military_course = MilitaryCourseSerializer()
+    military_course = serializers.CharField()
+    military_name = serializers.CharField(write_only=True,
+                                          required=False, allow_null=True)
+    skill_level = serializers.CharField(write_only=True,
+                                        required=False, allow_null=True,
+                                        allow_blank=True)
+    ace_identifier = serializers.CharField()
+    version = serializers.CharField(required=False, allow_null=True,
+                                    allow_blank=True)
 
     class Meta:
         model = AreasAndHour
-        fields = ['hours', 'name', 'code',]
+        fields = ['hours', 'level', 'academic_course_area',
+                  'military_course', 'ace_identifier',
+                  'start_date', 'end_date', 'last_updated_on',
+                  'version', 'military_name', 'skill_level']
+
+    def create(self, validated_data):
+
+        area_data = validated_data.pop('academic_course_area')
+        military_id = validated_data.pop('military_course', None)
+        military_name = validated_data.pop('military_name', None)
+        skill_level = validated_data.pop('skill_level', '') or ''
+        ace_id = validated_data.pop('ace_identifier')
+        ace_identifier, created_1 = ACEIdentifier.objects.get_or_create(
+            ace_identifier=ace_id)
+        if created_1:
+            logger.info('Created ACEIdentifier: %s', ace_identifier)
+        area, created_a = AcademicCourseArea.objects.get_or_create(**area_data)
+        if created_a:
+            logger.info('Created Academic Course Area: %s', area)
+        else:
+            logger.info('Academic Course Area already exists: %s', area)
+        if validated_data.get('version'):
+            military, created_2 = MilitaryCourse.objects.get_or_create(
+                experience_id=military_id)
+        else:
+            military, created_2 = MilitaryExperience.objects.get_or_create(
+                experience_name=military_name, skill_level=skill_level or '')
+        if created_2:
+            logger.info('Created Military Experience: %s', military)
+        if validated_data.get('version') is None:
+            validated_data['version'] = ''
+        validated_data['academic_course_area'] = area
+        validated_data['military_course'] = military
+        validated_data['ace_identifier'] = ace_identifier
+        instance = AreasAndHour.objects.create(**validated_data)
+        return instance
+
+    def update(self, instance, validated_data):
+
+        if instance['last_updated_on'] > validated_data['last_updated_on']:
+            area_data = validated_data.pop('academic_course_area')
+            military_id = validated_data.pop('military_course', None)
+            military_name = validated_data.get('military_name', None)
+            skill_level = validated_data.get('skill_level', '') or ''
+            ace_id = validated_data.pop('ace_identifier')
+            ace_identifier = ACEIdentifier.objects.get(
+                ace_identifier=ace_id)
+            area, created_a = AcademicCourseArea.objects.\
+                get_or_create(**area_data)
+            if created_a:
+                logger.info('Created Academic Course Area: %s', area)
+            else:
+                logger.info('Academic Course Area already exists: %s', area)
+            if validated_data.get('version'):
+                military, created_2 = MilitaryCourse.objects.get_or_create(
+                    experience_id=military_id)
+            else:
+                military, created_2 = MilitaryExperience.objects.get_or_create(
+                    experience_name=military_name,
+                    skill_level=skill_level or '')
+            if created_2:
+                logger.info('Created Military Experience : %s', military)
+            validated_data['academic_course_area'] = area
+            validated_data['military_course'] = military
+            validated_data['ace_identifier'] = ace_identifier
+            instance = AreasAndHour.objects.update(**validated_data)
+            return instance
+        return instance
 
 
 class TranscriptSerializer(serializers.ModelSerializer):
@@ -98,6 +274,8 @@ class TranscriptStatusSerializer(ObjectPermissionsAssignmentMixin,
                 validated_data['status'] = TranscriptStatus.STATUS.Pending
         transcriptStatus, c = TranscriptStatus.objects.update_or_create(
             **validated_data)
+        if c:
+            logger.info('Created TranscriptStatus: %s', transcriptStatus)
         return transcriptStatus
 
     def to_representation(self, instance):

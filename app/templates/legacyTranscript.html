@@ -7,7 +7,7 @@
         height: 100vh; /* Ensure body takes full viewport height */
       }
     </style>
-    <title style="text-align: center">JST</title>
+    <title style="text-align: center">Legacy Military Transcript</title>
   </head>
 
   <body>
@@ -43,7 +43,7 @@
 
     <div style="margin: 0px; font-size: 0.6em">
       <div style="columns: 2"></div>
-      <h1 style="text-align: center; margin-bottom: 0">JOINT SERVICES</h1>
+      <h1 style="text-align: center; margin-bottom: 0">LEGACY MILITARY</h1>
       <h1 style="text-align: center; margin-top: 0">TRANSCRIPT</h1>
 
       <div
@@ -60,12 +60,42 @@
           alt="Education logo"
           height="150"
         />
-        <img
-          src="{% static 'DepartmentLogo2.png' %}"
-          alt="Department_logo"
-          height="150"
-          style="margin-left: 30%"
-        />
+        {% if branch|lower == "navy" %}
+          <img
+            src="{% static 'Seal-Navy.png' %}"
+            alt="Navy_logo"
+            height="150"
+            style="margin-left: 30%"
+          />
+        {% elif branch|lower == "coast guard" %}
+          <img
+            src="{% static 'Seal-Coast-Guard.png' %}"
+            alt="Coast_Guard_Logo"
+            height="150"
+            style="margin-left: 30%"
+          />  
+        {% elif branch|lower == "marine corps" %}
+          <img
+            src="{% static 'Seal-USMC.png' %}"
+            alt="Marine_Corps_Logo"
+            height="150"
+            style="margin-left: 30%"
+          /> 
+        {% elif branch|lower == "air force" %}
+          <img
+            src="{% static 'USAF-Seal.png' %}"
+            alt="Air_Force_logo"
+            height="150"
+            style="margin-left: 30%"
+          />      
+        {% else %}
+          <img
+            src="{% static 'Department-of-Defense-Seal.png' %}"
+            alt="DOD_logo"
+            height="150"
+            style="margin-left: 30%"
+          /> 
+        {% endif %}
       </div>
 
       <h3 style="text-align: center">***{{transcript_type}}***</h3>
@@ -145,7 +175,7 @@
       </div>
 
       <!-- Courses Begin -->
-      {% for exp in experiences %} {% if exp.course_name %}
+      {% for exp in experiences %} {% if exp.course %}
       <div style="padding-top: 5px">
         <div style="float: left; width: 10%; padding: 10px">
           <p style="margin: 0; font-size: 0.9em">{{exp.course_id}}</p>
@@ -165,7 +195,7 @@
         </div>
         <div style="float: left; width: 80%; padding-left: 10px">
           <p style="margin-top: 0; margin-bottom: 0; font-size: 0.9em">
-            <strong>{{exp.course_name}} </strong>
+            <strong>{{exp.occupation_name}} </strong>
           </p>
           <p style="margin: 5px 0px 3px; font-size: 0.9em">
             {{exp.description}}
@@ -237,7 +267,7 @@
       </div>
 
       <!-- Experiences Begin -->
-      {% for exp in experiences %} {% if not exp.course_name %}
+      {% for exp in experiences %} {% if not exp.course %}
       <div style="padding-top: 5px">
         <div style="float: left; width: 10%; padding: 10px">
           <p style="margin: 0; font-size: 0.9em">{{exp.course_id}}</p>
@@ -343,27 +373,6 @@
             <span style="content: ''; display: table; clear: both"></span>
           </div>
           <!-- Conent -->
-          <div>
-            <div style="float: left; width: 15%; padding: 0px 10px">
-              <p style="margin: 0; font-size: 0.9em">09-FEB-2011</p>
-            </div>
-            <div style="float: left; width: 15%; padding: 0px 10px">
-              <p style="margin: 0; font-size: 0.9em">World Conflict</p>
-            </div>
-            <div style="float: left; width: 10%; padding: 0px 10px">
-              <p style="margin: 0; font-size: 0.9em">3</p>
-            </div>
-            <div style="float: left; width: 10%; padding: 0px 10px">
-              <p style="margin: 0; font-size: 0.9em">U</p>
-            </div>
-            <div style="float: left; width: 10%; padding: 0px 10px">
-              <p style="margin: 0; font-size: 0.9em">C</p>
-            </div>
-            <div style="float: left; width: 10%; padding: 0px 10px">
-              <p style="margin: 0; font-size: 0.9em">A</p>
-            </div>
-            <span style="content: ''; display: table; clear: both"></span>
-          </div>
         </div>
         <!-- DAIMS Section -->
         <div>
@@ -489,75 +498,6 @@
             <span style="content: ''; display: table; clear: both"></span>
           </div>
           <!-- Conent -->
-          <div>
-            <div style="float: left; width: 15%; padding: 0px 10px">
-              <p style="margin: 0; font-size: 0.9em">01-SEP-2010</p>
-            </div>
-            <div style="float: left; width: 15%; padding: 0px 10px">
-              <p style="margin: 0; font-size: 0.9em">Spanish</p>
-            </div>
-            <div style="float: left; width: 10%; padding: 0px 10px">
-              <p style="margin: 0; font-size: 0.9em">3</p>
-            </div>
-            <div style="float: left; width: 45%; padding: 0px 10px">
-              <div style="float: left; width: 15%; padding: 0 10px">
-                <p style="margin: 2px; font-size: 0.9em">4L&6U</p>
-              </div>
-              <div style="float: left; width: 15%; padding: 0 10px">
-                <p style="margin: 2px 5px 0px; font-size: 0.9em"></p>
-              </div>
-              <div style="float: left; width: 15%; padding: 0 10px">
-                <p style="margin: 2px; font-size: 0.9em"></p>
-              </div>
-            </div>
-            <span style="content: ''; display: table; clear: both"></span>
-          </div>
-          <div>
-            <div style="float: left; width: 15%; padding: 0px 10px">
-              <p style="margin: 0; font-size: 0.9em">15-SEP-2010</p>
-            </div>
-            <div style="float: left; width: 15%; padding: 0px 10px">
-              <p style="margin: 0; font-size: 0.9em">Spanish</p>
-            </div>
-            <div style="float: left; width: 10%; padding: 0px 10px">
-              <p style="margin: 0; font-size: 0.9em">3+</p>
-            </div>
-            <div style="float: left; width: 45%; padding: 0px 10px">
-              <div style="float: left; width: 15%; padding: 0 10px">
-                <p style="margin: 2px; font-size: 0.9em"></p>
-              </div>
-              <div style="float: left; width: 15%; padding: 0 10px">
-                <p style="margin: 2px 5px 0px; font-size: 0.9em"></p>
-              </div>
-              <div style="float: left; width: 15%; padding: 0 10px">
-                <p style="margin: 2px; font-size: 0.9em">4L&7U</p>
-              </div>
-            </div>
-            <span style="content: ''; display: table; clear: both"></span>
-          </div>
-          <div>
-            <div style="float: left; width: 15%; padding: 0px 10px">
-              <p style="margin: 0; font-size: 0.9em">01-SEP-2012</p>
-            </div>
-            <div style="float: left; width: 15%; padding: 0px 10px">
-              <p style="margin: 0; font-size: 0.9em">Spanish</p>
-            </div>
-            <div style="float: left; width: 10%; padding: 0px 10px">
-              <p style="margin: 0; font-size: 0.9em">2+</p>
-            </div>
-            <div style="float: left; width: 45%; padding: 0px 10px">
-              <div style="float: left; width: 15%; padding: 0 10px">
-                <p style="margin: 2px; font-size: 0.9em"></p>
-              </div>
-              <div style="float: left; width: 15%; padding: 0 10px">
-                <p style="margin: 2px 5px 0px; font-size: 0.9em"></p>
-              </div>
-              <div style="float: left; width: 15%; padding: 0 10px">
-                <p style="margin: 2px; font-size: 0.9em"></p>
-              </div>
-            </div>
-            <span style="content: ''; display: table; clear: both"></span>
-          </div>
         </div>
 
         <p style="margin: 20px 0px 0px; font-size: 0.7em">

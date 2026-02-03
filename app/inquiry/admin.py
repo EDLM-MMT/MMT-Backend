@@ -1,5 +1,6 @@
 from django.contrib import admin
 from guardian.admin import GuardedModelAdmin
+
 from inquiry.models import Inquiry, InquiryComment, InquiryFAQ
 
 # Register your models here.
@@ -93,8 +94,6 @@ class InquiryAdmin(GuardedModelAdmin):
 @admin.register(InquiryFAQ)
 class InquiryFAQAdmin(GuardedModelAdmin):
     list_display = ('issue', 'default_assigned')
-
-    # inlines = [CommentInline]
 
     # fields to display in the admin site
     fieldsets = (
