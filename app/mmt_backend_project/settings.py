@@ -52,7 +52,6 @@ SILENCED_SYSTEM_CHECKS = ["security.w019"]
 
 
 # Application definition
-
 INSTALLED_APPS = [
     # admin override
     'admin_interface',
