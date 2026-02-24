@@ -1,5 +1,5 @@
 # MMT-Backend
-The Modernized Military Transcript (MMT) Backend is the consolidated backend to the human-facing MMT UI application, enabling complex data consolidation from multiple data sources and the generation and sharing of PDF transcripts. Because the MMT Backend is a separate application, it can be deployed in a separate environment from the connected services. It can even be configured to point to different deployments (ELRR, XIS, etc.) as needed. MMT Backend currently provides services to index data from XIS and ELRR Services. 
+The Modernized Military Transcript (MMT) Backend is the consolidated backend to the human-facing [MMT Portal](https://github.com/adlnet/mmt-portal) application, enabling complex data consolidation from multiple data sources and the generation and sharing of PDF transcripts. Because the MMT Backend is a separate application, it can be deployed in a separate environment from the connected services. It can even be configured to point to different deployments (ELRR, XIS, etc.) as needed. MMT Backend currently provides services to index data from [XIS](https://github.com/adlnet/ecc-openlxp-xis) and [ELRR Services](https://github.com/adlnet/elrr-services). 
 
 ## Data Flow Diagram
 
@@ -115,7 +115,12 @@ This workflow loads Academic Institute information from `/opt/imports` and any S
 ## Logs
 Logging is written to standard output and the file specified by the LOG_PATH environment variable.
 
-## License
+## Additional Information
+[MMT Wiki can be found here](https://github.com/adlnet/mmt-portal/wiki)
 
- This project uses the [MIT](http://www.apache.org/licenses/LICENSE-2.0) license.
+## License
+This project uses the [Apache](http://www.apache.org/licenses/LICENSE-2.0) license.
+
+
+
   
